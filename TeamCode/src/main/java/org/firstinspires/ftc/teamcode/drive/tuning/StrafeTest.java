@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode;
+package org.firstinspires.ftc.teamcode.drive.tuning;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -13,19 +13,20 @@ import org.firstinspires.ftc.teamcode.drive.DrunkenHippoDrive;
  * This is a simple routine to test translational drive capabilities.
  */
 
-@SuppressWarnings({"unused","EmptyLoopBody"})
+@SuppressWarnings("unused")
 @Config
 @Disabled
 @Autonomous(group = "drive")
-public class StraightTest extends LinearOpMode {
+public class StrafeTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public void runOpMode() throws InterruptedException {
         DrunkenHippoDrive drive = new DrunkenHippoDrive(hardwareMap);
 
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
-                .forward(DISTANCE)
+                .strafeRight(DISTANCE)
                 .build();
 
         waitForStart();
@@ -40,7 +41,6 @@ public class StraightTest extends LinearOpMode {
         telemetry.addData("finalHeading", poseEstimate.getHeading());
         telemetry.update();
 
-        //noinspection StatementWithEmptyBody
         while (!isStopRequested() && opModeIsActive()) ;
     }
 }
