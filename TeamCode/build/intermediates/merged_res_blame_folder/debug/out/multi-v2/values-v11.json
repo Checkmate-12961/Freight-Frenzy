@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "/home/riley/github/Freight-Frenzy/TeamCode/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v11/values-v11.xml",
+            "map": [
+                {
+                    "source": "/home/riley/.gradle/caches/transforms-3/62c48b7f9e57e411d240e88695a1ecb9/transformed/jetified-RobotCore-6.2.1/res/values-v11/values-v11.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "4",
+                        "endColumns": "12",
+                        "endOffsets": "187"
+                    }
+                }
+            ]
+        }
+    ]
+}
