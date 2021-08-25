@@ -1,3 +1,4 @@
+warningKillers/
 # Built application files
 *.apk
 *.aar
@@ -21,9 +22,7 @@ out/
 
 # Gradle files
 .gradle/
-.gradle/*
 build/
-build/*
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -87,3 +86,6 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+.DS_Store
+.idea
