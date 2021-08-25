@@ -35,6 +35,7 @@ public class DriveConstants {
      * from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = true;
+    // TODO: re-tune this for the new robot
     public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(25, 0, 0.7, 14);
 
     /*
@@ -87,7 +88,7 @@ public class DriveConstants {
      * Maximum Angular Velocity is calculated as: maximum velocity / (trackWidth / 2) * (180 / Math.PI)
 
      */
-    // TODO: retune the robo
+    // TODO: re-tune the robot
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
             43, 30, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
