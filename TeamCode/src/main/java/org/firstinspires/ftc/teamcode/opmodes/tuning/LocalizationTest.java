@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.tuning;
+package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.robot.deprecated.DrunkenHippoDrive;
+import org.firstinspires.ftc.teamcode.robot.CheckmateDrive;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.robot.deprecated.DrunkenHippoDrive;
 public class LocalizationTest extends LinearOpMode {
     @Override // ur mom gae
     public void runOpMode() throws InterruptedException {
-        DrunkenHippoDrive drive = new DrunkenHippoDrive(hardwareMap);
+        CheckmateDrive drive = new CheckmateDrive(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

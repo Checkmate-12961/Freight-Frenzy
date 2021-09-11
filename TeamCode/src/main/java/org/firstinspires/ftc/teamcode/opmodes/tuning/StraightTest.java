@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.tuning;
+package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.deprecated.DrunkenHippoDrive;
+import org.firstinspires.ftc.teamcode.robot.CheckmateDrive;
 
 /*
  * This is a simple routine to test translational drive capabilities.
@@ -22,7 +22,7 @@ public class StraightTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        DrunkenHippoDrive drive = new DrunkenHippoDrive(hardwareMap);
+        CheckmateDrive drive = new CheckmateDrive(hardwareMap);
 
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)

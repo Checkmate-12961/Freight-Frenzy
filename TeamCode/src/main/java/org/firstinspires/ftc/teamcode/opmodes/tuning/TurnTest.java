@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.robot.tuning;
+package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.deprecated.DrunkenHippoDrive;
+import org.firstinspires.ftc.teamcode.robot.CheckmateDrive;
 
 /*
  * This is a simple routine to test turning capabilities.
@@ -18,7 +18,7 @@ public class TurnTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        DrunkenHippoDrive drive = new DrunkenHippoDrive(hardwareMap);
+        CheckmateDrive drive = new CheckmateDrive(hardwareMap);
 
         waitForStart();
 

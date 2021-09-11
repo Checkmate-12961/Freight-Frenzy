@@ -1,4 +1,10 @@
-package org.firstinspires.ftc.teamcode.robot.tuning;
+package org.firstinspires.ftc.teamcode.opmodes.tuning;
+
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kV;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -12,17 +18,10 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.robot.deprecated.HippoDriveConstants;
-import org.firstinspires.ftc.teamcode.robot.deprecated.DrunkenHippoDrive;
+import org.firstinspires.ftc.teamcode.robot.CheckmateDrive;
 
 import java.util.Objects;
-
-import static org.firstinspires.ftc.teamcode.robot.deprecated.HippoDriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.robot.deprecated.HippoDriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.robot.deprecated.HippoDriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.robot.deprecated.HippoDriveConstants.kV;
 
 /*
  * This routine is designed to tune the open-loop feedforward coefficients. Although it may seem unnecessary,
@@ -46,6 +45,7 @@ import static org.firstinspires.ftc.teamcode.robot.deprecated.HippoDriveConstant
 @Config
 @Disabled
 @Autonomous(group = "drive")
+@SuppressWarnings("unused")
 public class ManualFeedforwardTuner extends LinearOpMode {
     public static double DISTANCE = 72; // in
 
@@ -59,22 +59,14 @@ public class ManualFeedforwardTuner extends LinearOpMode {
     private static MotionProfile generateProfile(boolean movingForward) {
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
         MotionState goal = new MotionState(movingForward ? DISTANCE : 0, 0, 0, 0);
-        return MotionProfileGenerator.generateSimpleMotionProfile(start, goal,
-                HippoDriveConstants.BASE_CONSTRAINTS.maxVel,
-                HippoDriveConstants.BASE_CONSTRAINTS.maxAccel,
-                HippoDriveConstants.BASE_CONSTRAINTS.maxJerk);
+        return MotionProfileGenerator.generateSimpleMotionProfile(start, goal, MAX_VEL, MAX_ACCEL);
     }
 
     @Override
     public void runOpMode() {
-        if (RUN_USING_ENCODER) {
-            RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
-                    "when using the built-in drive motor velocity PID.");
-        }
-
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        DrunkenHippoDrive drive = new DrunkenHippoDrive(hardwareMap);
+        CheckmateDrive drive = new CheckmateDrive(hardwareMap);
 
         Mode mode = Mode.TUNING_MODE;
 

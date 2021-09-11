@@ -20,7 +20,6 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityCons
 import com.acmerobotics.roadrunner.util.Angle;
 
 import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.SequenceSegment;
-import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.SequenceSegment;
 import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.TrajectorySegment;
 import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.TurnSegment;
 import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.WaitSegment;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class TrajectorySequenceBuilder {
     private final double resolution = 0.25;
 

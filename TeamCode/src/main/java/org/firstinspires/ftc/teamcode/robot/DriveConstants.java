@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 /*
  * Constants shared between multiple drive types.
@@ -26,18 +25,6 @@ public class DriveConstants {
     public static double MAX_RPM = 312;
 
     /*
-     * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
-     * Set this flag to false if drive encoders are not present and an alternative localization
-     * method is in use (e.g., tracking wheels).
-     *
-     * If using the built-in motor velocity PID, update MOTOR_VELO_PID with the tuned coefficients
-     * from DriveVelocityPIDTuner.
-     */
-    public static final boolean RUN_USING_ENCODER = true;
-    // TODO: re-tune this for the new robot
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(25, 0, 0.7, 14);
-
-    /*
      * These are physical constants that can be determined from your robot (including the track
      * width; it will be tune empirically later although a rough estimate is important). Users are
      * free to chose whichever linear distance unit they would like so long as it is consistently
@@ -55,6 +42,7 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
+    // TODO: tune for the robot
     public static double kV = 1.0 / rpmToVelocity(MAX_RPM);
     public static double kA = 0;
     public static double kStatic = 0;

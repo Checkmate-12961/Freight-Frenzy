@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 /**
  * Various utility functions for the BNO055 IMU.
  */
+@SuppressWarnings("unused")
 public class BNO055IMUUtil {
     /**
      * Remap BNO055 IMU axes and signs. For reference, the default order is {@link AxesOrder#ZYX}.
@@ -19,7 +20,7 @@ public class BNO055IMUUtil {
      * @param order axes order
      * @param signs axes signs
      */
-    public static void remapAxes(BNO055IMU imu, AxesOrder order, org.firstinspires.ftc.teamcode.util.AxesSigns signs) {
+    public static void remapAxes(BNO055IMU imu, AxesOrder order, AxesSigns signs) {
         try {
             // the indices correspond with the 2-bit encodings specified in the datasheet
             int[] indices = order.indices();

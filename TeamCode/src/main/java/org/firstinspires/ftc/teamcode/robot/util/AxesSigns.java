@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robot.util;
 /**
  * IMU axes signs in the order XYZ (after remapping).
  */
+@SuppressWarnings("unused")
 public enum AxesSigns {
     PPP(0b000),
     PPN(0b001),

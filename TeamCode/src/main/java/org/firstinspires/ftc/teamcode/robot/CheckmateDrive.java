@@ -1,5 +1,15 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kV;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -9,7 +19,6 @@ import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
@@ -24,29 +33,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.robot.trajectorysequence.CancelableTrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.robot.trajectorysequence.TrajectorySequenceBuilder;
-import org.firstinspires.ftc.teamcode.robot.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.robot.util.LynxModuleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kV;
-import static org.firstinspires.ftc.teamcode.robot.deprecated.HippoDriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.robot.deprecated.HippoDriveConstants.MAX_ANG_ACCEL;
-import static org.firstinspires.ftc.teamcode.robot.deprecated.HippoDriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.robot.deprecated.HippoDriveConstants.MAX_VEL;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
@@ -55,8 +51,9 @@ import static org.firstinspires.ftc.teamcode.robot.deprecated.HippoDriveConstant
 @SuppressWarnings("unused")
 @Config
 public class CheckmateDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    // TODO: tune
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 1);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 1);
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -64,12 +61,10 @@ public class CheckmateDrive extends MecanumDrive {
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
 
-    private final TrajectorySequenceRunner trajectorySequenceRunner;
+    private final CancelableTrajectorySequenceRunner trajectorySequenceRunner;
 
     private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
-
-    private final TrajectoryFollower follower;
 
     private final DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private final List<DcMotorEx> motors;
@@ -80,7 +75,7 @@ public class CheckmateDrive extends MecanumDrive {
     public CheckmateDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
-        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
+        TrajectoryFollower follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
@@ -91,7 +86,6 @@ public class CheckmateDrive extends MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        // TODO: adjust the names of the following hardware devices to match your configuration
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
@@ -110,15 +104,8 @@ public class CheckmateDrive extends MecanumDrive {
             motor.setMotorType(motorConfigurationType);
         }
 
-        if (RUN_USING_ENCODER) {
-            setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
-            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
-        }
 
         // DONE: reverse any motors using DcMotor.setDirection()
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -127,7 +114,7 @@ public class CheckmateDrive extends MecanumDrive {
         // DONE: if desired, use setLocalizer() to change the localization method
         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
 
-        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+        trajectorySequenceRunner = new CancelableTrajectorySequenceRunner(follower, HEADING_PID);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -200,6 +187,10 @@ public class CheckmateDrive extends MecanumDrive {
             update();
     }
 
+    public void cancelSequence() {
+
+    }
+
     public boolean isBusy() {
         return trajectorySequenceRunner.isBusy();
     }
@@ -210,20 +201,13 @@ public class CheckmateDrive extends MecanumDrive {
         }
     }
 
+    public double getVoltage() {
+        return batteryVoltageSensor.getVoltage();
+    }
+
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
         for (DcMotorEx motor : motors) {
             motor.setZeroPowerBehavior(zeroPowerBehavior);
-        }
-    }
-
-    public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients) {
-        PIDFCoefficients compensatedCoefficients = new PIDFCoefficients(
-                coefficients.p, coefficients.i, coefficients.d,
-                coefficients.f * 12 / batteryVoltageSensor.getVoltage()
-        );
-
-        for (DcMotorEx motor : motors) {
-            motor.setPIDFCoefficients(runMode, compensatedCoefficients);
         }
     }
 
@@ -281,7 +265,7 @@ public class CheckmateDrive extends MecanumDrive {
 
     @Override
     public Double getExternalHeadingVelocity() {
-        // TODO: This must be changed to match your configuration
+        // DONE: This must be changed to match your configuration
         //                           | Z axis
         //                           |
         //     (Motor Port Side)     |   / X axis

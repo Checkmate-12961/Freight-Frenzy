@@ -45,7 +45,7 @@ public class TrajectorySequenceRunner {
 
     private final NanoClock clock;
 
-    private TrajectorySequence currentTrajectorySequence;
+    protected TrajectorySequence currentTrajectorySequence;
     private double currentSegmentStartTime;
     private int currentSegmentIndex;
     private int lastSegmentIndex;
@@ -116,6 +116,7 @@ public class TrajectorySequenceRunner {
                 remainingMarkers.clear();
 
                 remainingMarkers.addAll(currentSegment.getMarkers());
+                // TODO: fix this if we're using api 24+, otherwise, suppress it
                 Collections.sort(remainingMarkers, (t1, t2) -> Double.compare(t1.getTime(), t2.getTime()));
             }
 
