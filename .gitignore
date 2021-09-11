@@ -1,4 +1,3 @@
-warningKillers/
 # Built application files
 *.apk
 *.aar
@@ -86,6 +85,3 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
-
-.DS_Store
-.idea

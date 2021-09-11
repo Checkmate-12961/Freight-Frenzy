@@ -19,13 +19,26 @@ import java.util.regex.Pattern
 
 apply plugin: 'com.android.application'
 
-def useProguard = false
-
 android {
 
     compileSdkVersion 30
 
     signingConfigs {
+        release {
+            def apkStoreFile = System.getenv("APK_SIGNING_STORE_FILE")
+            if (apkStoreFile != null) {
+                keyAlias System.getenv("APK_SIGNING_KEY_ALIAS")
+                keyPassword System.getenv("APK_SIGNING_KEY_PASSWORD")
+                storeFile file(System.getenv("APK_SIGNING_STORE_FILE"))
+                storePassword System.getenv("APK_SIGNING_STORE_PASSWORD")
+            } else {
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+                storeFile rootProject.file('libs/ftc.debug.keystore')
+                storePassword 'android'
+            }
+        }
+
         debug {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
@@ -43,7 +56,6 @@ android {
         applicationId 'com.qualcomm.ftcrobotcontroller'
         minSdkVersion 23
         targetSdkVersion 30
-        multiDexEnabled !useProguard
 
         /**
          * We keep the versionCode and versionName of robot controller applications in sync with
@@ -54,8 +66,8 @@ android {
          * We accomplish this with the help of a funky little Groovy script that maintains that
          * correspondence automatically.
          *
-         * http://developer.android.com/tools/building/configuring-gradle.html
-         * http://developer.android.com/tools/publishing/versioning.html
+         * @see <a href="http://developer.android.com/tools/building/configuring-gradle.html">Configure Your Build</a>
+         * @see <a href="http://developer.android.com/tools/publishing/versioning.html">Versioning Your App</a>
          */
         def manifestFile = project(':FtcRobotController').file('src/main/AndroidManifest.xml')
         def manifestText = manifestFile.getText()
@@ -78,17 +90,10 @@ android {
     // http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.BuildType.html
     buildTypes {
         release {
-            // Disable debugging for release versions so it can be uploaded to Google Play.
-            //debuggable true
+            signingConfig signingConfigs.release
+
             ndk {
                 abiFilters "armeabi-v7a"
-            }
-
-            if (useProguard) {
-                minifyEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                        'proguard-rules.pro'
-                println(getProguardFiles())
             }
         }
         debug {
@@ -97,13 +102,6 @@ android {
             renderscriptDebuggable true
             ndk {
                 abiFilters "armeabi-v7a"
-            }
-
-            if (useProguard) {
-                minifyEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                        'proguard-rules.pro'
-                println(getProguardFiles())
             }
         }
     }
@@ -117,12 +115,12 @@ android {
         jni.srcDirs = []
         jniLibs.srcDir rootProject.file('libs')
     }
+    ndkVersion '21.3.6528147'
 }
 
 repositories {
     flatDir {
         dirs rootProject.file('libs')
     }
-    jcenter()
 }
-apply from: 'build.release.gradle'
+
