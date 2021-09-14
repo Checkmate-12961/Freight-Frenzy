@@ -25,7 +25,7 @@ jobs:
       - name: Build app
         uses: sparkfabrik/android-build-action@v1.0.0
         with:
-          project-path: .
+          project-path: ..
           output-path: builds/ftc-robot-controller.apk
       - name: Upload artifact
         uses: actions/upload-artifact@v2.2.4
