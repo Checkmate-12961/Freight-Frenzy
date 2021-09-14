@@ -160,7 +160,7 @@ public class CheckmateDrive extends MecanumDrive {
 
     public void followTrajectory(Trajectory trajectory) {
         followTrajectoryAsync(trajectory);
-        waitForIdle();
+        waitForIdle();// Maddy was here mwahahahaha
     }
 
     public void followTrajectorySequenceAsync(org.firstinspires.ftc.teamcode.robot.trajectorysequence.TrajectorySequence trajectorySequence) {
