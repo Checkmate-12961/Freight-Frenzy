@@ -19,11 +19,14 @@ public class TeleBase extends LinearOpMode {
     private enum ControlMode {TELE, AUTO}
     private ControlMode controlMode = ControlMode.TELE;
 
-    // Initialize CheckmateDrive
-    CheckmateDrive robot = new CheckmateDrive(hardwareMap);
+    // Define CheckmateDrive
+    CheckmateDrive robot;
 
     @Override
     public void runOpMode() throws InterruptedException{
+        // Initialize CheckmateDrive
+        robot = new CheckmateDrive(hardwareMap);
+
         // Retrieve our pose from the PoseStorage.currentPose static field
         robot.setPoseEstimate(PoseUtils.currentPose);
 
