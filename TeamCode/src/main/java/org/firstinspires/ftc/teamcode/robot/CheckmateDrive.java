@@ -112,7 +112,7 @@ public class CheckmateDrive extends MecanumDrive {
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // DONE: if desired, use setLocalizer() to change the localization method
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        setLocalizer(new RealsenseLocalizer(hardwareMap));
 
         trajectorySequenceRunner = new CancelableTrajectorySequenceRunner(follower, HEADING_PID);
     }
