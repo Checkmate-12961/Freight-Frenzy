@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.robot.util;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
+import com.arcrobotics.ftclib.geometry.Transform2d;
+import com.arcrobotics.ftclib.geometry.Translation2d;
+import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 
 /**
  * Class for converting Pose2d objects to be used with the Realsense camera library
@@ -50,5 +53,28 @@ public class Pose2dConversionUtil {
         return new Pose2d(
                 inputPose.vec().div(metersToInchesMultiplier),
                 inputPose.getHeading());
+    }
+
+    /**
+     * Converts a ChassisSpeeds object to a Roadrunner Pose2d
+     * @param chassisSpeeds ChassisSpeeds object to convert
+     * @return Roadrunner pose with the same value
+     */
+    public static Pose2d chassisSpeedsToRoadrunnerPose(ChassisSpeeds chassisSpeeds) {
+        return new Pose2d(
+                chassisSpeeds.vxMetersPerSecond,
+                chassisSpeeds.vyMetersPerSecond,
+                chassisSpeeds.omegaRadiansPerSecond);
+    }
+
+    /**
+     * Converts a Roadrunner Pose2d to a FTCLib Transform2d
+     * @param inputPose Pose to convert
+     * @return Transform2d with the same value
+     */
+    public static Transform2d toTransform2d(Pose2d inputPose) {
+        return new Transform2d(
+                new Translation2d(inputPose.getX(), inputPose.getY()),
+                new Rotation2d(inputPose.getHeading()));
     }
 }
