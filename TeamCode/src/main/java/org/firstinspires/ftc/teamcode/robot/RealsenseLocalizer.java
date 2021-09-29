@@ -14,6 +14,9 @@ import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.teamcode.robot.util.Pose2dConversionUtil;
 
+/**
+ * Localizer that implements Intel's T265 Realsense camera's VSLAM system
+ */
 public class RealsenseLocalizer implements Localizer {
     // TODO: tune this based on the relative positions of the camera and the robot
     public static Transform2d cameraRobotOffset = new Transform2d(new Translation2d(9.0,8.25), new Rotation2d());
@@ -25,7 +28,10 @@ public class RealsenseLocalizer implements Localizer {
 
     private final T265Camera slamera;
 
-
+    /**
+     * Initializes the localizer and starts receiving packets from it
+     * @param hardwareMap Passed in from the OpMode
+     */
     public RealsenseLocalizer(HardwareMap hardwareMap) {
         super();
         elapsedTime = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
@@ -41,7 +47,11 @@ public class RealsenseLocalizer implements Localizer {
     @NonNull
     @Override
     public Pose2d getPoseEstimate() {
-        return Pose2dConversionUtil.toRoadrunnerPose(slamera.getLastReceivedCameraUpdate().pose);
+        // Convert meters to inches
+        return Pose2dConversionUtil.metersToInches(
+                // Convert to Roadrunner Pose2d
+                Pose2dConversionUtil.toRoadrunnerPose(
+                        slamera.getLastReceivedCameraUpdate().pose));
     }
 
     /**
@@ -50,7 +60,12 @@ public class RealsenseLocalizer implements Localizer {
      */
     @Override
     public void setPoseEstimate(@NonNull Pose2d pose) {
-        slamera.setPose(Pose2dConversionUtil.toRealsensePose(pose));
+        slamera.setPose(
+                // Convert to FTCLib Pose2d
+                Pose2dConversionUtil.toFtclibPose(
+                        // Convert inches to meters
+                        Pose2dConversionUtil.inchesToMeters(
+                                pose)));
     }
 
     /**
