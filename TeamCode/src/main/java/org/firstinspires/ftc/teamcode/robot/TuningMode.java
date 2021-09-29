@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.opmodes.tuning.TurnTest;
 
 // stupid switch to enable all of the tuning op modes
 public class TuningMode {
-    public static final boolean isTuning = true; // make this true for tuning mode and false for not
+    public static final boolean isTuning = false; // make this true for tuning mode and false for not
 
     @OpModeRegistrar
     public static void registerTuningOpModes(OpModeManager manager) {
