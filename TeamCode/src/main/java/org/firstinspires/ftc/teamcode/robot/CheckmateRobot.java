@@ -17,6 +17,8 @@ public class CheckmateRobot extends AbstractRobot {
      */
     public CheckmateRobot(HardwareMap hardwareMap) {
         super();
+
+        // Set up the drivetrain
         drivetrain = new Drivetrain(hardwareMap);
         addSubsystem(drivetrain);
     }

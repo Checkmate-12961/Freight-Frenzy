@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot.abstracts;
 
+/**
+ * Interface that all subsystems need to implement
+ */
 public interface AbstractSubsystem {
     /**
      * Runs on each iteration of the main Op Mode loop

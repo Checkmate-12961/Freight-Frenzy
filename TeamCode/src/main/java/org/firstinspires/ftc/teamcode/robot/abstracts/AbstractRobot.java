@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.robot.abstracts;
 
 import java.util.ArrayList;
 
+/**
+ * Class that all robots need to extend
+ */
 public abstract class AbstractRobot {
     private final ArrayList<AbstractSubsystem> subsystems;
 
@@ -12,7 +15,7 @@ public abstract class AbstractRobot {
     /**
      * Updates all subsystems
      */
-    public void update() {
+    public final void update() {
         for (AbstractSubsystem subsystem : subsystems) {
             subsystem.update();
         }
@@ -21,7 +24,7 @@ public abstract class AbstractRobot {
     /**
      * Runs cleanup() on all subsystems
      */
-    public void cleanup() {
+    public final void cleanup() {
         for (AbstractSubsystem subsystem : subsystems) {
             subsystem.cleanup();
         }
@@ -31,7 +34,7 @@ public abstract class AbstractRobot {
      * Adds a new subsystem
      * @param subsystem Subsystem to add. Must implement the Subsystem class
      */
-    protected void addSubsystem(AbstractSubsystem subsystem){
+    protected final void addSubsystem(AbstractSubsystem subsystem){
         subsystems.add(subsystem);
     }
 }
