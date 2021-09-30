@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.trajectorysequence;
+package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -19,10 +19,10 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.Angle;
 
-import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.SequenceSegment;
-import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.TrajectorySegment;
-import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.TurnSegment;
-import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.WaitSegment;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.sequencesegment.SequenceSegment;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.sequencesegment.TrajectorySegment;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.sequencesegment.TurnSegment;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.sequencesegment.WaitSegment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +30,6 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class TrajectorySequenceBuilder {
-    private final double resolution = 0.25;
 
     private final TrajectoryVelocityConstraint baseVelConstraint;
     private final TrajectoryAccelerationConstraint baseAccelConstraint;
@@ -490,6 +489,7 @@ public class TrajectorySequenceBuilder {
 
         double tangent = setAbsoluteTangent ? absoluteTangent : Angle.norm(lastPose.getHeading() + tangentOffset);
 
+        double resolution = 0.25;
         currentTrajectoryBuilder = new TrajectoryBuilder(lastPose, tangent, currentVelConstraint, currentAccelConstraint, resolution);
     }
 
@@ -703,6 +703,7 @@ public class TrajectorySequenceBuilder {
                 closestPoint = comparingPoint;
         }
 
+        assert closestPoint != null;
         return displacementToTime(sequenceSegments, closestPoint.thisPathDisplacement);
     }
 

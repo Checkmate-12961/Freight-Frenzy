@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.CheckmateDrive;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 
 /*
  * This is a simple routine to test turning capabilities.
@@ -20,7 +20,7 @@ public class TurnTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        CheckmateDrive drive = new CheckmateDrive(hardwareMap);
+        Drivetrain drive = new Drivetrain(hardwareMap);
 
         waitForStart();
 

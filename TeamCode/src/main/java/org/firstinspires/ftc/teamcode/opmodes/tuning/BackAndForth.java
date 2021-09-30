@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.CheckmateDrive;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
@@ -35,7 +35,7 @@ public class BackAndForth extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        CheckmateDrive drive = new CheckmateDrive(hardwareMap);
+        Drivetrain drive = new Drivetrain(hardwareMap);
 
         Trajectory trajectoryForward = drive.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)

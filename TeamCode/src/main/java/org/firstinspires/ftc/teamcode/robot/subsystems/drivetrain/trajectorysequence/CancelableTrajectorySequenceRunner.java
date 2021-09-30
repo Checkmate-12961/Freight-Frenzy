@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.trajectorysequence;
+package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;

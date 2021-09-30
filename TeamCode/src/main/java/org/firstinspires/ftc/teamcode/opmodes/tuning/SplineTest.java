@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.CheckmateDrive;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 
 /*
  * This is an example of a more complex path to really test the tuning.
@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.robot.CheckmateDrive;
 public class SplineTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        CheckmateDrive drive = new CheckmateDrive(hardwareMap);
+        Drivetrain drive = new Drivetrain(hardwareMap);
 
         waitForStart();
 

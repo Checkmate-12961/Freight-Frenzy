@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.kV;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.CheckmateDrive;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 
 import java.util.Objects;
 
@@ -66,7 +66,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        CheckmateDrive drive = new CheckmateDrive(hardwareMap);
+        Drivetrain drive = new Drivetrain(hardwareMap);
 
         Mode mode = Mode.TUNING_MODE;
 
