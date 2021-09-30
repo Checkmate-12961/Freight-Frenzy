@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.robot.PoseUtils;
 
 import java.util.Locale;
 
-@TeleOp(name = "BaseOp")
+@TeleOp
 public class TeleBase extends LinearOpMode {
     // Timer to keep track of elapsed time
     private final ElapsedTime runtime = new ElapsedTime();
