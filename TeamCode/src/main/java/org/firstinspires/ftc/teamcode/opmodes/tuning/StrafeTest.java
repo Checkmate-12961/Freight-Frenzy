@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 
 /*
  * This is a simple routine to test translational drive capabilities.
@@ -23,9 +23,9 @@ public class StrafeTest extends LinearOpMode {
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain drive = new Drivetrain(hardwareMap);
+        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
 
-        Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
+        Trajectory trajectory = robot.drivetrain.trajectoryBuilder(new Pose2d())
                 .strafeRight(DISTANCE)
                 .build();
 
@@ -33,9 +33,9 @@ public class StrafeTest extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        drive.followTrajectory(trajectory);
+        robot.drivetrain.followTrajectory(trajectory);
 
-        Pose2d poseEstimate = drive.getPoseEstimate();
+        Pose2d poseEstimate = robot.drivetrain.getPoseEstimate();
         telemetry.addData("finalX", poseEstimate.getX());
         telemetry.addData("finalY", poseEstimate.getY());
         telemetry.addData("finalHeading", poseEstimate.getHeading());

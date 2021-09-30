@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 import org.firstinspires.ftc.teamcode.robot.util.LoggingUtil;
 import org.firstinspires.ftc.teamcode.robot.util.RegressionUtil;
 
@@ -43,7 +43,7 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        Drivetrain drive = new Drivetrain(hardwareMap);
+        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
 
         NanoClock clock = NanoClock.system();
 
@@ -102,7 +102,7 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
         List<Double> positionSamples = new ArrayList<>();
         List<Double> powerSamples = new ArrayList<>();
 
-        drive.setPoseEstimate(new Pose2d());
+        robot.drivetrain.setPoseEstimate(new Pose2d());
 
         double startTime = clock.seconds();
         while (!isStopRequested()) {
@@ -114,13 +114,13 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
             double power = vel / maxVel;
 
             timeSamples.add(elapsedTime);
-            positionSamples.add(drive.getPoseEstimate().getX());
+            positionSamples.add(robot.drivetrain.getPoseEstimate().getX());
             powerSamples.add(power);
 
-            drive.setDrivePower(new Pose2d(power, 0.0, 0.0));
-            drive.updatePoseEstimate();
+            robot.drivetrain.setDrivePower(new Pose2d(power, 0.0, 0.0));
+            robot.drivetrain.updatePoseEstimate();
         }
-        drive.setDrivePower(new Pose2d(0.0, 0.0, 0.0));
+        robot.drivetrain.setDrivePower(new Pose2d(0.0, 0.0, 0.0));
 
         RegressionUtil.RampResult rampResult = RegressionUtil.fitRampData(
                 timeSamples, positionSamples, powerSamples, fitIntercept,
@@ -180,8 +180,8 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
             positionSamples.clear();
             powerSamples.clear();
 
-            drive.setPoseEstimate(new Pose2d());
-            drive.setDrivePower(new Pose2d(MAX_POWER, 0.0, 0.0));
+            robot.drivetrain.setPoseEstimate(new Pose2d());
+            robot.drivetrain.setDrivePower(new Pose2d(MAX_POWER, 0.0, 0.0));
 
             startTime = clock.seconds();
             while (!isStopRequested()) {
@@ -191,12 +191,12 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
                 }
 
                 timeSamples.add(elapsedTime);
-                positionSamples.add(drive.getPoseEstimate().getX());
+                positionSamples.add(robot.drivetrain.getPoseEstimate().getX());
                 powerSamples.add(MAX_POWER);
 
-                drive.updatePoseEstimate();
+                robot.drivetrain.updatePoseEstimate();
             }
-            drive.setDrivePower(new Pose2d(0.0, 0.0, 0.0));
+            robot.drivetrain.setDrivePower(new Pose2d(0.0, 0.0, 0.0));
 
             RegressionUtil.AccelResult accelResult = RegressionUtil.fitAccelData(
                     timeSamples, positionSamples, powerSamples, rampResult,

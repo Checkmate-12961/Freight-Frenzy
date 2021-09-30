@@ -3,23 +3,18 @@ package org.firstinspires.ftc.teamcode.opmodes.tuning;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 
-import org.firstinspires.ftc.teamcode.opmodes.tuning.AutomaticFeedforwardTuner;
-import org.firstinspires.ftc.teamcode.opmodes.tuning.BackAndForth;
-import org.firstinspires.ftc.teamcode.opmodes.tuning.FollowerPIDTuner;
-import org.firstinspires.ftc.teamcode.opmodes.tuning.LocalizationTest;
-import org.firstinspires.ftc.teamcode.opmodes.tuning.ManualFeedforwardTuner;
-import org.firstinspires.ftc.teamcode.opmodes.tuning.MaxVelocityTuner;
-import org.firstinspires.ftc.teamcode.opmodes.tuning.SplineTest;
-import org.firstinspires.ftc.teamcode.opmodes.tuning.StrafeTest;
-import org.firstinspires.ftc.teamcode.opmodes.tuning.StraightTest;
-import org.firstinspires.ftc.teamcode.opmodes.tuning.TrackWidthTuner;
-import org.firstinspires.ftc.teamcode.opmodes.tuning.TrackingWheelLateralDistanceTuner;
-import org.firstinspires.ftc.teamcode.opmodes.tuning.TurnTest;
-
-// stupid switch to enable all of the tuning op modes
+/**
+ * Awful class that enables or disables all tuning OpModes at once
+ */
+@SuppressWarnings("unused")
 public class TuningMode {
-    public static final boolean isTuning = false; // make this true for tuning mode and false for not
+    // true for tuning mode on and false for tuning mode off
+    public static final boolean isTuning = false;
 
+    /**
+     * Registers tuning OpModes
+     * @param manager OpModeManager passed in by the OpMode register
+     */
     @OpModeRegistrar
     public static void registerTuningOpModes(OpModeManager manager) {
         if (isTuning) {
