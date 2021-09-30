@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot.abstracts;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import java.util.ArrayList;
 
 public abstract class AbstractRobot {
