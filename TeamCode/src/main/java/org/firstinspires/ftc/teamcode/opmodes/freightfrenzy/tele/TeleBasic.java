@@ -7,34 +7,27 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
+import org.firstinspires.ftc.teamcode.robot.abstracts.BasicOpMode;
 import org.firstinspires.ftc.teamcode.robot.util.PoseUtil;
 
 import java.util.Locale;
 
 @TeleOp
-public class TeleBasic extends OpMode {
+public class TeleBasic extends BasicOpMode {
     // Timer to keep track of elapsed time
     private final ElapsedTime runtime = new ElapsedTime();
 
     private enum ControlMode {TELE, AUTO}
     private ControlMode controlMode = ControlMode.TELE;
 
-    // Define CheckmateRobot
-    CheckmateRobot robot;
-
     @Override
-    public void init(){
-        // Initialize CheckmateRobot
-        robot = new CheckmateRobot(hardwareMap);
-
+    public void setup(){
         // Retrieve our pose from the PoseStorage.currentPose static field
         robot.drivetrain.setPoseEstimate(PoseUtil.get());
     }
 
     @Override
-    public void loop(){
-        // Update everything. Odometry. Etc.
-        robot.update();
+    public void run_loop(){
         updatePosition();
 
         switch (controlMode){
@@ -57,11 +50,6 @@ public class TeleBasic extends OpMode {
                 // Mission accomplished.
                 break;
         }
-    }
-
-    @Override
-    public void stop(){
-        robot.cleanup();
     }
 
     private void updatePosition() {
