@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.robot.HardwareNames;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.RealsenseLocalizer;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.CancelableTrajectorySequenceRunner;
@@ -93,10 +94,10 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.LEFT_FRONT.name);
+        leftRear = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.LEFT_REAR.name);
+        rightRear = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.RIGHT_REAR.name);
+        rightFront = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.RIGHT_FRONT.name);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -108,10 +109,18 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
-        // DONE: reverse any motors using DcMotor.setDirection()
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        if (HardwareNames.Motors.LEFT_FRONT.reverse){
+            leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        if (HardwareNames.Motors.LEFT_REAR.reverse){
+            leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        if (HardwareNames.Motors.RIGHT_REAR.reverse){
+            rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        if (HardwareNames.Motors.RIGHT_FRONT.reverse){
+            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
 
         // DONE: if desired, use setLocalizer() to change the localization method
         setLocalizer(new RealsenseLocalizer(hardwareMap));

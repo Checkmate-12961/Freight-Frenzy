@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.robot.HardwareNames;
 import org.firstinspires.ftc.teamcode.robot.util.Encoder;
 
 import java.util.Arrays;
@@ -49,13 +50,19 @@ public class TrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
                 new Pose2d(FORWARD_OFFSET, 0, Math.toRadians(90)) // front
         ));
 
-        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightRear"));
-        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftRear"));
-        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftFront"));
+        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, HardwareNames.Encoders.RIGHT.name));
+        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, HardwareNames.Encoders.LEFT.name));
+        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, HardwareNames.Encoders.FRONT.name));
 
-        // DONE: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
-        // frontEncoder.setDirection(Encoder.Direction.REVERSE);
-        leftEncoder.setDirection(Encoder.Direction.REVERSE);
+        if (HardwareNames.Encoders.RIGHT.reverse){
+            rightEncoder.setDirection(Encoder.Direction.REVERSE);
+        }
+        if (HardwareNames.Encoders.LEFT.reverse){
+            leftEncoder.setDirection(Encoder.Direction.REVERSE);
+        }
+        if (HardwareNames.Encoders.FRONT.reverse){
+            frontEncoder.setDirection(Encoder.Direction.REVERSE);
+        }
     }
 
     public static double encoderTicksToInches(double ticks) {
