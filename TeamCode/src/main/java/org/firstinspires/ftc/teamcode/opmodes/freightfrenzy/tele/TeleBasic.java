@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.tele;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 import org.firstinspires.ftc.teamcode.robot.abstracts.BasicOpMode;
 import org.firstinspires.ftc.teamcode.robot.util.PoseUtil;
 
@@ -14,9 +11,6 @@ import java.util.Locale;
 
 @TeleOp
 public class TeleBasic extends BasicOpMode {
-    // Timer to keep track of elapsed time
-    private final ElapsedTime runtime = new ElapsedTime();
-
     private enum ControlMode {TELE, AUTO}
     private ControlMode controlMode = ControlMode.TELE;
 
@@ -59,7 +53,7 @@ public class TeleBasic extends BasicOpMode {
         telemetry.addData("x", position.getX());
         telemetry.addData("y", position.getY());
         telemetry.addData("heading", Math.toDegrees(position.getHeading()));
-        telemetry.addData("runtime",String.format(Locale.ENGLISH,"%fs",runtime.seconds()));
+        telemetry.addData("runtime",String.format(Locale.ENGLISH,"%fs",getRuntime()));
         telemetry.update();
     }
 
