@@ -1,14 +1,14 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.robot.subsystems;
 
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_ANG_ACCEL;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.kV;
 
 import androidx.annotation.NonNull;
 
@@ -36,8 +36,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.robot.trajectorysequence.CancelableTrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.robot.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.robot.HardwareNames;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.RealsenseLocalizer;
+import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.CancelableTrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.robot.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -48,9 +51,9 @@ import java.util.List;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 
-@SuppressWarnings("unused")
+
 @Config
-public class CheckmateDrive extends MecanumDrive {
+public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
     // TODO: tune
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 1);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 1);
@@ -72,7 +75,7 @@ public class CheckmateDrive extends MecanumDrive {
     private final BNO055IMU imu;
     private final VoltageSensor batteryVoltageSensor;
 
-    public CheckmateDrive(HardwareMap hardwareMap) {
+    public Drivetrain(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         TrajectoryFollower follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -91,10 +94,10 @@ public class CheckmateDrive extends MecanumDrive {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.LEFT_FRONT.name);
+        leftRear = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.LEFT_REAR.name);
+        rightRear = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.RIGHT_REAR.name);
+        rightFront = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.RIGHT_FRONT.name);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -106,10 +109,18 @@ public class CheckmateDrive extends MecanumDrive {
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
-        // DONE: reverse any motors using DcMotor.setDirection()
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        if (HardwareNames.Motors.LEFT_FRONT.reverse){
+            leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        if (HardwareNames.Motors.LEFT_REAR.reverse){
+            leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        if (HardwareNames.Motors.RIGHT_REAR.reverse){
+            rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        if (HardwareNames.Motors.RIGHT_FRONT.reverse){
+            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
 
         // DONE: if desired, use setLocalizer() to change the localization method
         setLocalizer(new RealsenseLocalizer(hardwareMap));
@@ -163,11 +174,11 @@ public class CheckmateDrive extends MecanumDrive {
         waitForIdle();// Maddy was here mwahahahaha
     }
 
-    public void followTrajectorySequenceAsync(org.firstinspires.ftc.teamcode.robot.trajectorysequence.TrajectorySequence trajectorySequence) {
+    public void followTrajectorySequenceAsync(org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence trajectorySequence) {
         trajectorySequenceRunner.followTrajectorySequenceAsync(trajectorySequence);
     }
 
-    public void followTrajectorySequence(org.firstinspires.ftc.teamcode.robot.trajectorysequence.TrajectorySequence trajectorySequence) {
+    public void followTrajectorySequence(org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence trajectorySequence) {
         followTrajectorySequenceAsync(trajectorySequence);
         waitForIdle();
     }
@@ -188,7 +199,7 @@ public class CheckmateDrive extends MecanumDrive {
     }
 
     public void cancelSequence() {
-
+        trajectorySequenceRunner.cancelSequence();
     }
 
     public boolean isBusy() {

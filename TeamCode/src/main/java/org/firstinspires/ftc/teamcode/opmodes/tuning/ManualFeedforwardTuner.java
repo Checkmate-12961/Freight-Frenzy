@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.robot.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.kV;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.CheckmateDrive;
+import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 
 import java.util.Objects;
 
@@ -66,7 +66,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        CheckmateDrive drive = new CheckmateDrive(hardwareMap);
+        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
 
         Mode mode = Mode.TUNING_MODE;
 
@@ -107,10 +107,10 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     MotionState motionState = activeProfile.get(profileTime);
                     double targetPower = Kinematics.calculateMotorFeedforward(motionState.getV(), motionState.getA(), kV, kA, kStatic);
 
-                    drive.setDrivePower(new Pose2d(targetPower, 0, 0));
-                    drive.updatePoseEstimate();
+                    robot.drivetrain.setDrivePower(new Pose2d(targetPower, 0, 0));
+                    robot.drivetrain.updatePoseEstimate();
 
-                    Pose2d poseVelo = Objects.requireNonNull(drive.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
+                    Pose2d poseVelo = Objects.requireNonNull(robot.drivetrain.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
                     double currentVelo = poseVelo.getX();
 
                     // update telemetry
@@ -127,7 +127,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                         profileStart = clock.seconds();
                     }
 
-                    drive.setWeightedDrivePower(
+                    robot.drivetrain.setWeightedDrivePower(
                             new Pose2d(
                                     -gamepad1.left_stick_y,
                                     -gamepad1.left_stick_x,

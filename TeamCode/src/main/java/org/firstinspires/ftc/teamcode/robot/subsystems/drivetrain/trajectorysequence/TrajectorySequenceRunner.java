@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.trajectorysequence;
+package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence;
 
 import androidx.annotation.Nullable;
 
@@ -15,18 +15,17 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryMarker;
 import com.acmerobotics.roadrunner.util.NanoClock;
 
-import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.SequenceSegment;
-import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.TrajectorySegment;
-import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.TurnSegment;
-import org.firstinspires.ftc.teamcode.robot.trajectorysequence.sequencesegment.WaitSegment;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.sequencesegment.SequenceSegment;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.sequencesegment.TrajectorySegment;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.sequencesegment.TurnSegment;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.sequencesegment.WaitSegment;
 import org.firstinspires.ftc.teamcode.robot.util.DashboardUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-//@Config
 public class TrajectorySequenceRunner {
     public static String COLOR_INACTIVE_TRAJECTORY = "#4caf507a";
     public static String COLOR_INACTIVE_TURN = "#7c4dff7a";
@@ -115,8 +114,7 @@ public class TrajectorySequenceRunner {
                 remainingMarkers.clear();
 
                 remainingMarkers.addAll(currentSegment.getMarkers());
-                // TODO: fix this if we're using api 24+, otherwise, suppress it
-                Collections.sort(remainingMarkers, (t1, t2) -> Double.compare(t1.getTime(), t2.getTime()));
+                remainingMarkers.sort(Comparator.comparingDouble(TrajectoryMarker::getTime));
             }
 
             double deltaTime = now - currentSegmentStartTime;

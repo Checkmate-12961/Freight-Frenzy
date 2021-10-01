@@ -7,13 +7,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.CheckmateDrive;
+import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 
 /*
  * This is a simple routine to test translational drive capabilities.
  */
 
-@SuppressWarnings({"unused","EmptyLoopBody"})
+@SuppressWarnings("unused")
 @Config
 @Disabled
 @Autonomous(group = "drive")
@@ -22,9 +22,9 @@ public class StraightTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        CheckmateDrive drive = new CheckmateDrive(hardwareMap);
+        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
 
-        Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
+        Trajectory trajectory = robot.drivetrain.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)
                 .build();
 
@@ -32,15 +32,26 @@ public class StraightTest extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        drive.followTrajectory(trajectory);
+        robot.drivetrain.followTrajectoryAsync(trajectory);
 
-        Pose2d poseEstimate = drive.getPoseEstimate();
+        while (!isStopRequested() && opModeIsActive()){
+            robot.update();
+
+            Pose2d poseEstimate = robot.drivetrain.getPoseEstimate();
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.update();
+
+            if (!robot.drivetrain.isBusy()){
+                break;
+            }
+        }
+
+        Pose2d poseEstimate = robot.drivetrain.getPoseEstimate();
         telemetry.addData("finalX", poseEstimate.getX());
         telemetry.addData("finalY", poseEstimate.getY());
         telemetry.addData("finalHeading", poseEstimate.getHeading());
         telemetry.update();
-
-        //noinspection StatementWithEmptyBody
-        while (!isStopRequested() && opModeIsActive()) ;
     }
 }
