@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.BasicOpMode;
-import org.firstinspires.ftc.teamcode.robot.util.PoseUtil;
+import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 
 import java.util.Locale;
 
@@ -17,7 +17,7 @@ public class TeleBasic extends BasicOpMode {
     @Override
     public void setup(){
         // Retrieve our pose from the PoseStorage.currentPose static field
-        robot.drivetrain.setPoseEstimate(PoseUtil.get());
+        robot.drivetrain.setPoseEstimate(PositionUtil.get());
     }
 
     @Override
@@ -48,7 +48,7 @@ public class TeleBasic extends BasicOpMode {
 
     private void updatePosition() {
         Pose2d position = robot.drivetrain.getPoseEstimate();
-        PoseUtil.set(position);
+        PositionUtil.set(position);
         // Print pose to telemetry
         telemetry.addData("x", position.getX());
         telemetry.addData("y", position.getY());
