@@ -16,8 +16,6 @@ import org.firstinspires.ftc.teamcode.robot.util.PoseUtil;
  */
 public class RealsenseLocalizer implements Localizer {
 
-    private T265Camera.PoseConfidence lastConfidence = null;
-
     private T265Camera slamera = null;
 
     /**
@@ -42,7 +40,6 @@ public class RealsenseLocalizer implements Localizer {
     @Override
     public Pose2d getPoseEstimate() {
         T265Camera.CameraUpdate update = slamera.getLastReceivedCameraUpdate();
-        lastConfidence = update.confidence;
 
         // Convert meters to inches
         return PoseUtil.metersToInches(
@@ -57,7 +54,6 @@ public class RealsenseLocalizer implements Localizer {
      */
     @Override
     public void setPoseEstimate(@NonNull Pose2d pose) {
-        lastConfidence = T265Camera.PoseConfidence.High;
         slamera.setPose(
                 // Convert to FTCLib Pose2d
                 PoseUtil.toFtclibPose(
