@@ -33,14 +33,10 @@ dependencies {
 
     // Realsense wrapper dependency
     implementation 'com.spartronics4915.lib:ftc265:2.1.9'
-
-    // meepmeep
-    implementation 'com.github.NoahBres:MeepMeep:1.0.6'
 }
 
 repositories {
     // Realsense wrapper repo
     maven { url = "https://dl.bintray.com/first-tech-challenge/ftcsdk/" }
     maven { url = "https://maven.0x778.tk" }
-    maven { url 'https://jitpack.io' }
 }
