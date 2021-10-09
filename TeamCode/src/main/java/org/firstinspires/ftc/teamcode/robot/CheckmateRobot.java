@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
  * The 2021-2022 robot class
  */
 public class CheckmateRobot extends AbstractRobot {
-    public Drivetrain drivetrain;
+    public final Drivetrain drivetrain;
 
     /**
      * Set up the robot and initialize the subsystems you want to use
