@@ -21,13 +21,23 @@ public class BiLocalizer implements Localizer {
     private final RealsenseLocalizer realsenseLocalizer;
     private final TrackingWheelLocalizer trackingWheelLocalizer;
 
+    private ConfidenceTracker confidenceTracker = ConfidenceTracker.HIGH;
+
+    /**
+     * Keeps track of what the latest confidence was. If the confidence just turned to HIGH,
+     *  it will update the camera's pose before going into HIGH.
+     */
+    private enum ConfidenceTracker {
+        LOW,
+        HIGH
+    }
+
     /**
      * Initializes both localizers
      * @param hardwareMap Hardware map passed in from an op mode
      */
     public BiLocalizer(HardwareMap hardwareMap) {
         super();
-
         realsenseLocalizer = new RealsenseLocalizer(hardwareMap);
         trackingWheelLocalizer = new TrackingWheelLocalizer(hardwareMap);
     }
@@ -39,17 +49,11 @@ public class BiLocalizer implements Localizer {
     @NonNull
     @Override
     public Pose2d getPoseEstimate() {
-        T265Camera.CameraUpdate update = realsenseLocalizer.getRawUpdate();
-
         // TODO: get the bounding box thing working
-        switch (update.confidence){
-            case Failed:
-            case Low:
-            case Medium:
-                return trackingWheelLocalizer.getPoseEstimate();
-            default:
-                return updateToPose(update);
+        if (confidenceTracker == ConfidenceTracker.HIGH) {
+            return realsenseLocalizer.getPoseEstimate();
         }
+        return trackingWheelLocalizer.getPoseEstimate();
     }
 
     /**
@@ -90,33 +94,19 @@ public class BiLocalizer implements Localizer {
         // Get an update from the camera
         T265Camera.CameraUpdate update = realsenseLocalizer.getRawUpdate();
 
-        // Get poses from both of our localizers
-        Pose2d trackingWheelPose = trackingWheelLocalizer.getPoseEstimate();
-        Pose2d realsensePose = PoseUtil.metersToInches(
-                PoseUtil.toRoadrunnerPose(
-                        update.pose));
-
         // Update the pose of the least confident localizer
         // TODO: get the bounding box thing working
         switch (update.confidence) {
             case Failed:
             case Low:
             case Medium:
-                realsenseLocalizer.setPoseEstimate(trackingWheelPose);
+                confidenceTracker = ConfidenceTracker.LOW;
                 break;
             default:
-                trackingWheelLocalizer.setPoseEstimate(realsensePose);
+                if (confidenceTracker == ConfidenceTracker.LOW) {
+                    realsenseLocalizer.setPoseEstimate(trackingWheelLocalizer.getPoseEstimate());
+                    confidenceTracker = ConfidenceTracker.HIGH;
+                }
         }
-    }
-
-    /**
-     * Pulls the pose from a T265 camera update and converts it to be used with RR
-     * @param update Camera update
-     * @return Pose2d (in inches)
-     */
-    private Pose2d updateToPose(T265Camera.CameraUpdate update) {
-        return PoseUtil.metersToInches(
-                PoseUtil.toRoadrunnerPose(
-                        update.pose));
     }
 }
