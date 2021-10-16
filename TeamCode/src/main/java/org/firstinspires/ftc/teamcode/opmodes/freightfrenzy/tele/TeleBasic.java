@@ -28,6 +28,9 @@ public class TeleBasic extends BasicOpMode {
             case TELE:
                 // Moves the robot based on the GP1 left stick
                 runDrivetrain();
+
+                // Runs the carousel spinner based on the GP2 bumpers
+                runCarousel();
                 break;
 
             case AUTO:
@@ -73,5 +76,17 @@ public class TeleBasic extends BasicOpMode {
                         -gamepad1.right_stick_x * Range.scale((gamepad1.right_trigger), -1, 1, 0, 1)
                 )
         );
+    }
+
+    // BIND:
+    //  gamepad2.right_bumper, gamepad2.left_bumper
+    private void runCarousel() {
+        if (gamepad2.right_bumper) {
+            robot.carousel.setPower(1);
+        } else if (gamepad2.left_bumper) {
+            robot.carousel.setPower(-1);
+        } else {
+            robot.carousel.setPower(0);
+        }
     }
 }
