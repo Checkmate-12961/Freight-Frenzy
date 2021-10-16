@@ -39,6 +39,8 @@ public class Lift implements AbstractSubsystem {
      */
     @Override
     public void update() {
+        liftMotor.setPower(1);
+
         // Quick and dirty protection just in case I try something really stupid
         if (targetHeight > maxHeight) {
             targetHeight = maxHeight;
@@ -88,6 +90,7 @@ public class Lift implements AbstractSubsystem {
             liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
         // Set it to run to a target position and hold the position
+        liftMotor.setTargetPosition(0);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
