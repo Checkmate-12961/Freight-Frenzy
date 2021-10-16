@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.teamcode.robot.HardwareNames;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.BiLocalizer;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.bilocalizer.RealsenseLocalizer;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.CancelableTrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.robot.util.LynxModuleUtil;
@@ -121,7 +122,7 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
         }
 
         // DONE: if desired, use setLocalizer() to change the localization method
-        setLocalizer(new BiLocalizer(hardwareMap));
+        setLocalizer(new RealsenseLocalizer(hardwareMap));
 
         trajectorySequenceRunner = new CancelableTrajectorySequenceRunner(follower, HEADING_PID);
     }
