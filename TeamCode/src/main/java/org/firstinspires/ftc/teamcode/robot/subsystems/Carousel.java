@@ -42,7 +42,7 @@ public class Carousel implements AbstractSubsystem {
      * @param power The motor's power, must fit in [0, 1]
      */
     public void setPower(double power) {
-        targetPower = Range.clip(power, 0, 1);
+        targetPower = Range.clip(power, -1, 1);
     }
 
     /**
