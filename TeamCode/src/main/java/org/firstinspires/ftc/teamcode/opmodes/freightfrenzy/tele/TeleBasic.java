@@ -81,9 +81,9 @@ public class TeleBasic extends BasicOpMode {
     //  gamepad2.dpad_up, gamepad2.dpad_down
     private void runLift() {
         if (gamepad2.dpad_up) {
-            robot.lift.setHeight(robot.lift.getHeight() + 1);
+            robot.lift.setHeight(robot.lift.getHeight() + .1);
         } else if (gamepad2.dpad_down) {
-            robot.lift.setHeight(robot.lift.getHeight() - 1);
+            robot.lift.setHeight(robot.lift.getHeight() - .1);
         }
     }
 }
