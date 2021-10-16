@@ -23,7 +23,7 @@ public class Lift implements AbstractSubsystem {
     // Constants to manage the height of the lift
     private static final double spoolDiameter = 1.5; // inches
     private static final double encoderTicksPerRev = 751.8;
-    private static final double maxHeight = 21.0; // inches
+    private static final double maxHeight = 20.0; // inches
 
     // Math for going from height to revolutions to ticks:
     /*
