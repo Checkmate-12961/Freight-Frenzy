@@ -31,6 +31,8 @@ public class TeleBasic extends BasicOpMode {
 
                 // Runs the carousel spinner based on the GP2 bumpers
                 runCarousel();
+                // Runs the lift based on the GP2 dpad
+                runLift();
                 break;
 
             case AUTO:
@@ -87,6 +89,16 @@ public class TeleBasic extends BasicOpMode {
             robot.carousel.setPower(-1);
         } else {
             robot.carousel.setPower(0);
+        }
+    }
+
+    // BIND:
+    //  gamepad2.dpad_up, gamepad2.dpad_down
+    private void runLift() {
+        if (gamepad2.dpad_up) {
+            robot.lift.setHeight(robot.lift.getHeight() + .1);
+        } else if (gamepad2.dpad_down) {
+            robot.lift.setHeight(robot.lift.getHeight() - .1);
         }
     }
 }

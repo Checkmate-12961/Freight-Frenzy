@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractRobot;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
 
 /**
  * The 2021-2022 robot class
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 public class CheckmateRobot extends AbstractRobot {
     public Drivetrain drivetrain;
     public Carousel carousel;
+    public Lift lift;
 
     /**
      * Set up the robot and initialize the subsystems you want to use
@@ -27,5 +29,9 @@ public class CheckmateRobot extends AbstractRobot {
         // Set up the carousel motor
         carousel = new Carousel(hardwareMap);
         addSubsystem(carousel);
+
+        // Set up the lift
+        lift = new Lift(hardwareMap);
+        addSubsystem(lift);
     }
 }
