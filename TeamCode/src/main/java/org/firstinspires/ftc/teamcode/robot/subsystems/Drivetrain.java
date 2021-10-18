@@ -37,8 +37,9 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.robot.HardwareNames;
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.RealsenseLocalizer;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.BiLocalizer;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.bilocalizer.RealsenseLocalizer;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.CancelableTrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.robot.util.LynxModuleUtil;
@@ -47,11 +48,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/*
- * Simple mecanum drive hardware implementation for REV hardware.
+/**
+ * Mecanum drive implementation to work with roadrunner
  */
-
-
 @Config
 public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
     // TODO: tune
