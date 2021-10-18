@@ -39,4 +39,19 @@ public class HardwareNames {
             this.reverse = reverse;
         }
     }
+
+    /**
+     * Contains hardware info for continuous rotation servos
+     */
+    public enum CRServos {
+        CAROUSEL ("carousel", false);
+
+        public final String name;
+        public final boolean reverse;
+
+        CRServos(String name, boolean reverse) {
+            this.name = name;
+            this.reverse = reverse;
+        }
+    }
 }

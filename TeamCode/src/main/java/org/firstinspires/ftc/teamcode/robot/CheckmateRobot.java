@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractRobot;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
 
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
  */
 public class CheckmateRobot extends AbstractRobot {
     public Drivetrain drivetrain;
+    public Carousel carousel;
     public Lift lift;
 
     /**
@@ -23,6 +25,10 @@ public class CheckmateRobot extends AbstractRobot {
         // Set up the drivetrain
         drivetrain = new Drivetrain(hardwareMap);
         addSubsystem(drivetrain);
+
+        // Set up the carousel motor
+        carousel = new Carousel(hardwareMap);
+        addSubsystem(carousel);
 
         // Set up the lift
         lift = new Lift(hardwareMap);
