@@ -28,6 +28,8 @@ public class TeleBasic extends BasicOpMode {
             case TELE:
                 // Moves the robot based on the GP1 left stick
                 runDrivetrain();
+                // Runs the lift based on the GP2 dpad
+                runLift();
                 break;
 
             case AUTO:
@@ -66,12 +68,22 @@ public class TeleBasic extends BasicOpMode {
         robot.drivetrain.setWeightedDrivePower(
                 new Pose2d(
                         // left stick X
-                        gamepad1.left_stick_x * Range.scale((gamepad1.right_trigger), -1, 1, 0, 1),
+                        -gamepad1.left_stick_y * Range.scale((gamepad1.right_trigger), -1, 1, 0, 1),
                         // left sick Y
-                        gamepad1.left_stick_y * Range.scale((gamepad1.right_trigger), -1, 1, 0, 1),
+                        -gamepad1.left_stick_x * Range.scale((gamepad1.right_trigger), -1, 1, 0, 1),
                         // right stick X (rotation)
                         -gamepad1.right_stick_x * Range.scale((gamepad1.right_trigger), -1, 1, 0, 1)
                 )
         );
+    }
+
+    // BIND:
+    //  gamepad2.dpad_up, gamepad2.dpad_down
+    private void runLift() {
+        if (gamepad2.dpad_up) {
+            robot.lift.setHeight(robot.lift.getHeight() + .1);
+        } else if (gamepad2.dpad_down) {
+            robot.lift.setHeight(robot.lift.getHeight() - .1);
+        }
     }
 }
