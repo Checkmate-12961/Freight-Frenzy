@@ -130,5 +130,6 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
         telemetry.update();
 
         while (!isStopRequested()) idle();
+        robot.cleanup();
     }
 }

@@ -53,5 +53,6 @@ public class StraightTest extends LinearOpMode {
         telemetry.addData("finalY", poseEstimate.getY());
         telemetry.addData("finalHeading", poseEstimate.getHeading());
         telemetry.update();
+        robot.cleanup();
     }
 }

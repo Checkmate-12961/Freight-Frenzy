@@ -55,6 +55,7 @@ public class MaxVelocityTuner extends LinearOpMode {
         ElapsedTime timer = new ElapsedTime();
 
         while (!isStopRequested() && timer.seconds() < RUNTIME) {
+            robot.update();
             robot.drivetrain.updatePoseEstimate();
 
             Pose2d poseVelo = Objects.requireNonNull(robot.drivetrain.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
@@ -71,6 +72,7 @@ public class MaxVelocityTuner extends LinearOpMode {
         telemetry.update();
 
         while (!isStopRequested() && opModeIsActive()) idle();
+        robot.cleanup();
     }
 
     private double veloInchesToTicks(double inchesPerSec) {
