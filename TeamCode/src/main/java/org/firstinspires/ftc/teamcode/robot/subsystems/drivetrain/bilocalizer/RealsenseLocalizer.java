@@ -43,9 +43,9 @@ public class RealsenseLocalizer implements Localizer {
 
         // Convert meters to inches
         return PoseUtil.metersToInches(
-                // Convert to Roadrunner Pose2d
-                PoseUtil.toRoadrunnerPose(
-                        update.pose));
+            // Convert to Roadrunner Pose2d
+            PoseUtil.toRoadrunnerPose(
+                update.pose));
     }
 
     /**
@@ -55,11 +55,11 @@ public class RealsenseLocalizer implements Localizer {
     @Override
     public void setPoseEstimate(@NonNull Pose2d pose) {
         slamera.setPose(
-                // Convert to FTCLib Pose2d
-                PoseUtil.toFtclibPose(
-                        // Convert inches to meters
-                        PoseUtil.inchesToMeters(
-                                pose)));
+            // Convert to FTCLib Pose2d
+            PoseUtil.toFtclibPose(
+                // Convert inches to meters
+                PoseUtil.inchesToMeters(
+                    pose)));
     }
 
     /**
@@ -71,10 +71,10 @@ public class RealsenseLocalizer implements Localizer {
     public Pose2d getPoseVelocity() {
         // Convert meters to inches
         return PoseUtil.metersToInches(
-                // Convert ChassisSpeeds to Pose2d
-                PoseUtil.chassisSpeedsToRoadrunnerPose(
-                        // Get the camera's reported velocity
-                        slamera.getLastReceivedCameraUpdate().velocity));
+            // Convert ChassisSpeeds to Pose2d
+            PoseUtil.chassisSpeedsToRoadrunnerPose(
+                // Get the camera's reported velocity
+                slamera.getLastReceivedCameraUpdate().velocity));
     }
 
     /**

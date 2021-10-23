@@ -22,7 +22,9 @@ public class RealsenseManager {
     public static T265Camera slamera = null;
 
     public static void init(HardwareMap hardwareMap) {
-        slamera = new T265Camera(cameraRobotOffset, encoderMeasurementCovariance, hardwareMap.appContext);
+        if (slamera == null) {
+            slamera = new T265Camera(cameraRobotOffset, encoderMeasurementCovariance, hardwareMap.appContext);
+        }
         slamera.setPose(new com.arcrobotics.ftclib.geometry.Pose2d());
         slamera.start();
     }
@@ -30,7 +32,6 @@ public class RealsenseManager {
     public static void cleanup() {
         if (slamera != null) {
             slamera.stop();
-            slamera = null;
         }
     }
 }
