@@ -77,4 +77,16 @@ public class PoseUtil {
                 new Translation2d(inputPose.getX(), inputPose.getY()),
                 new Rotation2d(inputPose.getHeading()));
     }
+
+    /**
+     * Multiply each individual component
+     * @param inputPose Pose to multiply
+     * @param xFactor Factor of the x component
+     * @param yFactor Factor of the y component
+     * @param headingFactor Factor of the heading component
+     * @return Multiplied pose
+     */
+    public static Pose2d multiply(Pose2d inputPose, double xFactor, double yFactor, double headingFactor) {
+        return new Pose2d(inputPose.getX() * xFactor, inputPose.getY() * yFactor, inputPose.getHeading() * headingFactor);
+    }
 }
