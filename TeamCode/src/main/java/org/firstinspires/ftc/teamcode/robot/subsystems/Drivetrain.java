@@ -37,7 +37,6 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.robot.HardwareNames;
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.BiLocalizer;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.bilocalizer.RealsenseLocalizer;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.CancelableTrajectorySequenceRunner;
@@ -54,8 +53,8 @@ import java.util.List;
 @Config
 public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
     // TODO: tune
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 1);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 1);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 1);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
 
     public static double LATERAL_MULTIPLIER = 1;
 
