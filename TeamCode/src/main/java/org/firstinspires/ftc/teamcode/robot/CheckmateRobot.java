@@ -35,9 +35,8 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
  */
 public class CheckmateRobot extends AbstractRobot {
     public final Drivetrain drivetrain;
-    public Drivetrain drivetrain;
-    public Carousel carousel;
-    public Lift lift;
+    public final Carousel carousel;
+    public final Lift lift;
 
     /**
      * Set up the robot and initialize the subsystems you want to use
