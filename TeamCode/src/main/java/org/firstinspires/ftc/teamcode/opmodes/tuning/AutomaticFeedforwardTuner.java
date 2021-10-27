@@ -61,6 +61,7 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
 
         boolean fitIntercept = false;
         while (!isStopRequested()) {
+            robot.update();
             if (gamepad1.a) {
                 fitIntercept = true;
                 while (!isStopRequested() && gamepad1.a) {
@@ -213,5 +214,6 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
         while (!isStopRequested()) {
             idle();
         }
+        robot.cleanup();
     }
 }

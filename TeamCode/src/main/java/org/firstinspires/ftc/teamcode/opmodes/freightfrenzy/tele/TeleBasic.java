@@ -29,6 +29,7 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.BasicOpMode;
 import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 
 import java.util.Locale;
+import java.util.Objects;
 
 @TeleOp
 public class TeleBasic extends BasicOpMode {
@@ -80,6 +81,8 @@ public class TeleBasic extends BasicOpMode {
         telemetry.addData("y", position.getY());
         telemetry.addData("heading", Math.toDegrees(position.getHeading()));
         telemetry.addData("runtime",String.format(Locale.ENGLISH,"%fs",getRuntime()));
+        telemetry.addData("vx", Objects.requireNonNull(robot.drivetrain.getPoseVelocity()).getX());
+        telemetry.addData("vy", Objects.requireNonNull(robot.drivetrain.getPoseVelocity()).getY());
         telemetry.update();
     }
 

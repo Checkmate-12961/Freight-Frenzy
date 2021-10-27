@@ -64,8 +64,8 @@ public class DriveConstants {
      * empirically tuned.
      */
     // TODO: tune for the robot
-    public static double kV = 1.0 / rpmToVelocity(MAX_RPM);
-    public static double kA = 0;
+    public static double kV = 0.021;
+    public static double kA = 0.0006;
     public static double kStatic = 0;
 
     /*
@@ -97,7 +97,7 @@ public class DriveConstants {
 
      */
     // TODO: re-tune the robot
-    public static double MAX_VEL = 43;
+    public static double MAX_VEL = 35;
     public static double MAX_ACCEL = 30;
     public static double MAX_ANG_VEL = Math.toRadians(180);
     public static double MAX_ANG_ACCEL = Math.toRadians(180);

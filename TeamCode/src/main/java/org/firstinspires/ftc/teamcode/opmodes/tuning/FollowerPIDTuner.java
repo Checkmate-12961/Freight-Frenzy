@@ -43,6 +43,7 @@ public class FollowerPIDTuner extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (!isStopRequested()) {
+            robot.update();
             Trajectory traj = robot.drivetrain.trajectoryBuilder(startPose)
                     .forward(DISTANCE)
                     .build();
@@ -51,5 +52,6 @@ public class FollowerPIDTuner extends LinearOpMode {
 
             startPose = traj.end().plus(new Pose2d(0, 0, Math.toRadians(90)));
         }
+        robot.cleanup();
     }
 }
