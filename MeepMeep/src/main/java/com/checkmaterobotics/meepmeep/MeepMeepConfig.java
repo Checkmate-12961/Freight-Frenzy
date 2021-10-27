@@ -19,28 +19,22 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package org.firstinspires.ftc.teamcode.robot.util;
+package com.checkmaterobotics.meepmeep;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.noahbres.meepmeep.MeepMeep;
+import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 
-public class PositionUtil {
-    private static double x = 0;
-    private static double y = 0;
-    private static double heading = 0;
-
-    public static Pose2d get(){
-        return new Pose2d(x, y, heading);
-    }
-
-    public static void set(Pose2d pose){
-        x = pose.getX();
-        y = pose.getY();
-        heading = pose.getHeading();
-    }
-
-    public static void set(double x, double y, double heading){
-        PositionUtil.x = x;
-        PositionUtil.y = y;
-        PositionUtil.heading = heading;
+public class MeepMeepConfig {
+    static public MeepMeep getConfig() {
+        // With a field size of 800 pixels
+        return new MeepMeep(800)
+                // Set field image
+                .setBackground(MeepMeep.Background.FIELD_FREIGHT_FRENZY)
+                // Set theme
+                .setTheme(new ColorSchemeRedDark())
+                // Background opacity from 0-1
+                .setBackgroundAlpha(1f)
+                // Set constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15);
     }
 }

@@ -19,28 +19,28 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package org.firstinspires.ftc.teamcode.robot.util;
+package com.checkmaterobotics.meepmeep;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
-public class PositionUtil {
-    private static double x = 0;
-    private static double y = 0;
-    private static double heading = 0;
+public class MeepMeepTesting {
+    public static void main(String[] args) {
+        System.setProperty("sun.java2d.opengl", "true");
 
-    public static Pose2d get(){
-        return new Pose2d(x, y, heading);
-    }
-
-    public static void set(Pose2d pose){
-        x = pose.getX();
-        y = pose.getY();
-        heading = pose.getHeading();
-    }
-
-    public static void set(double x, double y, double heading){
-        PositionUtil.x = x;
-        PositionUtil.y = y;
-        PositionUtil.heading = heading;
+        // Grab our config
+        MeepMeepConfig.getConfig()
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
+                                .forward(30)
+                                .turn(Math.toRadians(90))
+                                .forward(30)
+                                .turn(Math.toRadians(90))
+                                .forward(30)
+                                .turn(Math.toRadians(90))
+                                .forward(30)
+                                .turn(Math.toRadians(90))
+                                .build()
+                )
+                .start();
     }
 }
