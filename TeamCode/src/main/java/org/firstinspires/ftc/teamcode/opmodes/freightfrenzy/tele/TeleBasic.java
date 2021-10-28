@@ -54,7 +54,9 @@ public class TeleBasic extends BasicOpMode {
                 // Runs the carousel spinner based on the GP2 bumpers
                 runCarousel();
                 // Runs the lift based on the GP2 dpad
-                runLift();
+                //runLift();
+                runArm();
+                runGripper();
                 break;
 
             case AUTO:
@@ -75,14 +77,17 @@ public class TeleBasic extends BasicOpMode {
 
     private void updatePosition() {
         Pose2d position = robot.drivetrain.getPoseEstimate();
+        Pose2d velocity = Objects.requireNonNull(robot.drivetrain.getPoseVelocity());
         PositionUtil.set(position);
         // Print pose to telemetry
+        telemetry.addData("armAngle", Math.toDegrees(robot.jankArm.getAngle()));
         telemetry.addData("x", position.getX());
         telemetry.addData("y", position.getY());
-        telemetry.addData("heading", Math.toDegrees(position.getHeading()));
+        telemetry.addData("h", Math.toDegrees(position.getHeading()));
         telemetry.addData("runtime",String.format(Locale.ENGLISH,"%fs",getRuntime()));
-        telemetry.addData("vx", Objects.requireNonNull(robot.drivetrain.getPoseVelocity()).getX());
-        telemetry.addData("vy", Objects.requireNonNull(robot.drivetrain.getPoseVelocity()).getY());
+        telemetry.addData("vX", velocity.getX());
+        telemetry.addData("vY", velocity.getY());
+        telemetry.addData("vH", Math.toDegrees(velocity.getHeading()));
         telemetry.update();
     }
 
@@ -116,6 +121,7 @@ public class TeleBasic extends BasicOpMode {
         }
     }
 
+    /*
     // BIND:
     //  gamepad2.dpad_up, gamepad2.dpad_down
     private void runLift() {
@@ -123,6 +129,27 @@ public class TeleBasic extends BasicOpMode {
             robot.lift.setHeight(robot.lift.getHeight() + .1);
         } else if (gamepad2.dpad_down) {
             robot.lift.setHeight(robot.lift.getHeight() - .1);
+        }
+    }
+    */
+
+    // BIND:
+    //  gamepad2.dpad_up, gamepad2.dpad_down
+    private void runArm() {
+        if (gamepad2.dpad_up) {
+            robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
+        } else if (gamepad2.dpad_down) {
+            robot.jankArm.setAngle(robot.jankArm.getAngle() - .01);
+        }
+    }
+
+    // BIND:
+    //  gamepad2.a, gamepad2.b
+    private void runGripper() {
+        if (gamepad2.a) {
+            robot.jankHand.close();
+        } else if (gamepad2.b) {
+            robot.jankHand.open();
         }
     }
 }

@@ -46,14 +46,14 @@ public class Lift implements AbstractSubsystem {
     private static final double encoderTicksPerRev = 751.8;
     private static final double maxHeight = 20.0; // inches
 
-    // Math for going from height to revolutions to ticks:
+    // Math for going from height to revolutions to geared ticks to ticks:
     /*
     targetHeight * encoderTicksPerRev
     ---------------------------------
           spoolDiameter * Math.PI
      */
 
-    private static final double heightToTicksMultiplier = encoderTicksPerRev / (spoolDiameter * Math.PI);
+    private static final double ticksPerInch = encoderTicksPerRev / (spoolDiameter * Math.PI);
 
     /**
      * Updates the target height of the lift based on targetHeight
@@ -68,7 +68,7 @@ public class Lift implements AbstractSubsystem {
         } else if (targetHeight < 0) {
             targetHeight = 0;
         }
-        liftMotor.setTargetPosition((int)round(targetHeight * heightToTicksMultiplier));
+        liftMotor.setTargetPosition((int)round(targetHeight * ticksPerInch));
     }
 
     /**
