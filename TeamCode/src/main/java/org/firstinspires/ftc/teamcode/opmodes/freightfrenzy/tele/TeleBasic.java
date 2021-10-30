@@ -26,7 +26,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.BasicOpMode;
-import org.firstinspires.ftc.teamcode.robot.subsystems.JankArm;
 import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 
 import java.util.Locale;
@@ -93,29 +92,28 @@ public class TeleBasic extends BasicOpMode {
     }
 
     // BIND:
-    //  gamepad1.left_stick_x, gamepad1.left_stick_y
-    //  gamepad1.right_stick_x, gamepad1.right_stick_y
-    //  gamepad1.right_trigger
+    //  gp1.leftStickX, gp1.leftStickY
+    //  gp1.rightStickX, gp1.rightTrigger
     private void runDrivetrain() {
         // Set the power of the DT based on the GP1 left
         robot.drivetrain.setWeightedDrivePower(
                 new Pose2d(
                         // left stick X
-                        -gamepad1.left_stick_y * Range.scale((gamepad1.right_trigger), -1, 1, 0, 1),
+                        -gp1.getLeftStickY() * Range.scale((gp1.getRightTrigger()), -1, 1, 0, 1),
                         // left sick Y
-                        -gamepad1.left_stick_x * Range.scale((gamepad1.right_trigger), -1, 1, 0, 1),
+                        -gp1.getLeftStickX() * Range.scale((gp1.getRightTrigger()), -1, 1, 0, 1),
                         // right stick X (rotation)
-                        -gamepad1.right_stick_x * Range.scale((gamepad1.right_trigger), -1, 1, 0, 1)
+                        -gp1.getRightStickX() * Range.scale((gp1.getRightTrigger()), -1, 1, 0, 1)
                 )
         );
     }
 
     // BIND:
-    //  gamepad2.right_bumper, gamepad2.left_bumper
+    //  gp2.rightBumper, gp2.leftBumper
     private void runCarousel() {
-        if (gamepad2.right_bumper) {
+        if (gp2.getRightBumper()) {
             robot.carousel.setPower(1);
-        } else if (gamepad2.left_bumper) {
+        } else if (gp2.getLeftBumper()) {
             robot.carousel.setPower(-1);
         } else {
             robot.carousel.setPower(0);
@@ -124,32 +122,32 @@ public class TeleBasic extends BasicOpMode {
 
     /*
     // BIND:
-    //  gamepad2.dpad_up, gamepad2.dpad_down
+    //  gp2.dpad_up, gp2.dpad_down
     private void runLift() {
-        if (gamepad2.dpad_up) {
+        if (gp2.dpad_up) {
             robot.lift.setHeight(robot.lift.getHeight() + .1);
-        } else if (gamepad2.dpad_down) {
+        } else if (gp2.dpad_down) {
             robot.lift.setHeight(robot.lift.getHeight() - .1);
         }
     }
     */
 
     // BIND:
-    //  gamepad2.dpad_up, gamepad2.dpad_down
+    //  gp2.dpadUp, gp2.dpadDown
     private void runArm() {
-        if (gamepad2.left_stick_y < -0.4) {
+        if (gp2.getLeftStickY() < -0.4) {
             robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
-        } else if (gamepad2.left_stick_y > 0.4) {
+        } else if (gp2.getLeftStickY() > 0.4) {
             robot.jankArm.setAngle(robot.jankArm.getAngle() - .01);
         }
     }
 
     // BIND:
-    //  gamepad2.a, gamepad2.b
+    //  gp2.a, gp2.b
     private void runGripper() {
-        if (gamepad2.a) {
+        if (gp2.getA()) {
             robot.jankHand.close();
-        } else if (gamepad2.b) {
+        } else if (gp2.getB()) {
             robot.jankHand.open();
         }
     }
