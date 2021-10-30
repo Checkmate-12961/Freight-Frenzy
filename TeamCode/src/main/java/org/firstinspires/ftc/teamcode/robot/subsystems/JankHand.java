@@ -26,14 +26,14 @@ public class JankHand implements AbstractSubsystem {
      * Opens the jank hand
      */
     public void open() {
-        targetPosition = 1;
+        targetPosition = 0;
     }
 
     /**
      * Closes the jank hand
      */
     public void close() {
-        targetPosition = 0;
+        targetPosition = 1;
     }
 
     /**

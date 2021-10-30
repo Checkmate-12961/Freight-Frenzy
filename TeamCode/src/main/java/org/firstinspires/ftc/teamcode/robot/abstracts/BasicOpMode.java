@@ -36,9 +36,15 @@ public abstract class BasicOpMode extends OpMode {
      */
     @Override
     final public void init() {
+        pre_setup();
         robot = new CheckmateRobot(hardwareMap);
         setup();
     }
+
+    /**
+     * Runs before the hardware initializes
+     */
+    public void pre_setup() { }
 
     /**
      * Runs when the OpMode initializes

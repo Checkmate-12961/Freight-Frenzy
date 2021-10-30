@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.BasicOpMode;
+import org.firstinspires.ftc.teamcode.robot.subsystems.JankArm;
 import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 
 import java.util.Locale;
@@ -136,9 +137,9 @@ public class TeleBasic extends BasicOpMode {
     // BIND:
     //  gamepad2.dpad_up, gamepad2.dpad_down
     private void runArm() {
-        if (gamepad2.dpad_up) {
+        if (gamepad2.left_stick_y < -0.4) {
             robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
-        } else if (gamepad2.dpad_down) {
+        } else if (gamepad2.left_stick_y > 0.4) {
             robot.jankArm.setAngle(robot.jankArm.getAngle() - .01);
         }
     }

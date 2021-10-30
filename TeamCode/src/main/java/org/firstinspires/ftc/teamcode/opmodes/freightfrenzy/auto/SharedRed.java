@@ -13,18 +13,25 @@ import java.util.Objects;
 
 @Autonomous
 public class SharedRed extends BasicOpMode {
+    Pose2d startPose = new Pose2d(10, -61, Math.toRadians(90));
+
+    @Override
+    public void pre_setup() {
+        PositionUtil.set(startPose);
+    }
 
     /**
      * Runs when the OpMode initializes
      */
     @Override
     public void setup() {
-        robot.drivetrain.setPoseEstimate(new Pose2d());
-
         // Trajectory to get the robot into the shared thing on blue
-        TrajectorySequence toSharedRed = robot.drivetrain.trajectorySequenceBuilder(new Pose2d(10, -61, Math.toRadians(90)))
+        TrajectorySequence toSharedRed = robot.drivetrain.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(10, -46), 0)
-                .splineTo(new Vector2d(39, -46), 0)
+                .addDisplacementMarker(() -> {
+                    robot.jankArm.setAngle(200);
+                })
+                .splineTo(new Vector2d(50, -46), 0)
                 .build();
 
         robot.drivetrain.followTrajectorySequenceAsync(toSharedRed);

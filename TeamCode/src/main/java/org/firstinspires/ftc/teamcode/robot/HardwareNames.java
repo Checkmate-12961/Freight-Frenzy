@@ -65,13 +65,13 @@ public class HardwareNames {
      * Contains hardware info for servos
      */
     public enum Servos {
-        GRIPPER ("gripper", 0, 1);
+        GRIPPER ("gripper", 0.5, 1);
 
         public final String name;
         public final double upperLimit;
         public final double lowerLimit;
 
-        Servos(String name, double lowerLimit, double upperLimit) {
+        Servos(String name, double lowerLimit, double upperLimit){
             this.name = name;
             this.upperLimit = upperLimit;
             this.lowerLimit = lowerLimit;

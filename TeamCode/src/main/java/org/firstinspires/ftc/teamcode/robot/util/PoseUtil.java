@@ -110,4 +110,20 @@ public class PoseUtil {
     public static Pose2d multiply(Pose2d inputPose, double xFactor, double yFactor, double headingFactor) {
         return new Pose2d(inputPose.getX() * xFactor, inputPose.getY() * yFactor, inputPose.getHeading() * headingFactor);
     }
+
+    public static boolean greaterThan(Pose2d inputPose, double x, double y) {
+        return inputPose.getX() > x && inputPose.getY() > y;
+    }
+
+    /**
+     * Get the absolute value of each individual component
+     * @param inputPose Pose to get the absolute value of
+     * @return Absolute valued pose
+     */
+    public static Pose2d abs(Pose2d inputPose) {
+        return new Pose2d(
+                Math.abs(inputPose.getX()),
+                Math.abs(inputPose.getY()),
+                inputPose.getHeading());
+    }
 }
