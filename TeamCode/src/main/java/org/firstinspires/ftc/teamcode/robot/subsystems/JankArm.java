@@ -79,6 +79,8 @@ public class JankArm implements AbstractSubsystem {
         targetAngle = angleBounds[1];
 
         armMotor.setTargetPosition((int)(angleBounds[1] * ticksPerRadian) + angleOffset);
+
+        while (armMotor.isBusy()) { }
     }
 
     /**

@@ -15,12 +15,12 @@ class SuperController(
     /**
      * Internal gamepad
      */
-    private val gamepad: Gamepad
+    val gamepad: Gamepad
 ){
     /**
      * Minimum dead zone threshold
      */
-    private val deadZoneMin = 0.1F
+    private val deadZoneMin = 0.2F
 
     /**
      * left analog stick horizontal axis
@@ -274,54 +274,4 @@ class SuperController(
         get() {
             return gamepad.ps
         }
-
-    /**
-     * Which user is this gamepad used by
-     */
-    var user: GamepadUser
-        get() {
-            return gamepad.user
-        }
-        set(user) {
-            gamepad.user = user
-        }
-
-    /**
-     * See {@link org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl#runActiveOpMode(Gamepad[])}
-     */
-    var userForRumble: Byte = 0
-        set(userForRumble) {
-            gamepad.setUserForRumble(userForRumble)
-        }
-
-    /**
-     * ID assigned to this gamepad by the OS. This value can change each time the device is plugged in.
-     */
-    var id: Int
-        get() {
-            return gamepad.id
-        }
-        set(id) {
-            gamepad.id = id
-        }
-
-    /**
-     * Relative timestamp of the last time an event was detected
-     */
-    var timestamp: Long
-        get() {
-            return gamepad.timestamp
-        }
-        set(timestamp) {
-            gamepad.timestamp = timestamp
-        }
-
-    /**
-     * Refreshes the Gamepad's timestamp to be the current time.
-     */
-    fun refreshTimestamp() {
-        gamepad.refreshTimestamp()
-    }
-
-    // TODO("implement the rest of the stuff")
 }

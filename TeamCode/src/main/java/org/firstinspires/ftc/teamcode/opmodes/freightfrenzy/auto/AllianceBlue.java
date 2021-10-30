@@ -6,12 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.BasicOpMode;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.robot.util.PoseUtil;
 import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 
 import java.util.Locale;
 import java.util.Objects;
 
-@Autonomous
+@Autonomous(preselectTeleOp = "TeleBasic")
 public class AllianceBlue extends BasicOpMode {
     Pose2d startPose = new Pose2d(-34, 61, Math.toRadians(-90));
 
@@ -25,13 +26,18 @@ public class AllianceBlue extends BasicOpMode {
      */
     @Override
     public void setup() {
+        // Crash the op mode if the realsense camera doesn't init
+        while (!PoseUtil.greaterThan(PoseUtil.abs(robot.drivetrain.getPoseEstimate()), 1, 1)) {
+            robot.drivetrain.setPoseEstimate(startPose);
+        }
+
         // Trajectory to get the robot into the shared thing on blue
-        TrajectorySequence toSharedRed = robot.drivetrain.trajectorySequenceBuilder(startPose)
+        TrajectorySequence toSharedBlue = robot.drivetrain.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(-50, 50), Math.toRadians(-135))
                 .splineTo(new Vector2d(-59, 35), Math.toRadians(-90))
                 .build();
 
-        robot.drivetrain.followTrajectorySequenceAsync(toSharedRed);
+        robot.drivetrain.followTrajectorySequenceAsync(toSharedBlue);
     }
 
     /**

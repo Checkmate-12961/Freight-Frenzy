@@ -65,7 +65,7 @@ public class HardwareNames {
      * Contains hardware info for servos
      */
     public enum Servos {
-        GRIPPER ("gripper", 0.5, 1);
+        GRIPPER ("gripper", 0, 1);
 
         public final String name;
         public final double upperLimit;

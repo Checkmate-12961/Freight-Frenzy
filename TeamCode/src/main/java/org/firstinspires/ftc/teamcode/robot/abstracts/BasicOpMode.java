@@ -21,8 +21,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.firstinspires.ftc.teamcode.robot.abstracts;
 
-import android.annotation.SuppressLint;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
@@ -33,10 +31,8 @@ import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 public abstract class BasicOpMode extends OpMode {
     protected CheckmateRobot robot;
 
-    @SuppressWarnings("unused")
-    protected final SuperController gp1 = new SuperController(gamepad1);
-    @SuppressWarnings("unused")
-    protected final SuperController gp2 = new SuperController(gamepad2);
+    protected  SuperController gp1;
+    protected  SuperController gp2;
 
     /**
      * Internal method, do not call or overwrite
@@ -45,6 +41,8 @@ public abstract class BasicOpMode extends OpMode {
     final public void init() {
         pre_setup();
         robot = new CheckmateRobot(hardwareMap);
+        gp1 = new SuperController(gamepad1);
+        gp2 = new SuperController(gamepad2);
         setup();
     }
 
