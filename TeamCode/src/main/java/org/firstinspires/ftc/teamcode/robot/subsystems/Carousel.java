@@ -84,5 +84,7 @@ public class Carousel implements AbstractSubsystem {
     }
 
     @Override
-    public void cleanup() { }
+    public void cleanup() {
+        // Nothing to clean up
+    }
 }
