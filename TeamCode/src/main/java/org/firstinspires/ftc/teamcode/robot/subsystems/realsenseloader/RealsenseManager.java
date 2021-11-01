@@ -58,6 +58,7 @@ public class RealsenseManager {
     public static void cleanup() {
         if (slamera != null) {
             slamera.stop();
+            slamera.free();
         }
     }
 }
