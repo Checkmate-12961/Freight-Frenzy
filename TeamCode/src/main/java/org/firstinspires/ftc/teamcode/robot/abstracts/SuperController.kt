@@ -1,10 +1,7 @@
-//@file:JvmName("SuperController")
-
 package org.firstinspires.ftc.teamcode.robot.abstracts
 
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.qualcomm.robotcore.hardware.Gamepad
-import org.firstinspires.ftc.robotcore.internal.ui.GamepadUser
 import kotlin.math.abs
 
 /**
@@ -15,6 +12,7 @@ class SuperController(
     /**
      * Internal gamepad
      */
+    @JvmField
     val gamepad: Gamepad
 ){
     /**
