@@ -326,4 +326,7 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
     }
+
+    @Override
+    public void cleanup() { }
 }

@@ -82,4 +82,7 @@ public class Carousel implements AbstractSubsystem {
         // Set the power to 0 just in case
         carouselMotor.setPower(0);
     }
+
+    @Override
+    public void cleanup() { }
 }
