@@ -111,6 +111,13 @@ public class PoseUtil {
         return new Pose2d(inputPose.getX() * xFactor, inputPose.getY() * yFactor, inputPose.getHeading() * headingFactor);
     }
 
+    /**
+     * Check whether each of the position values is greater than another value
+     * @param inputPose Pose to check
+     * @param x X "other" value
+     * @param y Y "other" value
+     * @return Whether each component is greater than its "other" value
+     */
     public static boolean greaterThan(Pose2d inputPose, double x, double y) {
         return inputPose.getX() > x && inputPose.getY() > y;
     }
