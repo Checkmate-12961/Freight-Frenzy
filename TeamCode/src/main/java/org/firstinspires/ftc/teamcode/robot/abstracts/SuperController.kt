@@ -16,6 +16,80 @@ class SuperController(
     val gamepad: Gamepad
 ){
     /**
+     * Button class to manage callbacks and states
+     */
+    class Button(function: () -> Boolean) {
+        /**
+         * Get the value of the button from the controller
+         */
+        val rawPressed: () -> Boolean
+
+        /**
+         * Whether or not the button is currently pressed
+         */
+        var pressed: Boolean = false
+            private set
+
+        /**
+         * Callback for when the button is pressed
+         */
+        @JvmField
+        var onPress: ButtonCallback? = null
+
+        /**
+         * Callback for when the button is released
+         */
+        @JvmField
+        var onRelease: ButtonCallback? = null
+
+        /**
+         * Updates the button state
+         */
+        fun update() {
+            if (rawPressed() && !pressed) {
+                pressed = true
+                onPress?.let { it() }
+            } else if (!rawPressed() && pressed) {
+                pressed = false
+                onRelease?.let { it() }
+            }
+        }
+
+        init {
+            rawPressed = function
+        }
+    }
+
+    /**
+     * Update all buttons
+     */
+    fun update() {
+        leftBumper.update()
+        rightBumper.update()
+        a.update()
+        b.update()
+        x.update()
+        y.update()
+        dpadUp.update()
+        dpadDown.update()
+        dpadLeft.update()
+        dpadRight.update()
+        start.update()
+        back.update()
+        leftStickButton.update()
+        rightStickButton.update()
+        guide.update()
+        share.update()
+        options.update()
+        touchpad.update()
+        cross.update()
+        circle.update()
+        square.update()
+        triangle.update()
+        ps.update()
+    }
+
+    /**
      * Minimum dead zone threshold
      */
     private val deadZoneMin = 0.2F
@@ -60,122 +134,92 @@ class SuperController(
     /**
      * dpad up
      */
-    val dpadUp: Boolean
-        get() {
-            return gamepad.dpad_up
-        }
+    @JvmField
+    val dpadUp = Button { gamepad.dpad_up }
 
     /**
      * dpad down
      */
-    val dpadDown: Boolean
-        get() {
-            return gamepad.dpad_down
-        }
+    @JvmField
+    val dpadDown = Button { gamepad.dpad_down }
 
     /**
      * dpad left
      */
-    val dpadLeft: Boolean
-        get() {
-            return gamepad.dpad_left
-        }
+    @JvmField
+    val dpadLeft = Button { gamepad.dpad_left }
 
     /**
      * dpad right
      */
-    val dpadRight: Boolean
-        get() {
-            return gamepad.dpad_right
-        }
+    @JvmField
+    val dpadRight = Button { gamepad.dpad_right }
 
     /**
      * button a
      */
-    val a: Boolean
-        get() {
-            return gamepad.a
-        }
+    @JvmField
+    val a = Button { gamepad.a }
 
     /**
      * button b
      */
-    val b: Boolean
-        get() {
-            return gamepad.b
-        }
+    @JvmField
+    val b = Button { gamepad.b }
 
     /**
      * button x
      */
-    val x: Boolean
-        get() {
-            return gamepad.x
-        }
+    @JvmField
+    val x = Button { gamepad.x }
 
     /**
      * button y
      */
-    val y: Boolean
-        get() {
-            return gamepad.y
-        }
+    @JvmField
+    val y = Button { gamepad.y }
 
     /**
      * button guide - often the large button in the middle of the controller. The OS may capture this button before it is sent to the app; in which case you'll never receive it.
      */
-    val guide: Boolean
-        get() {
-            return gamepad.guide
-        }
+    @JvmField
+    val guide = Button { gamepad.guide }
 
     /**
      * button start
      */
-    val start: Boolean
-        get() {
-            return gamepad.start
-        }
+    @JvmField
+    val start = Button { gamepad.start }
 
     /**
      * button back
      */
-    val back: Boolean
-        get() {
-            return gamepad.back
-        }
+    @JvmField
+    val back = Button { gamepad.back }
 
     /**
      * button left bumper
      */
-    val leftBumper: Boolean
-        get() {
-            return gamepad.left_bumper
-        }
+    @JvmField
+    val leftBumper = Button { gamepad.left_bumper }
 
     /**
      * button right bumper
      */
-    val rightBumper: Boolean
-        get() {
-            return gamepad.right_bumper
-        }
+    @JvmField
+    val rightBumper = Button { gamepad.right_bumper }
 
     /**
      * left stick button
      */
-    val leftStickButton: Boolean
-        get() {
-            return gamepad.left_stick_button
-        }
+    @JvmField
+    val leftStickButton = Button { gamepad.left_stick_button }
 
     /**
      * right stick button
      */
-    val rightStickButton: Boolean
-        get() {
-            return gamepad.right_stick_button
-        }
+    @JvmField
+    val rightStickButton = Button { gamepad.right_stick_button }
 
     /**
      * left trigger
@@ -196,58 +240,44 @@ class SuperController(
     /**
      * PS4 Support - Circle
      */
-    val circle: Boolean
-        get () {
-            return gamepad.circle
-        }
+    @JvmField
+    val circle = Button { gamepad.circle }
 
     /**
      * PS4 Support - Cross
      */
-    val cross: Boolean
-        get () {
-            return gamepad.cross
-        }
+    @JvmField
+    val cross = Button { gamepad.cross }
 
     /**
      * PS4 Support - Triangle
      */
-    val triangle: Boolean
-        get () {
-            return gamepad.triangle
-        }
+    @JvmField
+    val triangle = Button { gamepad.triangle }
 
     /**
      * PS4 Support - Square
      */
-    val square: Boolean
-        get () {
-            return gamepad.square
-        }
+    @JvmField
+    val square = Button { gamepad.square }
 
     /**
      * PS4 Support - Share
      */
-    val share: Boolean
-        get () {
-            return gamepad.share
-        }
+    @JvmField
+    val share = Button { gamepad.share }
 
     /**
      * PS4 Support - Options
      */
-    val options: Boolean
-        get () {
-            return gamepad.options
-        }
+    @JvmField
+    val options = Button { gamepad.options }
 
     /**
      * PS4 Support - touchpad
      */
-    val touchpad: Boolean
-        get() {
-            return gamepad.touchpad
-        }
+    @JvmField
+    val touchpad = Button { gamepad.touchpad }
     val touchpadFinger1: Vector2d?
         get() {
             return if (gamepad.touchpad_finger_1){
@@ -268,8 +298,6 @@ class SuperController(
     /**
      * PS4 Support - PS Button
      */
-    val ps: Boolean
-        get() {
-            return gamepad.ps
-        }
+    @JvmField
+    val ps = Button { gamepad.ps }
 }

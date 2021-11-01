@@ -33,43 +33,50 @@ import java.util.Objects;
 
 @TeleOp
 public class TeleBasic extends BasicOpMode {
-    private enum ControlMode {TELE, AUTO}
-    private ControlMode controlMode = ControlMode.TELE;
-
     @Override
     public void setup(){
         // Retrieve our pose from the PoseStorage.currentPose static field
         robot.drivetrain.setPoseEstimate(PositionUtil.get());
+
+        // A opens the jank hand
+        gp2.a.onPress = () -> robot.jankHand.close();
+        // B closes the jank hand
+        gp2.b.onPress = () -> robot.jankHand.open();
+
+        // Right bumper runs the carousel
+        gp2.rightBumper.onPress = () -> robot.carousel.setPower(1);
+        gp2.rightBumper.onRelease = () -> robot.carousel.setPower(0);
+
+        // Left bumper runs the carousel the other way
+        gp2.leftBumper.onPress = () -> robot.carousel.setPower(-1);
+        gp2.leftBumper.onRelease = () -> robot.carousel.setPower(0);
     }
 
     @Override
     public void run_loop(){
         updatePosition();
 
-        switch (controlMode){
-            case TELE:
+        switch (opModeType){
+            case TeleOp:
                 // Moves the robot based on the GP1 left stick
                 runDrivetrain();
 
-                // Runs the carousel spinner based on the GP2 bumpers
-                runCarousel();
                 // Runs the lift based on the GP2 dpad
                 //runLift();
                 runArm();
-                runGripper();
                 break;
 
-            case AUTO:
+            case Autonomous:
                 // Replace false here with a check to cancel the sequence
                 //noinspection ConstantConditions
                 if (false) robot.drivetrain.cancelSequence();
-                if (!robot.drivetrain.isBusy()) controlMode = ControlMode.TELE;
+                if (!robot.drivetrain.isBusy()) opModeType = OpModeType.TeleOp;
                 break;
             default:
                 // If we end up here, something went horribly wrong.
                 // Generally, the best plan of action is to ignore
                 //  it and move on.
-                controlMode = ControlMode.TELE;
+                opModeType = OpModeType.TeleOp;
                 // Mission accomplished.
                 break;
         }
@@ -108,18 +115,6 @@ public class TeleBasic extends BasicOpMode {
         );
     }
 
-    // BIND:
-    //  gp2.rightBumper, gp2.leftBumper
-    private void runCarousel() {
-        if (gp2.getRightBumper()) {
-            robot.carousel.setPower(1);
-        } else if (gp2.getLeftBumper()) {
-            robot.carousel.setPower(-1);
-        } else {
-            robot.carousel.setPower(0);
-        }
-    }
-
     /*
     // BIND:
     //  gp2.dpad_up, gp2.dpad_down
@@ -139,16 +134,6 @@ public class TeleBasic extends BasicOpMode {
             robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
         } else if (gp2.getLeftStickY() > 0.4) {
             robot.jankArm.setAngle(robot.jankArm.getAngle() - .01);
-        }
-    }
-
-    // BIND:
-    //  gp2.a, gp2.b
-    private void runGripper() {
-        if (gp2.getA()) {
-            robot.jankHand.close();
-        } else if (gp2.getB()) {
-            robot.jankHand.open();
         }
     }
 }
