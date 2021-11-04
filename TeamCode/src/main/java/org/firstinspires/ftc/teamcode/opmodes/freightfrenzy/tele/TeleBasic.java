@@ -52,8 +52,9 @@ public class TeleBasic extends BasicOpMode {
         gp2.leftBumper.onDeactivate = () -> robot.carousel.setPower(0);
 
         // Left stick Y axis runs the arm
-        gp2.leftStickY.onActivate = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() - .01);
-        gp2.leftStickY.onActivateNeg = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
+        gp2.leftStickY.setActivationThreshold(0.4);
+        gp2.leftStickY.whileActive = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() - .01);
+        gp2.leftStickY.whileActiveNeg = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
     }
 
     @Override
