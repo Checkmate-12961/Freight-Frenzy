@@ -33,41 +33,50 @@ import java.util.Objects;
 
 @TeleOp
 public class TeleBasic extends BasicOpMode {
-    private enum ControlMode {TELE, AUTO}
-    private ControlMode controlMode = ControlMode.TELE;
-
     @Override
     public void setup(){
         // Retrieve our pose from the PoseStorage.currentPose static field
         robot.drivetrain.setPoseEstimate(PositionUtil.get());
+
+        // A opens the jank hand
+        gp2.a.onPress = () -> robot.jankHand.close();
+        // B closes the jank hand
+        gp2.b.onPress = () -> robot.jankHand.open();
+
+        // Right bumper runs the carousel
+        gp2.rightBumper.onPress = () -> robot.carousel.setPower(1);
+        gp2.rightBumper.onRelease = () -> robot.carousel.setPower(0);
+
+        // Left bumper runs the carousel the other way
+        gp2.leftBumper.onPress = () -> robot.carousel.setPower(-1);
+        gp2.leftBumper.onRelease = () -> robot.carousel.setPower(0);
     }
 
     @Override
     public void run_loop(){
         updatePosition();
 
-        switch (controlMode){
-            case TELE:
+        switch (opModeType){
+            case TeleOp:
                 // Moves the robot based on the GP1 left stick
                 runDrivetrain();
 
-                // Runs the carousel spinner based on the GP2 bumpers
-                runCarousel();
                 // Runs the lift based on the GP2 dpad
-                runLift();
+                //runLift();
+                runArm();
                 break;
 
-            case AUTO:
+            case Autonomous:
                 // Replace false here with a check to cancel the sequence
                 //noinspection ConstantConditions
                 if (false) robot.drivetrain.cancelSequence();
-                if (!robot.drivetrain.isBusy()) controlMode = ControlMode.TELE;
+                if (!robot.drivetrain.isBusy()) opModeType = OpModeType.TeleOp;
                 break;
             default:
                 // If we end up here, something went horribly wrong.
                 // Generally, the best plan of action is to ignore
                 //  it and move on.
-                controlMode = ControlMode.TELE;
+                opModeType = OpModeType.TeleOp;
                 // Mission accomplished.
                 break;
         }
@@ -75,54 +84,56 @@ public class TeleBasic extends BasicOpMode {
 
     private void updatePosition() {
         Pose2d position = robot.drivetrain.getPoseEstimate();
+        Pose2d velocity = Objects.requireNonNull(robot.drivetrain.getPoseVelocity());
         PositionUtil.set(position);
         // Print pose to telemetry
+        telemetry.addData("armAngle", Math.toDegrees(robot.jankArm.getAngle()));
         telemetry.addData("x", position.getX());
         telemetry.addData("y", position.getY());
-        telemetry.addData("heading", Math.toDegrees(position.getHeading()));
+        telemetry.addData("h", Math.toDegrees(position.getHeading()));
         telemetry.addData("runtime",String.format(Locale.ENGLISH,"%fs",getRuntime()));
-        telemetry.addData("vx", Objects.requireNonNull(robot.drivetrain.getPoseVelocity()).getX());
-        telemetry.addData("vy", Objects.requireNonNull(robot.drivetrain.getPoseVelocity()).getY());
+        telemetry.addData("vX", velocity.getX());
+        telemetry.addData("vY", velocity.getY());
+        telemetry.addData("vH", Math.toDegrees(velocity.getHeading()));
         telemetry.update();
     }
 
     // BIND:
-    //  gamepad1.left_stick_x, gamepad1.left_stick_y
-    //  gamepad1.right_stick_x, gamepad1.right_stick_y
-    //  gamepad1.right_trigger
+    //  gp1.leftStickX, gp1.leftStickY
+    //  gp1.rightStickX, gp1.rightTrigger
     private void runDrivetrain() {
         // Set the power of the DT based on the GP1 left
         robot.drivetrain.setWeightedDrivePower(
                 new Pose2d(
                         // left stick X
-                        -gamepad1.left_stick_y * Range.scale((gamepad1.right_trigger), -1, 1, 0, 1),
+                        -gp1.getLeftStickY() * Range.scale((gp1.getRightTrigger()), -1, 1, 0, 1),
                         // left sick Y
-                        -gamepad1.left_stick_x * Range.scale((gamepad1.right_trigger), -1, 1, 0, 1),
+                        -gp1.getLeftStickX() * Range.scale((gp1.getRightTrigger()), -1, 1, 0, 1),
                         // right stick X (rotation)
-                        -gamepad1.right_stick_x * Range.scale((gamepad1.right_trigger), -1, 1, 0, 1)
+                        -gp1.getRightStickX() * Range.scale((gp1.getRightTrigger()), -1, 1, 0, 1)
                 )
         );
     }
 
+    /*
     // BIND:
-    //  gamepad2.right_bumper, gamepad2.left_bumper
-    private void runCarousel() {
-        if (gamepad2.right_bumper) {
-            robot.carousel.setPower(1);
-        } else if (gamepad2.left_bumper) {
-            robot.carousel.setPower(-1);
-        } else {
-            robot.carousel.setPower(0);
+    //  gp2.dpad_up, gp2.dpad_down
+    private void runLift() {
+        if (gp2.dpad_up) {
+            robot.lift.setHeight(robot.lift.getHeight() + .1);
+        } else if (gp2.dpad_down) {
+            robot.lift.setHeight(robot.lift.getHeight() - .1);
         }
     }
+    */
 
     // BIND:
-    //  gamepad2.dpad_up, gamepad2.dpad_down
-    private void runLift() {
-        if (gamepad2.dpad_up) {
-            robot.lift.setHeight(robot.lift.getHeight() + .1);
-        } else if (gamepad2.dpad_down) {
-            robot.lift.setHeight(robot.lift.getHeight() - .1);
+    //  gp2.dpadUp, gp2.dpadDown
+    private void runArm() {
+        if (gp2.getLeftStickY() < -0.4) {
+            robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
+        } else if (gp2.getLeftStickY() > 0.4) {
+            robot.jankArm.setAngle(robot.jankArm.getAngle() - .01);
         }
     }
 }

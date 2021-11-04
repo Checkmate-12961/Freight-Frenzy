@@ -21,7 +21,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.firstinspires.ftc.teamcode.robot.abstracts;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 
@@ -31,14 +33,38 @@ import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 public abstract class BasicOpMode extends OpMode {
     protected CheckmateRobot robot;
 
+    protected  SuperController gp1;
+    protected  SuperController gp2;
+
+    protected enum OpModeType {
+        TeleOp,
+        Autonomous
+    }
+
+    protected OpModeType opModeType = null;
+
     /**
      * Internal method, do not call or overwrite
      */
     @Override
     final public void init() {
+        if (this.getClass().getAnnotation(TeleOp.class) != null) {
+            opModeType = OpModeType.TeleOp;
+        } else if (this.getClass().getAnnotation(Autonomous.class) != null) {
+            opModeType = OpModeType.Autonomous;
+        }
+
+        pre_setup();
         robot = new CheckmateRobot(hardwareMap);
+        gp1 = new SuperController(gamepad1);
+        gp2 = new SuperController(gamepad2);
         setup();
     }
+
+    /**
+     * Runs before the hardware initializes
+     */
+    public void pre_setup() { }
 
     /**
      * Runs when the OpMode initializes
@@ -50,6 +76,11 @@ public abstract class BasicOpMode extends OpMode {
      */
     @Override
     final public void loop() {
+        if (opModeType == OpModeType.TeleOp) {
+            gp1.update();
+            gp2.update();
+        }
+
         robot.update();
         run_loop();
     }

@@ -27,6 +27,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.teamcode.robot.util.PoseUtil;
+import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 
 import javax.annotation.Nullable;
 
@@ -46,13 +47,18 @@ public class RealsenseManager {
         if (slamera == null) {
             slamera = new T265Camera(cameraRobotOffset, encoderMeasurementCovariance, hardwareMap.appContext);
         }
-        slamera.setPose(new com.arcrobotics.ftclib.geometry.Pose2d());
+        slamera.setPose(PoseUtil.toFtclibPose(
+                PoseUtil.inchesToMeters(
+                        PositionUtil.get()
+                )
+        ));
         slamera.start();
     }
 
     public static void cleanup() {
         if (slamera != null) {
             slamera.stop();
+            slamera.free();
         }
     }
 }

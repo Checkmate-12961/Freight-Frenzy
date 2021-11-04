@@ -18,36 +18,31 @@ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+package org.firstinspires.ftc.teamcode.robot.abstracts
 
-package org.firstinspires.ftc.teamcode.robot.abstracts;
-
-import java.util.ArrayList;
+import java.util.ArrayList
 
 /**
  * Class that all robots need to extend
  */
-public abstract class AbstractRobot {
-    private final ArrayList<AbstractSubsystem> subsystems;
-
-    public AbstractRobot(){
-        subsystems = new ArrayList<>();
-    }
+abstract class AbstractRobot {
+    private val subsystems: ArrayList<AbstractSubsystem> = ArrayList()
 
     /**
      * Updates all subsystems
      */
-    public final void update() {
-        for (AbstractSubsystem subsystem : subsystems) {
-            subsystem.update();
+    fun update() {
+        for (subsystem in subsystems) {
+            subsystem.update()
         }
     }
 
     /**
      * Runs cleanup() on all subsystems
      */
-    public final void cleanup() {
-        for (AbstractSubsystem subsystem : subsystems) {
-            subsystem.cleanup();
+    fun cleanup() {
+        for (subsystem in subsystems) {
+            subsystem.cleanup()
         }
     }
 
@@ -55,7 +50,8 @@ public abstract class AbstractRobot {
      * Adds a new subsystem
      * @param subsystem Subsystem to add. Must implement the Subsystem class
      */
-    protected final void addSubsystem(AbstractSubsystem subsystem){
-        subsystems.add(subsystem);
+    protected fun addSubsystem(subsystem: AbstractSubsystem) {
+        subsystems.add(subsystem)
     }
+
 }

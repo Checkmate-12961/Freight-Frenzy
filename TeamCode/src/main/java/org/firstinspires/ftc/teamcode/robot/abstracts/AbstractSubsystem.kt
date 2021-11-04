@@ -18,20 +18,19 @@ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+package org.firstinspires.ftc.teamcode.robot.abstracts
 
-package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence;
+/**
+ * Interface that all subsystems need to implement
+ */
+interface AbstractSubsystem {
+    /**
+     * Runs on each iteration of the main Op Mode loop
+     */
+    fun update()
 
-import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
-
-@Config
-public class CancelableTrajectorySequenceRunner extends TrajectorySequenceRunner{
-    public CancelableTrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
-        super(follower, headingPIDCoefficients);
-    }
-
-    public void cancelSequence() {
-        super.currentTrajectorySequence = null;
-    }
+    /**
+     * Runs when an Op Mode ends
+     */
+    fun cleanup()
 }

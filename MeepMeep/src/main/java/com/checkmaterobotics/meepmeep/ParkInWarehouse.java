@@ -22,6 +22,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package com.checkmaterobotics.meepmeep;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 public class ParkInWarehouse {
     public static void main(String[] args) {
@@ -30,15 +31,13 @@ public class ParkInWarehouse {
         // Grab our config
         MeepMeepConfig.getConfig()
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
-                                .forward(30)
+                        drive.trajectorySequenceBuilder(new Pose2d(10, 61, Math.toRadians(-90)))
+                                .forward(15)
+                                .addDisplacementMarker(() -> {
+                                    //robot.jankArm.setAngle(Math.toRadians(200));
+                                })
                                 .turn(Math.toRadians(90))
                                 .forward(30)
-                                .turn(Math.toRadians(90))
-                                .forward(30)
-                                .turn(Math.toRadians(90))
-                                .forward(30)
-                                .turn(Math.toRadians(90))
                                 .build()
                 )
                 .start();

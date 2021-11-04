@@ -26,6 +26,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractRobot;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.subsystems.JankArm;
+import org.firstinspires.ftc.teamcode.robot.subsystems.JankHand;
 import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
@@ -36,7 +38,9 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
 public class CheckmateRobot extends AbstractRobot {
     public final Drivetrain drivetrain;
     public final Carousel carousel;
-    public final Lift lift;
+    public final JankArm jankArm;
+    public final JankHand jankHand;
+    //public final Lift lift;
 
     /**
      * Set up the robot and initialize the subsystems you want to use
@@ -56,8 +60,15 @@ public class CheckmateRobot extends AbstractRobot {
         carousel = new Carousel(hardwareMap);
         addSubsystem(carousel);
 
+        // Set up the janky arm & hand
+        jankArm = new JankArm(hardwareMap);
+        jankHand = new JankHand(hardwareMap);
+        addSubsystem(jankArm);
+        addSubsystem(jankHand);
+
+
         // Set up the lift
-        lift = new Lift(hardwareMap);
-        addSubsystem(lift);
+        //lift = new Lift(hardwareMap);
+        //addSubsystem(lift);
     }
 }

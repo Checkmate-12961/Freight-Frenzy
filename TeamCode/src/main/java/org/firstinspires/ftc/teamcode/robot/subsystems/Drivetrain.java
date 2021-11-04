@@ -60,7 +60,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.teamcode.robot.HardwareNames;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.bilocalizer.RealsenseLocalizer;
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.CancelableTrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.SuperTrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.robot.util.LynxModuleUtil;
 
@@ -83,7 +83,7 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
 
-    private final CancelableTrajectorySequenceRunner trajectorySequenceRunner;
+    private final SuperTrajectorySequenceRunner trajectorySequenceRunner;
 
     private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
@@ -144,7 +144,7 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
         // DONE: if desired, use setLocalizer() to change the localization method
         setLocalizer(new RealsenseLocalizer(hardwareMap));
 
-        trajectorySequenceRunner = new CancelableTrajectorySequenceRunner(follower, HEADING_PID);
+        trajectorySequenceRunner = new SuperTrajectorySequenceRunner(follower, HEADING_PID);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -326,4 +326,7 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
     }
+
+    @Override
+    public void cleanup() { }
 }
