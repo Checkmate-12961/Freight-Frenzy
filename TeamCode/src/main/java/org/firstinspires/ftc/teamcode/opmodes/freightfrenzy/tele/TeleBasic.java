@@ -39,17 +39,21 @@ public class TeleBasic extends BasicOpMode {
         robot.drivetrain.setPoseEstimate(PositionUtil.get());
 
         // A opens the jank hand
-        gp2.a.onPress = () -> robot.jankHand.close();
+        gp2.a.onActivate = () -> robot.jankHand.close();
         // B closes the jank hand
-        gp2.b.onPress = () -> robot.jankHand.open();
+        gp2.b.onActivate = () -> robot.jankHand.open();
 
         // Right bumper runs the carousel
-        gp2.rightBumper.onPress = () -> robot.carousel.setPower(1);
-        gp2.rightBumper.onRelease = () -> robot.carousel.setPower(0);
+        gp2.rightBumper.onActivate = () -> robot.carousel.setPower(1);
+        gp2.rightBumper.onDeactivate = () -> robot.carousel.setPower(0);
 
         // Left bumper runs the carousel the other way
-        gp2.leftBumper.onPress = () -> robot.carousel.setPower(-1);
-        gp2.leftBumper.onRelease = () -> robot.carousel.setPower(0);
+        gp2.leftBumper.onActivate = () -> robot.carousel.setPower(-1);
+        gp2.leftBumper.onDeactivate = () -> robot.carousel.setPower(0);
+
+        // Left stick Y axis runs the arm
+        gp2.leftStickY.onActivate = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() - .01);
+        gp2.leftStickY.onActivateNeg = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
     }
 
     @Override
@@ -59,11 +63,16 @@ public class TeleBasic extends BasicOpMode {
         switch (opModeType){
             case TeleOp:
                 // Moves the robot based on the GP1 left stick
-                runDrivetrain();
-
-                // Runs the lift based on the GP2 dpad
-                //runLift();
-                runArm();
+                robot.drivetrain.setWeightedDrivePower(
+                        new Pose2d(
+                                // left stick X
+                                -gp1.leftStickY.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), -1, 1, 0, 1),
+                                // left sick Y
+                                -gp1.leftStickX.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), -1, 1, 0, 1),
+                                // right stick X (rotation)
+                                -gp1.rightStickX.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), -1, 1, 0, 1)
+                        )
+                );
                 break;
 
             case Autonomous:
@@ -96,44 +105,5 @@ public class TeleBasic extends BasicOpMode {
         telemetry.addData("vY", velocity.getY());
         telemetry.addData("vH", Math.toDegrees(velocity.getHeading()));
         telemetry.update();
-    }
-
-    // BIND:
-    //  gp1.leftStickX, gp1.leftStickY
-    //  gp1.rightStickX, gp1.rightTrigger
-    private void runDrivetrain() {
-        // Set the power of the DT based on the GP1 left
-        robot.drivetrain.setWeightedDrivePower(
-                new Pose2d(
-                        // left stick X
-                        -gp1.getLeftStickY() * Range.scale((gp1.getRightTrigger()), -1, 1, 0, 1),
-                        // left sick Y
-                        -gp1.getLeftStickX() * Range.scale((gp1.getRightTrigger()), -1, 1, 0, 1),
-                        // right stick X (rotation)
-                        -gp1.getRightStickX() * Range.scale((gp1.getRightTrigger()), -1, 1, 0, 1)
-                )
-        );
-    }
-
-    /*
-    // BIND:
-    //  gp2.dpad_up, gp2.dpad_down
-    private void runLift() {
-        if (gp2.dpad_up) {
-            robot.lift.setHeight(robot.lift.getHeight() + .1);
-        } else if (gp2.dpad_down) {
-            robot.lift.setHeight(robot.lift.getHeight() - .1);
-        }
-    }
-    */
-
-    // BIND:
-    //  gp2.dpadUp, gp2.dpadDown
-    private void runArm() {
-        if (gp2.getLeftStickY() < -0.4) {
-            robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
-        } else if (gp2.getLeftStickY() > 0.4) {
-            robot.jankArm.setAngle(robot.jankArm.getAngle() - .01);
-        }
     }
 }

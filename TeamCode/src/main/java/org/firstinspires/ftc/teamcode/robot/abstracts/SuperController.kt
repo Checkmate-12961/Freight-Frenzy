@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.robot.abstracts
 
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.qualcomm.robotcore.hardware.Gamepad
-import kotlin.math.abs
 
 /**
  * A better controller with extra custom features
@@ -16,52 +15,7 @@ class SuperController(
     val gamepad: Gamepad
 ){
     /**
-     * Button class to manage callbacks and states
-     */
-    class Button(function: () -> Boolean) {
-        /**
-         * Get the value of the button from the controller
-         */
-        val rawPressed: () -> Boolean
-
-        /**
-         * Whether or not the button is currently pressed
-         */
-        var pressed: Boolean = false
-            private set
-
-        /**
-         * Callback for when the button is pressed
-         */
-        @JvmField
-        var onPress: ButtonCallback? = null
-
-        /**
-         * Callback for when the button is released
-         */
-        @JvmField
-        var onRelease: ButtonCallback? = null
-
-        /**
-         * Updates the button state
-         */
-        fun update() {
-            if (rawPressed() && !pressed) {
-                pressed = true
-                onPress?.let { it() }
-            } else if (!rawPressed() && pressed) {
-                pressed = false
-                onRelease?.let { it() }
-            }
-        }
-
-        init {
-            rawPressed = function
-        }
-    }
-
-    /**
-     * Update all buttons
+     * Update all Triggerables.Buttons
      */
     fun update() {
         leftBumper.update()
@@ -87,6 +41,12 @@ class SuperController(
         square.update()
         triangle.update()
         ps.update()
+        leftTrigger.update()
+        rightTrigger.update()
+        leftStickX.update()
+        leftStickY.update()
+        rightStickX.update()
+        rightStickY.update()
     }
 
     /**
@@ -97,187 +57,167 @@ class SuperController(
     /**
      * left analog stick horizontal axis
      */
-    val leftStickX: Float
-        get() {
-            val value = gamepad.left_stick_x
-            return if (abs(value) > deadZoneMin) {value}
-            else {0F}
-        }
+    @JvmField
+    val leftStickX = Triggerables.ControllerStick { gamepad.left_stick_x }
     /**
      * left analog stick vertical axis
      */
-    val leftStickY: Float
-        get() {
-            val value = gamepad.left_stick_y
-            return if (abs(value) > deadZoneMin) {value}
-            else {0F}
-        }
+    @JvmField
+    val leftStickY = Triggerables.ControllerStick { gamepad.left_stick_y }
     /**
      * right analog stick horizontal axis
      */
-    val rightStickX: Float
-        get() {
-            val value = gamepad.right_stick_x
-            return if (abs(value) > deadZoneMin) {value}
-            else {0F}
-        }
+    @JvmField
+    val rightStickX = Triggerables.ControllerStick { gamepad.right_stick_x }
     /**
      * right analog stick vertical axis
      */
-    val rightStickY: Float
-        get() {
-            val value = gamepad.right_stick_y
-            return if (abs(value) > deadZoneMin) {value}
-            else {0F}
-        }
+    @JvmField
+    val rightStickY = Triggerables.ControllerStick { gamepad.right_stick_y }
 
     /**
      * dpad up
      */
     @JvmField
-    val dpadUp = Button { gamepad.dpad_up }
+    val dpadUp = Triggerables.ControllerButton { gamepad.dpad_up }
 
     /**
      * dpad down
      */
     @JvmField
-    val dpadDown = Button { gamepad.dpad_down }
+    val dpadDown = Triggerables.ControllerButton { gamepad.dpad_down }
 
     /**
      * dpad left
      */
     @JvmField
-    val dpadLeft = Button { gamepad.dpad_left }
+    val dpadLeft = Triggerables.ControllerButton { gamepad.dpad_left }
 
     /**
      * dpad right
      */
     @JvmField
-    val dpadRight = Button { gamepad.dpad_right }
+    val dpadRight = Triggerables.ControllerButton { gamepad.dpad_right }
 
     /**
-     * button a
+     * Triggerables.Button a
      */
     @JvmField
-    val a = Button { gamepad.a }
+    val a = Triggerables.ControllerButton { gamepad.a }
 
     /**
-     * button b
+     * Triggerables.Button b
      */
     @JvmField
-    val b = Button { gamepad.b }
+    val b = Triggerables.ControllerButton { gamepad.b }
 
     /**
-     * button x
+     * Triggerables.Button x
      */
     @JvmField
-    val x = Button { gamepad.x }
+    val x = Triggerables.ControllerButton { gamepad.x }
 
     /**
-     * button y
+     * Triggerables.Button y
      */
     @JvmField
-    val y = Button { gamepad.y }
+    val y = Triggerables.ControllerButton { gamepad.y }
 
     /**
-     * button guide - often the large button in the middle of the controller. The OS may capture this button before it is sent to the app; in which case you'll never receive it.
+     * Triggerables.Button guide - often the large Triggerables.Button in the middle of the controller. The OS may capture this Triggerables.Button before it is sent to the app; in which case you'll never receive it.
      */
     @JvmField
-    val guide = Button { gamepad.guide }
+    val guide = Triggerables.ControllerButton { gamepad.guide }
 
     /**
-     * button start
+     * Triggerables.Button start
      */
     @JvmField
-    val start = Button { gamepad.start }
+    val start = Triggerables.ControllerButton { gamepad.start }
 
     /**
-     * button back
+     * Triggerables.Button back
      */
     @JvmField
-    val back = Button { gamepad.back }
+    val back = Triggerables.ControllerButton { gamepad.back }
 
     /**
-     * button left bumper
+     * Triggerables.Button left bumper
      */
     @JvmField
-    val leftBumper = Button { gamepad.left_bumper }
+    val leftBumper = Triggerables.ControllerButton { gamepad.left_bumper }
 
     /**
-     * button right bumper
+     * Triggerables.Button right bumper
      */
     @JvmField
-    val rightBumper = Button { gamepad.right_bumper }
+    val rightBumper = Triggerables.ControllerButton { gamepad.right_bumper }
 
     /**
-     * left stick button
+     * left stick Triggerables.Button
      */
     @JvmField
-    val leftStickButton = Button { gamepad.left_stick_button }
+    val leftStickButton = Triggerables.ControllerButton { gamepad.left_stick_button }
 
     /**
-     * right stick button
+     * right stick Triggerables.Button
      */
     @JvmField
-    val rightStickButton = Button { gamepad.right_stick_button }
+    val rightStickButton = Triggerables.ControllerButton { gamepad.right_stick_button }
 
     /**
      * left trigger
      */
-    val leftTrigger: Float
-        get() {
-            return gamepad.left_trigger
-        }
+    @JvmField
+    val leftTrigger = Triggerables.ControllerTrigger { gamepad.left_trigger }
 
     /**
      * right trigger
      */
-    val rightTrigger: Float
-        get() {
-            return gamepad.right_trigger
-        }
+    @JvmField
+    val rightTrigger = Triggerables.ControllerTrigger { gamepad.right_trigger }
 
     /**
      * PS4 Support - Circle
      */
     @JvmField
-    val circle = Button { gamepad.circle }
+    val circle = Triggerables.ControllerButton { gamepad.circle }
 
     /**
      * PS4 Support - Cross
      */
     @JvmField
-    val cross = Button { gamepad.cross }
+    val cross = Triggerables.ControllerButton { gamepad.cross }
 
     /**
      * PS4 Support - Triangle
      */
     @JvmField
-    val triangle = Button { gamepad.triangle }
+    val triangle = Triggerables.ControllerButton { gamepad.triangle }
 
     /**
      * PS4 Support - Square
      */
     @JvmField
-    val square = Button { gamepad.square }
+    val square = Triggerables.ControllerButton { gamepad.square }
 
     /**
      * PS4 Support - Share
      */
     @JvmField
-    val share = Button { gamepad.share }
+    val share = Triggerables.ControllerButton { gamepad.share }
 
     /**
      * PS4 Support - Options
      */
     @JvmField
-    val options = Button { gamepad.options }
+    val options = Triggerables.ControllerButton { gamepad.options }
 
     /**
      * PS4 Support - touchpad
      */
     @JvmField
-    val touchpad = Button { gamepad.touchpad }
+    val touchpad = Triggerables.ControllerButton { gamepad.touchpad }
     val touchpadFinger1: Vector2d?
         get() {
             return if (gamepad.touchpad_finger_1){
@@ -296,8 +236,8 @@ class SuperController(
         }
 
     /**
-     * PS4 Support - PS Button
+     * PS4 Support - PS Triggerables.Button
      */
     @JvmField
-    val ps = Button { gamepad.ps }
+    val ps = Triggerables.ControllerButton { gamepad.ps }
 }
