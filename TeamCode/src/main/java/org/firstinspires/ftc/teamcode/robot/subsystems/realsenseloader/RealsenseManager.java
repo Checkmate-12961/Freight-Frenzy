@@ -27,7 +27,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.teamcode.robot.util.PoseUtil;
-import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 
 import javax.annotation.Nullable;
 
@@ -35,10 +34,10 @@ public class RealsenseManager {
     // TODO: tune this based on the relative positions of the camera and the robot
     //  This transform is the distance between the camera and the robot (not vice versa)
     //  Use the normal coordinate system the field uses.
-    public static Transform2d cameraRobotOffset = PoseUtil.toTransform2d(
+    public static final Transform2d cameraRobotOffset = PoseUtil.toTransform2d(
             PoseUtil.inchesToMeters(
                     new Pose2d(-9.0, -8.25)));
-    public static double encoderMeasurementCovariance = 0.8;
+    public static final double encoderMeasurementCovariance = 0.8;
 
     @Nullable
     public static T265Camera slamera = null;
@@ -46,19 +45,7 @@ public class RealsenseManager {
     public static void init(HardwareMap hardwareMap) {
         if (slamera == null) {
             slamera = new T265Camera(cameraRobotOffset, encoderMeasurementCovariance, hardwareMap.appContext);
-        }
-        slamera.setPose(PoseUtil.toFtclibPose(
-                PoseUtil.inchesToMeters(
-                        PositionUtil.get()
-                )
-        ));
-        slamera.start();
-    }
-
-    public static void cleanup() {
-        if (slamera != null) {
-            slamera.stop();
-            slamera.free();
+            slamera.start();
         }
     }
 }
