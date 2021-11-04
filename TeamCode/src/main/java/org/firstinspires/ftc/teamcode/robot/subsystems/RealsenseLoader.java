@@ -44,7 +44,5 @@ public class RealsenseLoader implements AbstractSubsystem {
      * Shut down the camera
      */
     @Override
-    public void cleanup() {
-        RealsenseManager.cleanup();
-    }
+    public void cleanup() { }
 }
