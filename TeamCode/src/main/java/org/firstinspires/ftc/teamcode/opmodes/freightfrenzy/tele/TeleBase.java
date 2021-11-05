@@ -25,14 +25,14 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.robot.abstracts.BasicOpMode;
+import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode;
 import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 
 import java.util.Locale;
 import java.util.Objects;
 
 @TeleOp
-public class TeleBasic extends BasicOpMode {
+public class TeleBase extends BaseOpMode {
     @Override
     public void setup(){
         // Retrieve our pose from the PoseStorage.currentPose static field

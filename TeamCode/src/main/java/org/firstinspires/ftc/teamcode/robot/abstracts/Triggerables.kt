@@ -75,7 +75,7 @@ class Triggerables {
          * Get the value of the button from the controller
          */
         @JvmField
-        val rawPressed: () -> Boolean
+        val rawPressed: () -> Boolean = function
 
         /**
          * Updates the button state
@@ -108,10 +108,6 @@ class Triggerables {
                 }
             }
         }
-
-        init {
-            rawPressed = function
-        }
     }
 
     /**
@@ -127,7 +123,7 @@ class Triggerables {
          * Get the value of the trigger from the controller
          */
         @JvmField
-        val rawValue: () -> Float
+        val rawValue: () -> Float = function
 
         /**
          * Get corrected value based on the activation threshold
@@ -170,9 +166,6 @@ class Triggerables {
             }
         }
 
-        init {
-            rawValue = function
-        }
     }
 
     /**
@@ -188,7 +181,7 @@ class Triggerables {
          * Get the value of the stick from the controller
          */
         @JvmField
-        val rawValue: () -> Float
+        val rawValue: () -> Float = function
 
         /**
          * What direction the stick is currently active in
@@ -285,8 +278,5 @@ class Triggerables {
             }
         }
 
-        init {
-            rawValue = function
-        }
     }
 }

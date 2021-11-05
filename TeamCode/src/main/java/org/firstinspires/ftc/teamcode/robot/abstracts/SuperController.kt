@@ -15,7 +15,7 @@ class SuperController(
     val gamepad: Gamepad
 ){
     /**
-     * Update all Triggerables.Buttons
+     * Update all triggerables
      */
     fun update() {
         leftBumper.update()
@@ -220,19 +220,19 @@ class SuperController(
     val touchpad = Triggerables.ControllerButton { gamepad.touchpad }
     val touchpadFinger1: Vector2d?
         get() {
-            return if (gamepad.touchpad_finger_1){
+            return if (gamepad.touchpad_finger_1) {
                 Vector2d(gamepad.touchpad_finger_1_x.toDouble(),
                     gamepad.touchpad_finger_1_y.toDouble()
                 )
-            } else {null}
+            } else { null }
         }
     val touchpadFinger2: Vector2d?
         get() {
-            return if (gamepad.touchpad_finger_2){
+            return if (gamepad.touchpad_finger_2) {
                 Vector2d(gamepad.touchpad_finger_2_x.toDouble(),
                     gamepad.touchpad_finger_2_y.toDouble()
                 )
-            } else {null}
+            } else { null }
         }
 
     /**

@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.robot.abstracts.BasicOpMode;
+import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.robot.util.PoseUtil;
 import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 @Autonomous(preselectTeleOp = "TeleBasic")
-public class AllianceRed extends BasicOpMode {
+public class AllianceRed extends BaseOpMode {
     Pose2d startPose = new Pose2d(-34, -61, Math.toRadians(90));
 
     @Override
