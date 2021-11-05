@@ -88,10 +88,10 @@ class Triggerables {
                     // tell it
                     active = true
                     // then run the activate callback (if it's set)
-                    onActivate?.let { it() }
+                    onActivate?.invoke()
                 } else {
                     // otherwise run the normal active callback
-                    whileActive?.let { it() }
+                    whileActive?.invoke()
                 }
             }
             // if it isn't pressed
@@ -101,10 +101,10 @@ class Triggerables {
                     // tell it
                     active = false
                     // and run the deactivate callback (if it's set)
-                    onDeactivate?.let { it() }
+                    onDeactivate?.invoke()
                 } else {
                     // otherwise run the normal inactive callback
-                    whileInactive?.let { it() }
+                    whileInactive?.invoke()
                 }
             }
         }
@@ -145,10 +145,10 @@ class Triggerables {
                     // set it as active
                     active = true
                     // and run the callback (if it's set)
-                    onActivate?.let { it() }
+                    onActivate?.invoke()
                 } else {
                     // then run the repeat callback (if it's set)
-                    whileActive?.let { it() }
+                    whileActive?.invoke()
                 }
             }
             // if it's under the threshold
@@ -158,10 +158,10 @@ class Triggerables {
                     // set it as inactive
                     active = false
                     // and run the callback (if it's set)
-                    onDeactivate?.let { it() }
+                    onDeactivate?.invoke()
                 } else {
                     // then run the repeat callback (if it's set)
-                    whileInactive?.let { it() }
+                    whileInactive?.invoke()
                 }
             }
         }
@@ -233,10 +233,10 @@ class Triggerables {
                         active = false
                         state = TriggerDirection.OFF
                         // and run the deactivate callback (if it's set)
-                        onDeactivate?.let { it() }
+                        onDeactivate?.invoke()
                     } else {
                         // otherwise run the normal up callback (if it's set)
-                        whileActive?.let { it() }
+                        whileActive?.invoke()
                     }
                 }
                 // if it thinks it's centered
@@ -247,7 +247,7 @@ class Triggerables {
                         active = true
                         state = TriggerDirection.UP
                         // and run the activate callback (if it's set)
-                        onActivate?.let { it() }
+                        onActivate?.invoke()
                     }
                     // but it's down
                     else if (rawValue() <= -activationThreshold) {
@@ -255,10 +255,10 @@ class Triggerables {
                         active = true
                         state = TriggerDirection.DOWN
                         // and run the negative active callback (if it's set)
-                        onActivateNeg?.let { it() }
+                        onActivateNeg?.invoke()
                     } else {
                         // otherwise run the normal off callback (if it's set)
-                        whileInactive?.let { it() }
+                        whileInactive?.invoke()
                     }
                 }
                 // if it thinks it's down
@@ -269,10 +269,10 @@ class Triggerables {
                         active = false
                         state = TriggerDirection.OFF
                         // and run the negative deactivation callback (if it's set)
-                        onDeactivateNeg?.let { it() }
+                        onDeactivateNeg?.invoke()
                     } else {
                         // otherwise run the normal down callback (if it's set)
-                        whileActiveNeg?.let { it() }
+                        whileActiveNeg?.invoke()
                     }
                 }
             }
