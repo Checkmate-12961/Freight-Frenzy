@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 /**
  * Basic OpMode class that all OpModes should extend
  */
-public abstract class BasicOpMode extends OpMode {
+public abstract class BaseOpMode extends OpMode {
     protected CheckmateRobot robot;
 
     protected  SuperController gp1;
