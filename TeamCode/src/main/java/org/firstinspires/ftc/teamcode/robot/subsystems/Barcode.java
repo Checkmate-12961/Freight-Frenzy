@@ -1,5 +1,12 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.robot.HardwareNames;
+import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.BarcodeConstants;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -7,10 +14,49 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
+import org.openftc.easyopencv.OpenCvWebcam;
 
+@Config
+public class Barcode implements AbstractSubsystem {
+    public Barcode(HardwareMap hardwareMap) {
+        OpenCvWebcam webCam = OpenCvCameraFactory.getInstance().createWebcam(
+                hardwareMap.get(WebcamName.class, HardwareNames.Cameras.WEBCAM.name),
+                hardwareMap.appContext.getResources().getIdentifier(
+                        "cameraMonitorViewId",
+                        "id",
+                        hardwareMap.appContext.getPackageName()));
+        webCam.setPipeline(pipeline);
 
-public class Barcode {
+        //listens for when the camera is opened
+        webCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                webCam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+
+            }
+        });
+
+        FtcDashboard.getInstance().startCameraStream(webCam, 12);
+    }
+
+    @Override
+    public void update() {
+        // nothing to update
+    }
+
+    @Override
+    public void cleanup() {
+        // nothing to clean up
+    }
+
     public enum BarcodePosition {LEFT, MIDDLE, RIGHT}
 
     private final RingDeterminationPipeline pipeline = new RingDeterminationPipeline();

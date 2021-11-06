@@ -95,4 +95,17 @@ public class HardwareNames {
             this.reverse = reverse;
         }
     }
+
+    /**
+     * Contains hardware info for cameras
+     */
+    public enum Cameras {
+        WEBCAM ("webcam");
+
+        public final String name;
+
+        Cameras(String name) {
+            this.name = name;
+        }
+    }
 }
