@@ -24,12 +24,11 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractRobot;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Barcode;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.subsystems.JankArm;
 import org.firstinspires.ftc.teamcode.robot.subsystems.JankHand;
-import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
 
 /**
@@ -38,6 +37,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
 public class CheckmateRobot extends AbstractRobot {
     public final Drivetrain drivetrain;
     public final Carousel carousel;
+    public final Barcode barcode;
     public final JankArm jankArm;
     public final JankHand jankHand;
     //public final Lift lift;
@@ -60,12 +60,15 @@ public class CheckmateRobot extends AbstractRobot {
         carousel = new Carousel(hardwareMap);
         addSubsystem(carousel);
 
+        // Set up the OpenCV camera
+        barcode = new Barcode(hardwareMap);
+        addSubsystem(barcode);
+
         // Set up the janky arm & hand
         jankArm = new JankArm(hardwareMap);
         jankHand = new JankHand(hardwareMap);
         addSubsystem(jankArm);
         addSubsystem(jankHand);
-
 
         // Set up the lift
         //lift = new Lift(hardwareMap);
