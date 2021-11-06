@@ -218,11 +218,11 @@ class Triggerables {
          */
         override fun update() {
             // update the threshold-corrected value
-            correctedValue = if (rawValue() >= 0) {
+            correctedValue = if (rawValue() >= activationThreshold) {
                 Range.scale(rawValue().toDouble(), 0.0, 1.0, activationThreshold, 1.0).toFloat()
-            } else {
+            } else if (rawValue() <= activationThreshold) {
                 -Range.scale(-rawValue().toDouble(), 0.0, 1.0, activationThreshold, 1.0).toFloat()
-            }
+            } else { 0F }
 
             when (state) {
                 // if it thinks it's up

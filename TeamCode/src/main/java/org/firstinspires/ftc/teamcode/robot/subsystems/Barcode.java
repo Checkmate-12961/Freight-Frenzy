@@ -21,20 +21,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Barcode implements AbstractSubsystem {
+    private final OpenCvCamera webcam;
+
     public Barcode(HardwareMap hardwareMap) {
-        OpenCvWebcam webCam = OpenCvCameraFactory.getInstance().createWebcam(
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(
                 hardwareMap.get(WebcamName.class, HardwareNames.Cameras.WEBCAM.name),
                 hardwareMap.appContext.getResources().getIdentifier(
                         "cameraMonitorViewId",
                         "id",
                         hardwareMap.appContext.getPackageName()));
-        webCam.setPipeline(pipeline);
+        webcam.setPipeline(pipeline);
 
         //listens for when the camera is opened
-        webCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webCam.startStreaming(320,240, OpenCvCameraRotation.UPSIDE_DOWN);
+                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -43,7 +45,7 @@ public class Barcode implements AbstractSubsystem {
             }
         });
 
-        FtcDashboard.getInstance().startCameraStream(webCam, 12);
+        FtcDashboard.getInstance().startCameraStream(webcam, 12);
     }
 
     public BarcodePosition getPosition() {
@@ -61,7 +63,9 @@ public class Barcode implements AbstractSubsystem {
 
     @Override
     public void cleanup() {
-        // nothing to clean up
+        webcam.stopRecordingPipeline();
+        webcam.stopStreaming();
+        FtcDashboard.getInstance().stopCameraStream();
     }
 
     public enum BarcodePosition {LEFT, MIDDLE, RIGHT}
