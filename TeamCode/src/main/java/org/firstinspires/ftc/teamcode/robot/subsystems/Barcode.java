@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.robot.HardwareNames;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.BarcodeConstants;
+import org.firstinspires.ftc.teamcode.robot.subsystems.barcode.BarcodeConstants;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -91,20 +91,20 @@ public class Barcode implements AbstractSubsystem {
         private final Point MIDDLEBOX_TOPLEFT_ANCHOR_POINT = new Point(BarcodeConstants.MiddleBoxX, BarcodeConstants.MiddleBoxY);
 
         private final Point MIDDLEBOX_pointA = new Point(
-                LEFTBOX_TOPLEFT_ANCHOR_POINT.x,
-                LEFTBOX_TOPLEFT_ANCHOR_POINT.y);
+                MIDDLEBOX_TOPLEFT_ANCHOR_POINT.x,
+                MIDDLEBOX_TOPLEFT_ANCHOR_POINT.y);
         private final Point MIDDLEBOX_pointB = new Point(
-                LEFTBOX_TOPLEFT_ANCHOR_POINT.x + BarcodeConstants.MiddleBoxWidth,
-                LEFTBOX_TOPLEFT_ANCHOR_POINT.y + BarcodeConstants.MiddleBoxHeight);
+                MIDDLEBOX_TOPLEFT_ANCHOR_POINT.x + BarcodeConstants.MiddleBoxWidth,
+                MIDDLEBOX_TOPLEFT_ANCHOR_POINT.y + BarcodeConstants.MiddleBoxHeight);
 
         private final Point RIGHTBOX_TOPLEFT_ANCHOR_POINT = new Point(BarcodeConstants.RightBoxX, BarcodeConstants.RightBoxY);
 
         private final Point RIGHTBOX_pointA = new Point(
-                LEFTBOX_TOPLEFT_ANCHOR_POINT.x,
-                LEFTBOX_TOPLEFT_ANCHOR_POINT.y);
+                RIGHTBOX_TOPLEFT_ANCHOR_POINT.x,
+                RIGHTBOX_TOPLEFT_ANCHOR_POINT.y);
         private final Point RIGHTBOX_pointB = new Point(
-                LEFTBOX_TOPLEFT_ANCHOR_POINT.x + BarcodeConstants.RightBoxWidth,
-                LEFTBOX_TOPLEFT_ANCHOR_POINT.y + BarcodeConstants.RightBoxHeight);
+                RIGHTBOX_TOPLEFT_ANCHOR_POINT.x + BarcodeConstants.RightBoxWidth,
+                RIGHTBOX_TOPLEFT_ANCHOR_POINT.y + BarcodeConstants.RightBoxHeight);
         /*
          * Working variables
          */
