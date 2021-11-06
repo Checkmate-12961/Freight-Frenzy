@@ -21,7 +21,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
@@ -33,21 +33,27 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
  * Subsystem to manage the carousel spinner on the front of the robot
  */
 public class Carousel implements AbstractSubsystem {
-    // Servo
-    private final CRServo carouselMotor;
+    /**
+     * The motor that spins the carousel
+     */
+    private final DcMotorEx carouselMotor;
 
-    // Variable to store how fast we want the motor to spin
+    /**
+     * Variable to store how fast we want the motor to spin
+     */
     private double targetPower = 0;
 
-    // Motor power is multiplied by this before it's set. Must fit in (0, 1]
-    private static final double powerMultiplier = 1;
+    /**
+     * Maximum power the motor can spin at
+     */
+    private static final double maxPower = 0.25;
 
     /**
      * Updates the power of the motor to match what we set it to
      */
     @Override
     public void update() {
-        carouselMotor.setPower(targetPower * powerMultiplier);
+        carouselMotor.setPower(targetPower * maxPower);
     }
 
     /**
@@ -72,10 +78,10 @@ public class Carousel implements AbstractSubsystem {
      */
     public Carousel(HardwareMap hardwareMap) {
         // Initialize the servo
-        carouselMotor = hardwareMap.get(CRServo.class, HardwareNames.CRServos.CAROUSEL.name);
+        carouselMotor = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.CAROUSEL.name);
 
         // Reverse the motor if we set it that way in the config
-        if (HardwareNames.CRServos.CAROUSEL.reverse) {
+        if (HardwareNames.Motors.CAROUSEL.reverse) {
             carouselMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 

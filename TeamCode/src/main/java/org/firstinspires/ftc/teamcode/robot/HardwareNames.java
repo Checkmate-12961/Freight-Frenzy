@@ -35,6 +35,9 @@ public class HardwareNames {
         LEFT_FRONT ("leftFront", true),
         LEFT_REAR ("leftRear", true),
 
+        // Carousel mechanism
+        CAROUSEL ("carousel", false),
+
         // Lift mechanism
         LIFT ("lift", false);
 
@@ -82,7 +85,7 @@ public class HardwareNames {
      * Contains hardware info for continuous rotation servos
      */
     public enum CRServos {
-        CAROUSEL ("carousel", false);
+        DUMMY ("", false);
 
         public final String name;
         public final boolean reverse;
