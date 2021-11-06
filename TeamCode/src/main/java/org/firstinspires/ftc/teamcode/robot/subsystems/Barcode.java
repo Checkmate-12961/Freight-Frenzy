@@ -47,6 +47,14 @@ public class Barcode implements AbstractSubsystem {
         FtcDashboard.getInstance().startCameraStream(webCam, 12);
     }
 
+    public BarcodePosition getPosition() {
+        return pipeline.getPosition();
+    }
+
+    public int getAnalysis() {
+        return pipeline.getAnalysis();
+    }
+
     @Override
     public void update() {
         // nothing to update
