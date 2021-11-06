@@ -86,5 +86,6 @@ public class TrackWidthTuner extends LinearOpMode {
         while (!isStopRequested()) {
             idle();
         }
+        robot.cleanup();
     }
 }

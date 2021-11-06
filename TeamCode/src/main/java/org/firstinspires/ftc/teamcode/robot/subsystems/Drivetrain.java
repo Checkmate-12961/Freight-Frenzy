@@ -1,3 +1,24 @@
+/*
+The MIT License (MIT)
+
+Copyright © 2021 Checkmate Robotics
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the “Software”), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.MAX_ACCEL;
@@ -37,9 +58,9 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.robot.HardwareNames;
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.RealsenseLocalizer;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.CancelableTrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.bilocalizer.RealsenseLocalizer;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.SuperTrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.robot.util.LynxModuleUtil;
 
@@ -47,16 +68,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/*
- * Simple mecanum drive hardware implementation for REV hardware.
+/**
+ * Mecanum drive implementation to work with roadrunner
  */
-
-
 @Config
 public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
     // TODO: tune
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 1);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 1);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 1);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -64,7 +83,7 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
 
-    private final CancelableTrajectorySequenceRunner trajectorySequenceRunner;
+    private final SuperTrajectorySequenceRunner trajectorySequenceRunner;
 
     private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
@@ -125,7 +144,7 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
         // DONE: if desired, use setLocalizer() to change the localization method
         setLocalizer(new RealsenseLocalizer(hardwareMap));
 
-        trajectorySequenceRunner = new CancelableTrajectorySequenceRunner(follower, HEADING_PID);
+        trajectorySequenceRunner = new SuperTrajectorySequenceRunner(follower, HEADING_PID);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -307,4 +326,7 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
     }
+
+    @Override
+    public void cleanup() { }
 }

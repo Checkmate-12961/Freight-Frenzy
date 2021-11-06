@@ -86,6 +86,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
 
         while (!isStopRequested()) {
+            robot.update();
             telemetry.addData("mode", mode);
 
             switch (mode) {
@@ -139,5 +140,6 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
             telemetry.update();
         }
+        robot.cleanup();
     }
 }

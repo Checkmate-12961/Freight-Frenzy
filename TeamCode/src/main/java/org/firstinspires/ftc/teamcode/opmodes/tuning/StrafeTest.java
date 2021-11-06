@@ -42,5 +42,6 @@ public class StrafeTest extends LinearOpMode {
         telemetry.update();
 
         while (!isStopRequested() && opModeIsActive()) ;
+        robot.cleanup();
     }
 }

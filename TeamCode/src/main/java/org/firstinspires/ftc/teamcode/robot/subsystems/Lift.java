@@ -1,3 +1,24 @@
+/*
+The MIT License (MIT)
+
+Copyright © 2021 Checkmate Robotics
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the “Software”), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import static java.lang.Math.round;
@@ -25,14 +46,14 @@ public class Lift implements AbstractSubsystem {
     private static final double encoderTicksPerRev = 751.8;
     private static final double maxHeight = 20.0; // inches
 
-    // Math for going from height to revolutions to ticks:
+    // Math for going from height to revolutions to geared ticks to ticks:
     /*
     targetHeight * encoderTicksPerRev
     ---------------------------------
           spoolDiameter * Math.PI
      */
 
-    private static final double heightToTicksMultiplier = encoderTicksPerRev / (spoolDiameter * Math.PI);
+    private static final double ticksPerInch = encoderTicksPerRev / (spoolDiameter * Math.PI);
 
     /**
      * Updates the target height of the lift based on targetHeight
@@ -47,7 +68,7 @@ public class Lift implements AbstractSubsystem {
         } else if (targetHeight < 0) {
             targetHeight = 0;
         }
-        liftMotor.setTargetPosition((int)round(targetHeight * heightToTicksMultiplier));
+        liftMotor.setTargetPosition((int)round(targetHeight * ticksPerInch));
     }
 
     /**
