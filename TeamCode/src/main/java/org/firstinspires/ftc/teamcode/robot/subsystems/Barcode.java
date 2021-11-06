@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -10,8 +9,6 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.barcode.BarcodeConstants;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -20,7 +17,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Config
+import java.util.Arrays;
+import java.util.List;
+
 public class Barcode implements AbstractSubsystem {
     public Barcode(HardwareMap hardwareMap) {
         OpenCvWebcam webCam = OpenCvCameraFactory.getInstance().createWebcam(
@@ -35,7 +34,7 @@ public class Barcode implements AbstractSubsystem {
         webCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webCam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                webCam.startStreaming(320,240, OpenCvCameraRotation.UPSIDE_DOWN);
             }
 
             @Override
@@ -51,7 +50,7 @@ public class Barcode implements AbstractSubsystem {
         return pipeline.getPosition();
     }
 
-    public int getAnalysis() {
+    public List<Integer> getAnalysis() {
         return pipeline.getAnalysis();
     }
 
@@ -78,33 +77,6 @@ public class Barcode implements AbstractSubsystem {
         private static final Scalar BLUE = new Scalar(0, 0, 255);
         private static final Scalar PURPLE = new Scalar(51, 12, 47);
 
-        //The core values which define the location and size of the sample regions
-        private final Point LEFTBOX_TOPLEFT_ANCHOR_POINT = new Point(BarcodeConstants.LeftBoxX, BarcodeConstants.LeftBoxY);
-
-        private final Point LEFTBOX_pointA = new Point(
-                LEFTBOX_TOPLEFT_ANCHOR_POINT.x,
-                LEFTBOX_TOPLEFT_ANCHOR_POINT.y);
-        private final Point LEFTBOX_pointB = new Point(
-                LEFTBOX_TOPLEFT_ANCHOR_POINT.x + BarcodeConstants.LeftBoxWidth,
-                LEFTBOX_TOPLEFT_ANCHOR_POINT.y + BarcodeConstants.LeftBoxHeight);
-
-        private final Point MIDDLEBOX_TOPLEFT_ANCHOR_POINT = new Point(BarcodeConstants.MiddleBoxX, BarcodeConstants.MiddleBoxY);
-
-        private final Point MIDDLEBOX_pointA = new Point(
-                MIDDLEBOX_TOPLEFT_ANCHOR_POINT.x,
-                MIDDLEBOX_TOPLEFT_ANCHOR_POINT.y);
-        private final Point MIDDLEBOX_pointB = new Point(
-                MIDDLEBOX_TOPLEFT_ANCHOR_POINT.x + BarcodeConstants.MiddleBoxWidth,
-                MIDDLEBOX_TOPLEFT_ANCHOR_POINT.y + BarcodeConstants.MiddleBoxHeight);
-
-        private final Point RIGHTBOX_TOPLEFT_ANCHOR_POINT = new Point(BarcodeConstants.RightBoxX, BarcodeConstants.RightBoxY);
-
-        private final Point RIGHTBOX_pointA = new Point(
-                RIGHTBOX_TOPLEFT_ANCHOR_POINT.x,
-                RIGHTBOX_TOPLEFT_ANCHOR_POINT.y);
-        private final Point RIGHTBOX_pointB = new Point(
-                RIGHTBOX_TOPLEFT_ANCHOR_POINT.x + BarcodeConstants.RightBoxWidth,
-                RIGHTBOX_TOPLEFT_ANCHOR_POINT.y + BarcodeConstants.RightBoxHeight);
         /*
          * Working variables
          */
@@ -133,9 +105,9 @@ public class Barcode implements AbstractSubsystem {
         public void init(Mat firstFrame) {
             inputToCb(firstFrame);
 
-            LEFTBOX_Cb = Cb.submat(new Rect(LEFTBOX_pointA, LEFTBOX_pointB));
-            MIDDLEBOX_Cb = Cb.submat(new Rect(MIDDLEBOX_pointA, MIDDLEBOX_pointB));
-            RIGHTBOX_Cb = Cb.submat(new Rect(RIGHTBOX_pointA, RIGHTBOX_pointB));
+            LEFTBOX_Cb = Cb.submat(BarcodeConstants.getLeftBox());
+            MIDDLEBOX_Cb = Cb.submat(BarcodeConstants.getMiddleBox());
+            RIGHTBOX_Cb = Cb.submat(BarcodeConstants.getRightBox());
         }
 
         @Override
@@ -148,22 +120,22 @@ public class Barcode implements AbstractSubsystem {
 
             Imgproc.rectangle(
                     input, // Buffer to draw on
-                    LEFTBOX_pointA, // First point which defines the rectangle
-                    LEFTBOX_pointB, // Second point which defines the rectangle
+                    BarcodeConstants.getLeftBoxPointA(), // First point which defines the rectangle
+                    BarcodeConstants.getLeftBoxPointB(), // Second point which defines the rectangle
                     PURPLE, // The color the rectangle is drawn in
                     2); // Thickness of the rectangle lines
 
             Imgproc.rectangle(
                     input, // Buffer to draw on
-                    MIDDLEBOX_pointA, // First point which defines the rectangle
-                    MIDDLEBOX_pointB, // Second point which defines the rectangle
+                    BarcodeConstants.getMiddleBoxPointA(), // First point which defines the rectangle
+                    BarcodeConstants.getMiddleBoxPointB(), // Second point which defines the rectangle
                     PURPLE, // The color the rectangle is drawn in
                     2); // Thickness of the rectangle lines
 
             Imgproc.rectangle(
                     input, // Buffer to draw on
-                    LEFTBOX_pointA, // First point which defines the rectangle
-                    LEFTBOX_pointB, // Second point which defines the rectangle
+                    BarcodeConstants.getRightBoxPointA(), // First point which defines the rectangle
+                    BarcodeConstants.getRightBoxPointB(), // Second point which defines the rectangle
                     PURPLE, // The color the rectangle is drawn in
                     2); // Thickness of the rectangle lines
 
@@ -179,30 +151,30 @@ public class Barcode implements AbstractSubsystem {
 
             Imgproc.rectangle(
                     input, // Buffer to draw on
-                    LEFTBOX_pointA, // First point which defines the rectangle
-                    LEFTBOX_pointB, // Second point which defines the rectangle
+                    BarcodeConstants.getLeftBoxPointA(), // First point which defines the rectangle
+                    BarcodeConstants.getLeftBoxPointB(), // Second point which defines the rectangle
                     RED, // The color the rectangle is drawn in
                     -1); // Negative thickness means solid fill
 
             Imgproc.rectangle(
                     input, // Buffer to draw on
-                    MIDDLEBOX_pointA, // First point which defines the rectangle
-                    MIDDLEBOX_pointB, // Second point which defines the rectangle
+                    BarcodeConstants.getMiddleBoxPointA(), // First point which defines the rectangle
+                    BarcodeConstants.getMiddleBoxPointB(), // Second point which defines the rectangle
                     YELLOW, // The color the rectangle is drawn in
                     -1); // Negative thickness means solid fill
 
             Imgproc.rectangle(
                     input, // Buffer to draw on
-                    RIGHTBOX_pointA, // First point which defines the rectangle
-                    RIGHTBOX_pointB, // Second point which defines the rectangle
+                    BarcodeConstants.getRightBoxPointA(), // First point which defines the rectangle
+                    BarcodeConstants.getRightBoxPointB(), // Second point which defines the rectangle
                     BLUE, // The color the rectangle is drawn in
                     -1); // Negative thickness means solid fill
 
             return input;
         }
 
-        public int getAnalysis() {
-            return leftValue;
+        public List<Integer> getAnalysis() {
+            return Arrays.asList(leftValue, middleValue, rightValue);
         }
 
         public BarcodePosition getPosition() {
