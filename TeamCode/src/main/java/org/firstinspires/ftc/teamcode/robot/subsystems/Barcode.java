@@ -15,7 +15,6 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.Arrays;
 import java.util.List;
@@ -63,9 +62,7 @@ public class Barcode implements AbstractSubsystem {
 
     @Override
     public void cleanup() {
-        webcam.stopRecordingPipeline();
-        webcam.stopStreaming();
-        FtcDashboard.getInstance().stopCameraStream();
+        // TODO: cleanup properly
     }
 
     public enum BarcodePosition {LEFT, MIDDLE, RIGHT}
