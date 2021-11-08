@@ -66,12 +66,12 @@ public class TeleBase extends BaseOpMode {
                 // Moves the robot based on the GP1 left stick
                 robot.drivetrain.setWeightedDrivePower(
                         new Pose2d(
-                                // left stick X
-                                -gp1.leftStickY.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), -1, 1, 0, 1),
-                                // left sick Y
-                                -gp1.leftStickX.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), -1, 1, 0, 1),
+                                // left stick Y
+                                -gp1.leftStickY.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), 0, 1, 0.5, 1),
+                                // left sick X
+                                -gp1.leftStickX.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), 0, 1, 0.5, 1),
                                 // right stick X (rotation)
-                                -gp1.rightStickX.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), -1, 1, 0, 1)
+                                -gp1.rightStickX.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), 0, 1, 0.5, 1)
                         )
                 );
                 break;

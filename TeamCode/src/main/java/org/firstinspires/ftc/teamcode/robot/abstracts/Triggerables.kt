@@ -117,7 +117,7 @@ class Triggerables {
         /**
          * The threshold for triggerable activation
          */
-        override var activationThreshold = 0.4
+        override var activationThreshold = 0.0
 
         /**
          * Get the value of the trigger from the controller
@@ -136,7 +136,9 @@ class Triggerables {
          */
         override fun update() {
             // update the threshold-corrected value
-            correctedValue = Range.scale(rawValue().toDouble(), 0.0, 1.0, activationThreshold, 1.0).toFloat()
+            correctedValue = if (rawValue() >= activationThreshold) {
+                Range.scale(rawValue().toDouble(), activationThreshold, 1.0, 0.0, 1.0).toFloat()
+            } else 0F
 
             // if it's over the threshold
             if (rawValue() >= activationThreshold) {
@@ -219,9 +221,9 @@ class Triggerables {
         override fun update() {
             // update the threshold-corrected value
             correctedValue = if (rawValue() >= activationThreshold) {
-                Range.scale(rawValue().toDouble(), 0.0, 1.0, activationThreshold, 1.0).toFloat()
-            } else if (rawValue() <= activationThreshold) {
-                -Range.scale(-rawValue().toDouble(), 0.0, 1.0, activationThreshold, 1.0).toFloat()
+                Range.scale(rawValue().toDouble(), activationThreshold, 1.0, 0.0, 1.0).toFloat()
+            } else if (-rawValue() >= activationThreshold) {
+                -Range.scale(-rawValue().toDouble(), activationThreshold, 1.0, 0.0, 1.0).toFloat()
             } else { 0F }
 
             when (state) {
