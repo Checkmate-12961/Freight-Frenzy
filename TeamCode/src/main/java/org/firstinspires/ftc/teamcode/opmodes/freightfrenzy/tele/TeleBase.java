@@ -55,6 +55,10 @@ public class TeleBase extends BaseOpMode {
         gp2.leftStickY.setActivationThreshold(0.4);
         gp2.leftStickY.whileActive = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() - .01);
         gp2.leftStickY.whileActiveNeg = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
+
+        // Floppa the arm
+        gp2.x.onActivate = () -> robot.jankArm.floppa(true);
+        gp2.x.onDeactivate = () -> robot.jankArm.floppa(false);
     }
 
     @Override
