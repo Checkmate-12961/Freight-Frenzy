@@ -142,7 +142,7 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
         }
 
         // DONE: if desired, use setLocalizer() to change the localization method
-        setLocalizer(new RealsenseLocalizer(hardwareMap));
+        //setLocalizer(new RealsenseLocalizer(hardwareMap));
 
         trajectorySequenceRunner = new SuperTrajectorySequenceRunner(follower, HEADING_PID);
     }
