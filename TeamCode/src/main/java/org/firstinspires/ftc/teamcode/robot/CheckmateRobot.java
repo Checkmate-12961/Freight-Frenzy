@@ -50,7 +50,7 @@ public class CheckmateRobot extends AbstractRobot {
         super();
 
         // Set up the Realsense camera
-        addSubsystem(new RealsenseLoader(hardwareMap));
+        //addSubsystem(new RealsenseLoader(hardwareMap));
 
         // Set up the drivetrain
         drivetrain = new Drivetrain(hardwareMap);
