@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence;
@@ -12,9 +13,10 @@ import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 import java.util.Locale;
 import java.util.Objects;
 
+@Disabled
 @Autonomous(preselectTeleOp = "TeleBasic")
 public class SharedRed extends BaseOpMode {
-    Pose2d startPose = new Pose2d(10, -61, Math.toRadians(90));
+    Pose2d startPose = new Pose2d(7, -63.75, Math.toRadians(0));
 
     @Override
     public void pre_setup() {
@@ -36,12 +38,7 @@ public class SharedRed extends BaseOpMode {
 
         // Trajectory to get the robot into the shared thing on blue
         TrajectorySequence toSharedRed = robot.drivetrain.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(10, -46), 0)
-                .splineTo(new Vector2d(50, -46), 0)
-                .addDisplacementMarker(() -> {
-                    // Set it to the max (it'll get clipped)
-                    robot.jankArm.setAngle(10);
-                })
+                .splineTo(new Vector2d(38,-63.5), Math.toRadians(0))
                 .build();
 
         robot.drivetrain.followTrajectorySequenceAsync(toSharedRed);
