@@ -140,11 +140,10 @@ class Triggerables {
          * Updates the trigger state
          */
         override fun update() {
-            // update the threshold-corrected value
-            correctedValue = Range.scale(rawValue().toDouble(), 0.0, 1.0, activationThreshold, 1.0).toFloat()
-
             // if it's over the threshold
             if (rawValue() >= activationThreshold) {
+                // set the corrected value
+                correctedValue = Range.scale(rawValue().toDouble(), activationThreshold, 1.0, 0.0, 1.0).toFloat()
                 // and it doesn't know it's active
                 if (!active) {
                     // set it as active
@@ -159,6 +158,8 @@ class Triggerables {
             }
             // if it's under the threshold
             else if (rawValue() < activationThreshold) {
+                // zero the corrected value
+                correctedValue = 0F
                 // and it thinks it's active
                 if (active) {
                     // set it as inactive
