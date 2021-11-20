@@ -29,10 +29,9 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode;
 import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 
 import java.util.Locale;
-import java.util.Objects;
 
-@TeleOp
-public class TeleBase extends BaseOpMode {
+@TeleOp(name = "TeleOp")
+public class MainTeleOp extends BaseOpMode {
     @Override
     public void setup(){
         // Retrieve our pose from the PoseStorage.currentPose static field
@@ -53,12 +52,18 @@ public class TeleBase extends BaseOpMode {
 
         // Left stick Y axis runs the arm
         gp2.leftStickY.setActivationThreshold(0.4);
-        gp2.leftStickY.whileActive = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() - .01);
-        gp2.leftStickY.whileActiveNeg = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
+        gp2.leftStickY.whileActive = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() - .02);
+        gp2.leftStickY.whileActiveNeg = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() + .02);
 
         // Floppa the arm
         gp2.x.whileActive = () -> robot.jankArm.floppa(true);
         gp2.x.onDeactivate = () -> robot.jankArm.floppa(false);
+
+        // Home the arm
+        gp2.rightTrigger.setActivationThreshold(0.1); // just in case
+        gp2.rightTrigger.whileActive = () ->
+                robot.jankArm.zoop(gp2.rightTrigger.getCorrectedValue());
+        gp2.rightTrigger.onDeactivate = () -> robot.jankArm.zoop(0);
     }
 
     @Override
@@ -71,11 +76,11 @@ public class TeleBase extends BaseOpMode {
                 robot.drivetrain.setWeightedDrivePower(
                         new Pose2d(
                                 // left stick X
-                                -gp1.leftStickY.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), -1, 1, 0, 1),
+                                -gp1.leftStickY.getCorrectedValue() * Range.scale(gp1.rightTrigger.getCorrectedValue(), -1, 1, 0, 1),
                                 // left sick Y
-                                -gp1.leftStickX.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), -1, 1, 0, 1),
+                                -gp1.leftStickX.getCorrectedValue() * Range.scale(gp1.rightTrigger.getCorrectedValue(), -1, 1, 0, 1),
                                 // right stick X (rotation)
-                                -gp1.rightStickX.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), -1, 1, 0, 1)
+                                -gp1.rightStickX.getCorrectedValue() * Range.scale(gp1.rightTrigger.getCorrectedValue(), -1, 1, 0, 1)
                         )
                 );
                 break;
@@ -98,7 +103,7 @@ public class TeleBase extends BaseOpMode {
 
     private void updatePosition() {
         Pose2d position = robot.drivetrain.getPoseEstimate();
-        Pose2d velocity = Objects.requireNonNull(robot.drivetrain.getPoseVelocity());
+        Pose2d velocity = robot.drivetrain.getPoseVelocity();
         PositionUtil.set(position);
         // Print pose to telemetry
         telemetry.addData("armAngle", Math.toDegrees(robot.jankArm.getAngle()));
@@ -106,9 +111,11 @@ public class TeleBase extends BaseOpMode {
         telemetry.addData("y", position.getY());
         telemetry.addData("h", Math.toDegrees(position.getHeading()));
         telemetry.addData("runtime",String.format(Locale.ENGLISH,"%fs",getRuntime()));
-        telemetry.addData("vX", velocity.getX());
-        telemetry.addData("vY", velocity.getY());
-        telemetry.addData("vH", Math.toDegrees(velocity.getHeading()));
+        if (velocity != null) {
+            telemetry.addData("vX", velocity.getX());
+            telemetry.addData("vY", velocity.getY());
+            telemetry.addData("vH", Math.toDegrees(velocity.getHeading()));
+        }
         telemetry.update();
     }
 }
