@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto
 
+import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
 
-@Autonomous
+@Config
+@Autonomous(name = "schmoove", preselectTeleOp = "TeleOp")
 class Schmoove : BaseOpMode() {
-    override fun setup() {}
-    override fun run_loop() {}
+    @JvmField
+    var schmooveLength = 750L
 
     /**
      * when you you you you when you run button
@@ -18,7 +20,7 @@ class Schmoove : BaseOpMode() {
 
         // wait
         try {
-            Thread.sleep(1000)
+            Thread.sleep(schmooveLength)
         } catch (ignored: InterruptedException) {}
 
         // stop going
