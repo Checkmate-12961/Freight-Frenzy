@@ -21,6 +21,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -32,6 +33,7 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
 /**
  * Subsystem to manage the carousel spinner on the front of the robot
  */
+@Config
 public class Carousel implements AbstractSubsystem {
     /**
      * The motor that spins the carousel
@@ -46,7 +48,7 @@ public class Carousel implements AbstractSubsystem {
     /**
      * Maximum power the motor can spin at
      */
-    private static final double maxPower = 0.25;
+    public static double maxPower = 0.5;
 
     /**
      * Updates the power of the motor to match what we set it to
