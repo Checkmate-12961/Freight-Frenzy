@@ -39,9 +39,9 @@ public class TeleBase extends BaseOpMode {
         robot.drivetrain.setPoseEstimate(PositionUtil.get());
 
         // A opens the jank hand
-        gp2.a.onActivate = () -> robot.jankHand.close();
+        gp2.a.onToggle = () -> robot.jankHand.close();
         // B closes the jank hand
-        gp2.b.onActivate = () -> robot.jankHand.open();
+        gp2.b.onToggle = () -> robot.jankHand.open();
 
         // Right bumper runs the carousel
         gp2.rightBumper.onActivate = () -> robot.carousel.setPower(1);
@@ -57,7 +57,7 @@ public class TeleBase extends BaseOpMode {
         gp2.leftStickY.whileActiveNeg = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
 
         // Floppa the arm
-        gp2.x.onActivate = () -> robot.jankArm.floppa(true);
+        gp2.x.whileActive = () -> robot.jankArm.floppa(true);
         gp2.x.onDeactivate = () -> robot.jankArm.floppa(false);
     }
 

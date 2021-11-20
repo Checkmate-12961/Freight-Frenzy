@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.robot.HardwareNames;
@@ -21,7 +22,14 @@ public class JankArm implements AbstractSubsystem {
     private double targetAngle; // radians
 
     // Constants to manage the power of the arm
-    public static double powerCoefficient = 0.5;
+    public static double powerCoefficient = 0.7;
+    private double lastPowerCoefficient = powerCoefficient;
+
+    // PIDF
+    public static double kP;
+    public static double kI;
+    public static double kD;
+    public static double kF;
 
     // Constants to manage the angle of the arm
     private static final double gearRatio = 1/2.25; // 2.25 motor rots = 1 arm rot
@@ -73,6 +81,14 @@ public class JankArm implements AbstractSubsystem {
         }
     }
 
+    @Override
+    public void update() {
+        if (powerCoefficient != lastPowerCoefficient) {
+            lastPowerCoefficient = powerCoefficient;
+            armMotor.setPower(powerCoefficient);
+        }
+    }
+
     /**
      * Initializes the janky arm subsystem
      * @param hardwareMap HardwareMap passed in from the op mode
@@ -89,6 +105,14 @@ public class JankArm implements AbstractSubsystem {
         armMotor.setTargetPosition(0);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        PIDFCoefficients PIDFValues = armMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
+
+        kP = PIDFValues.p;
+        kI = PIDFValues.i;
+        kD = PIDFValues.d;
+        kF = PIDFValues.f;
+
         armMotor.setPower(powerCoefficient);
     }
 }
