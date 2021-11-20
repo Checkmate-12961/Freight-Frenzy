@@ -15,6 +15,8 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
 
 @Config
 public class JankArm implements AbstractSubsystem {
+    private float homing = 0;
+
     // Motor that lifts the arm
     private final DcMotorEx armMotor;
 
@@ -70,12 +72,26 @@ public class JankArm implements AbstractSubsystem {
     public void floppa(boolean enable) {
         if (enable) {
             armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            if (homing != 0) {
+                armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                armMotor.setPower(-homing);
+            } else {
+                armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            }
         } else {
+            homing = 0;
             setAngle(0);
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
+    }
+
+    /**
+     * Whether we should zoop the arm back home
+     * @param zoopSpeed The speed to zoop at. If 0, don't zoop at all.
+     */
+    public void zoop(float zoopSpeed) {
+        homing = zoopSpeed;
     }
 
     @Override
