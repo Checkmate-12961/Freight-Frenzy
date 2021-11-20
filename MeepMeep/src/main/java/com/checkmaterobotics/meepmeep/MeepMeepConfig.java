@@ -27,14 +27,15 @@ import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 public class MeepMeepConfig {
     static public MeepMeep getConfig() {
         // With a field size of 800 pixels
-        return new MeepMeep(800)
+        return new MeepMeep(600)
                 // Set field image
                 .setBackground(MeepMeep.Background.FIELD_FREIGHT_FRENZY)
                 // Set theme
                 .setTheme(new ColorSchemeRedDark())
                 // Background opacity from 0-1
                 .setBackgroundAlpha(1f)
+                .setBotDimensions(13.25, 17.75)
                 // Set constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15);
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 12);
     }
 }
