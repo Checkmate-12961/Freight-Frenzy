@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import static java.lang.Math.round;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.robot.HardwareNames;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
 
+@Config
 public class JankArm implements AbstractSubsystem {
     // Motor that lifts the arm
     private final DcMotorEx armMotor;
@@ -19,12 +21,14 @@ public class JankArm implements AbstractSubsystem {
     private double targetAngle; // radians
 
     // Constants to manage the power of the arm
-    private static final double powerCoefficient = 0.3;
+    public static double powerCoefficient = 0.5;
 
     // Constants to manage the angle of the arm
     private static final double gearRatio = 1/2.25; // 2.25 motor rots = 1 arm rot
     private static final double encoderTicksPerRad = 751.8 / (2.0*Math.PI);
-    private static final double[] angleBounds = {0, 4.20}; // lower, upper in radians
+
+    public static double lowerAngleBound = 0;
+    public static double upperAngleBound = 4.20;
 
     // Math for going from angle to geared ticks to ticks:
     /*
@@ -49,7 +53,7 @@ public class JankArm implements AbstractSubsystem {
      */
     public void setAngle(double targetAngle) {
         // Quick and dirty protection just in case I try something really stupid
-        this.targetAngle = Range.clip(targetAngle, angleBounds[0], angleBounds[1]);
+        this.targetAngle = Range.clip(targetAngle, lowerAngleBound, upperAngleBound);
 
         armMotor.setTargetPosition((int) round(this.targetAngle * ticksPerRadian));
     }
