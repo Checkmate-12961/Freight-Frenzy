@@ -27,8 +27,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.robot.HardwareNames;
+import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
 
 /**
@@ -60,34 +61,22 @@ public class Lift implements AbstractSubsystem {
      */
     @Override
     public void update() {
-        liftMotor.setPower(1);
-
-        // Quick and dirty protection just in case I try something really stupid
-        if (targetHeight > maxHeight) {
-            targetHeight = maxHeight;
-        } else if (targetHeight < 0) {
-            targetHeight = 0;
-        }
-        liftMotor.setTargetPosition((int)round(targetHeight * ticksPerInch));
-    }
-
-    /**
-     * Resets the target height of the lift to 0
-     */
-    @Override
-    public void cleanup() {
-        // Setting targetHeight here just in case we get one last robot update
-        targetHeight = 0;
-
-        liftMotor.setTargetPosition(0);
     }
 
     /**
      * Gets the target height of the lift in inches (not the actual height)
      * @return Target height in inches
      */
-    public double getHeight() {
+    public double getTargetHeight() {
         return targetHeight;
+    }
+
+    /**
+     * Gets the real height of the lift in inches
+     * @return Real height in inches
+     */
+    public double getHeight() {
+        return liftMotor.getCurrentPosition() / ticksPerInch;
     }
 
     /**
@@ -95,7 +84,8 @@ public class Lift implements AbstractSubsystem {
      * @param targetHeight Target height in inches
      */
     public void setHeight(double targetHeight) {
-        this.targetHeight = targetHeight;
+        this.targetHeight = Range.clip(targetHeight, 0, maxHeight);
+        liftMotor.setTargetPosition((int)round(this.targetHeight * ticksPerInch));
     }
 
     /**
@@ -104,18 +94,16 @@ public class Lift implements AbstractSubsystem {
      */
     public Lift(HardwareMap hardwareMap) {
         // Initialize the motor
-        liftMotor = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.LIFT.name);
+        liftMotor = hardwareMap.get(DcMotorEx.class, Motors.LIFT.name);
 
         // Reverse the motor if we set it that way in the config
-        if (HardwareNames.Motors.LIFT.reverse) {
+        if (Motors.LIFT.reverse) {
             liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
         // Set it to run to a target position and hold the position
-        liftMotor.setTargetPosition(0);
+        setHeight(0);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Initialize the target height
-        targetHeight = 0;
+        liftMotor.setPower(1);
     }
 }
