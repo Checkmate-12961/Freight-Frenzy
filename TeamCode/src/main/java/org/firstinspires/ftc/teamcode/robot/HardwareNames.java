@@ -39,7 +39,7 @@ public class HardwareNames {
         CAROUSEL ("carousel", false),
 
         // Lift mechanism
-        LIFT ("lift", false);
+        LIFT ("lift", true);
 
         public final String name;
         public final boolean reverse;
