@@ -11,40 +11,18 @@ public class JankHand implements AbstractSubsystem {
     // Servo that does the gripping
     private final Servo gripperServo;
 
-    // Variable to store the target position
-    private double targetPosition = 1;
-
-    /**
-     * Updates the servo position based on targetPosition
-     */
-    @Override
-    public void update() {
-        gripperServo.setPosition(targetPosition);
-    }
-
-    /**
-     * Runs when an Op Mode ends
-     */
-    @Override
-    public void cleanup() {
-        targetPosition = 0;
-        gripperServo.setPosition(0);
-
-        while (gripperServo.getPosition() > 0.1) { }
-    }
-
     /**
      * Opens the jank hand
      */
     public void open() {
-        targetPosition = 0;
+        setPosition(1);
     }
 
     /**
      * Closes the jank hand
      */
     public void close() {
-        targetPosition = 1;
+        setPosition(0);
     }
 
     /**
@@ -52,7 +30,7 @@ public class JankHand implements AbstractSubsystem {
      * @return Target position
      */
     public double getPosition() {
-        return targetPosition;
+        return gripperServo.getPosition();
     }
 
     /**
@@ -60,7 +38,7 @@ public class JankHand implements AbstractSubsystem {
      * @param targetPosition Target position
      */
     public void setPosition(double targetPosition) {
-        this.targetPosition = Range.clip(targetPosition, 0, 1);
+        gripperServo.setPosition(Range.clip(targetPosition, 0, 1));
     }
 
     /**
@@ -73,6 +51,6 @@ public class JankHand implements AbstractSubsystem {
 
         // Set the bounds of the servo
         gripperServo.scaleRange(HardwareNames.Servos.GRIPPER.lowerLimit, HardwareNames.Servos.GRIPPER.upperLimit);
-        gripperServo.setPosition(targetPosition);
+        gripperServo.close();
     }
 }

@@ -33,16 +33,4 @@ public class RealsenseLoader implements AbstractSubsystem {
     public RealsenseLoader(HardwareMap hardwareMap) {
         RealsenseManager.init(hardwareMap);
     }
-
-    /**
-     * Doesn't do anything.
-     */
-    @Override
-    public void update() { }
-
-    /**
-     * Shut down the camera
-     */
-    @Override
-    public void cleanup() { }
 }

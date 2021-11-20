@@ -27,7 +27,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.robot.HardwareNames;
+import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
 
 /**
@@ -41,29 +41,16 @@ public class Carousel implements AbstractSubsystem {
     private final DcMotorEx carouselMotor;
 
     /**
-     * Variable to store how fast we want the motor to spin
-     */
-    private double targetPower = 0;
-
-    /**
      * Maximum power the motor can spin at
      */
     public static double maxPower = 0.5;
-
-    /**
-     * Updates the power of the motor to match what we set it to
-     */
-    @Override
-    public void update() {
-        carouselMotor.setPower(targetPower * maxPower);
-    }
 
     /**
      * Get the power of the carousel motor
      * @return The motor's power
      */
     public double getPower() {
-        return targetPower;
+        return carouselMotor.getPower();
     }
 
     /**
@@ -71,7 +58,7 @@ public class Carousel implements AbstractSubsystem {
      * @param power The motor's power, must fit in [0, 1]
      */
     public void setPower(double power) {
-        targetPower = Range.clip(power, -1, 1);
+        carouselMotor.setPower(Range.clip(power, -1, 1) * maxPower);
     }
 
     /**
@@ -80,10 +67,10 @@ public class Carousel implements AbstractSubsystem {
      */
     public Carousel(HardwareMap hardwareMap) {
         // Initialize the servo
-        carouselMotor = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.CAROUSEL.name);
+        carouselMotor = hardwareMap.get(DcMotorEx.class, Motors.CAROUSEL.name);
 
         // Reverse the motor if we set it that way in the config
-        if (HardwareNames.Motors.CAROUSEL.reverse) {
+        if (Motors.CAROUSEL.reverse) {
             carouselMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
