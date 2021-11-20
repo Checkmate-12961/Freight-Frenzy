@@ -60,7 +60,6 @@ public class MainTeleOp extends BaseOpMode {
         gp2.x.onDeactivate = () -> robot.jankArm.floppa(false);
 
         // Home the arm
-        gp2.rightTrigger.setActivationThreshold(0.1); // just in case
         gp2.rightTrigger.whileActive = () ->
                 robot.jankArm.zoop(gp2.rightTrigger.getCorrectedValue());
         gp2.rightTrigger.onDeactivate = () -> robot.jankArm.zoop(0);

@@ -24,12 +24,6 @@ public class JankArm implements AbstractSubsystem {
     public static double powerCoefficient = 1;
     private double lastPowerCoefficient = powerCoefficient;
 
-    // PIDF
-    public static double kP;
-    public static double kI;
-    public static double kD;
-    public static double kF;
-
     private double targetAngle = 0;
 
     // Constants to manage the angle of the arm
@@ -120,11 +114,6 @@ public class JankArm implements AbstractSubsystem {
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         PIDFCoefficients PIDFValues = armMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
-
-        kP = PIDFValues.p;
-        kI = PIDFValues.i;
-        kD = PIDFValues.d;
-        kF = PIDFValues.f;
 
         armMotor.setPower(powerCoefficient);
     }
