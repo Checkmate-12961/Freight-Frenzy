@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 import java.util.Locale;
 import java.util.Objects;
 
+@Disabled
 @Autonomous(preselectTeleOp = "TeleBasic")
 public class AllianceBlue extends BaseOpMode {
     Pose2d startPose = new Pose2d(-34, 61, Math.toRadians(-90));
