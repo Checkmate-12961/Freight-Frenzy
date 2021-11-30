@@ -51,7 +51,7 @@ public class AllianceRed extends BaseOpMode {
         Pose2d velocity = Objects.requireNonNull(robot.drivetrain.getPoseVelocity());
         PositionUtil.set(position);
         // Print pose to telemetry
-        telemetry.addData("armAngle", Math.toDegrees(robot.jankArm.getAngle()));
+        telemetry.addData("armAngle", Math.toDegrees(robot.lift.getHeight()));
         telemetry.addData("x", position.getX());
         telemetry.addData("y", position.getY());
         telemetry.addData("h", Math.toDegrees(position.getHeading()));

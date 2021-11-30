@@ -33,9 +33,6 @@ public class SharedRed extends BaseOpMode {
             robot.drivetrain.setPoseEstimate(startPose);
         }
 
-        robot.jankArm.setAngle(Math.toRadians(200));
-        robot.update();
-
         // Trajectory to get the robot into the shared thing on blue
         TrajectorySequence toSharedRed = robot.drivetrain.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(38,-63.5), Math.toRadians(0))
@@ -53,7 +50,7 @@ public class SharedRed extends BaseOpMode {
         Pose2d velocity = Objects.requireNonNull(robot.drivetrain.getPoseVelocity());
         PositionUtil.set(position);
         // Print pose to telemetry
-        telemetry.addData("armAngle", Math.toDegrees(robot.jankArm.getAngle()));
+        telemetry.addData("armAngle", Math.toDegrees(robot.lift.getHeight()));
         telemetry.addData("x", position.getX());
         telemetry.addData("y", position.getY());
         telemetry.addData("h", Math.toDegrees(position.getHeading()));

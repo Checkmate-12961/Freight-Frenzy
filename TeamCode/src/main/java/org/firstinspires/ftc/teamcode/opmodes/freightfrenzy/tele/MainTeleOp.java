@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 
 import java.util.Locale;
@@ -37,32 +38,31 @@ public class MainTeleOp extends BaseOpMode {
         // Retrieve our pose from the PoseStorage.currentPose static field
         robot.drivetrain.setPoseEstimate(PositionUtil.get());
 
-        // A opens the jank hand
-        gp2.a.onToggle = () -> robot.jankHand.close();
-        // B closes the jank hand
-        gp2.b.onToggle = () -> robot.jankHand.open();
-
         // Right bumper runs the carousel
-        gp2.rightBumper.onActivate = () -> robot.carousel.setPower(1);
-        gp2.rightBumper.onDeactivate = () -> robot.carousel.setPower(0);
+        //gp2.rightBumper.onActivate = () -> robot.carousel.setPower(1);
+        //gp2.rightBumper.onDeactivate = () -> robot.carousel.setPower(0);
 
         // Left bumper runs the carousel the other way
-        gp2.leftBumper.onActivate = () -> robot.carousel.setPower(-1);
-        gp2.leftBumper.onDeactivate = () -> robot.carousel.setPower(0);
+        //gp2.leftBumper.onActivate = () -> robot.carousel.setPower(-1);
+        //gp2.leftBumper.onDeactivate = () -> robot.carousel.setPower(0);
 
         // Left stick Y axis runs the arm
         gp2.leftStickY.setActivationThreshold(0.4);
-        gp2.leftStickY.whileActive = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() - .02);
-        gp2.leftStickY.whileActiveNeg = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() + .02);
+        gp2.leftStickY.whileActive = () -> robot.lift.setHeight(robot.lift.getHeight() - 2);
+        gp2.leftStickY.whileActiveNeg = () -> robot.lift.setHeight(robot.lift.getHeight() + 2);
 
-        // Floppa the arm
-        gp2.x.whileActive = () -> robot.jankArm.floppa(true);
-        gp2.x.onDeactivate = () -> robot.jankArm.floppa(false);
+        // Dpad does set points
+        ///gp2.dpadUp.onActivate = () -> robot.lift.setTarget(Lift.SetPoints.HIGH);
+        ///gp2.dpadRight.onActivate = () -> robot.lift.setTarget(Lift.SetPoints.MID);
+        ///gp2.dpadLeft.onActivate = () -> robot.lift.setTarget(Lift.SetPoints.MID);
+        ///gp2.dpadDown.onActivate = () -> robot.lift.setTarget(Lift.SetPoints.REST);
 
-        // Home the arm
-        gp2.rightTrigger.whileActive = () ->
-                robot.jankArm.zoop(gp2.rightTrigger.getCorrectedValue());
-        gp2.rightTrigger.onDeactivate = () -> robot.jankArm.zoop(0);
+        // A & B run the intake
+        gp2.a.onActivate = () -> robot.intake.setPower(1);
+        gp2.a.onDeactivate = () -> robot.intake.setPower(0);
+        gp2.b.onActivate = () -> robot.intake.setPower(-1);
+        gp2.b.onDeactivate = () -> robot.intake.setPower(0);
+
     }
 
     @Override
@@ -105,7 +105,7 @@ public class MainTeleOp extends BaseOpMode {
         Pose2d velocity = robot.drivetrain.getPoseVelocity();
         PositionUtil.set(position);
         // Print pose to telemetry
-        telemetry.addData("armAngle", Math.toDegrees(robot.jankArm.getAngle()));
+        telemetry.addData("liftHeight", Math.toDegrees(robot.lift.getHeight()));
         telemetry.addData("x", position.getX());
         telemetry.addData("y", position.getY());
         telemetry.addData("h", Math.toDegrees(position.getHeading()));
