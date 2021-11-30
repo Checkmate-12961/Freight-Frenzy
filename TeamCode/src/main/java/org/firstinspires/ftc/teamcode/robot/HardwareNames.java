@@ -38,8 +38,11 @@ public class HardwareNames {
         // Carousel mechanism
         CAROUSEL ("carousel", false),
 
+        // Intake mechanism
+        INTAKE ("intake", false),
+
         // Lift mechanism
-        LIFT ("lift", true);
+        LIFT ("lift", false);
 
         public final String name;
         public final boolean reverse;
