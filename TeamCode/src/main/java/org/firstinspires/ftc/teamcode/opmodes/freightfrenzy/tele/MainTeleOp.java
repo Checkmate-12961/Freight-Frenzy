@@ -26,35 +26,43 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 
 import java.util.Locale;
-import java.util.Objects;
 
-@TeleOp
-public class TeleBase extends BaseOpMode {
+@TeleOp(name = "TeleOp")
+public class MainTeleOp extends BaseOpMode {
     @Override
     public void setup(){
         // Retrieve our pose from the PoseStorage.currentPose static field
         robot.drivetrain.setPoseEstimate(PositionUtil.get());
 
-        // A opens the jank hand
-        gp2.a.onActivate = () -> robot.jankHand.close();
-        // B closes the jank hand
-        gp2.b.onActivate = () -> robot.jankHand.open();
-
         // Right bumper runs the carousel
-        gp2.rightBumper.onActivate = () -> robot.carousel.setPower(1);
-        gp2.rightBumper.onDeactivate = () -> robot.carousel.setPower(0);
+        //gp2.rightBumper.onActivate = () -> robot.carousel.setPower(1);
+        //gp2.rightBumper.onDeactivate = () -> robot.carousel.setPower(0);
 
         // Left bumper runs the carousel the other way
-        gp2.leftBumper.onActivate = () -> robot.carousel.setPower(-1);
-        gp2.leftBumper.onDeactivate = () -> robot.carousel.setPower(0);
+        //gp2.leftBumper.onActivate = () -> robot.carousel.setPower(-1);
+        //gp2.leftBumper.onDeactivate = () -> robot.carousel.setPower(0);
 
         // Left stick Y axis runs the arm
         gp2.leftStickY.setActivationThreshold(0.4);
-        gp2.leftStickY.whileActive = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() - .01);
-        gp2.leftStickY.whileActiveNeg = () -> robot.jankArm.setAngle(robot.jankArm.getAngle() + .01);
+        gp2.leftStickY.whileActive = () -> robot.lift.setHeight(robot.lift.getHeight() - 2);
+        gp2.leftStickY.whileActiveNeg = () -> robot.lift.setHeight(robot.lift.getHeight() + 2);
+
+        // Dpad does set points
+        ///gp2.dpadUp.onActivate = () -> robot.lift.setTarget(Lift.SetPoints.HIGH);
+        ///gp2.dpadRight.onActivate = () -> robot.lift.setTarget(Lift.SetPoints.MID);
+        ///gp2.dpadLeft.onActivate = () -> robot.lift.setTarget(Lift.SetPoints.MID);
+        ///gp2.dpadDown.onActivate = () -> robot.lift.setTarget(Lift.SetPoints.REST);
+
+        // A & B run the intake
+        gp2.a.onActivate = () -> robot.intake.setPower(1);
+        gp2.a.onDeactivate = () -> robot.intake.setPower(0);
+        gp2.b.onActivate = () -> robot.intake.setPower(-1);
+        gp2.b.onDeactivate = () -> robot.intake.setPower(0);
+
     }
 
     @Override
@@ -67,11 +75,11 @@ public class TeleBase extends BaseOpMode {
                 robot.drivetrain.setWeightedDrivePower(
                         new Pose2d(
                                 // left stick X
-                                -gp1.leftStickY.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), -1, 1, 0, 1),
+                                -gp1.leftStickY.getCorrectedValue() * Range.scale(gp1.rightTrigger.getCorrectedValue(), -1, 1, 0, 1),
                                 // left sick Y
-                                -gp1.leftStickX.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), -1, 1, 0, 1),
+                                -gp1.leftStickX.getCorrectedValue() * Range.scale(gp1.rightTrigger.getCorrectedValue(), -1, 1, 0, 1),
                                 // right stick X (rotation)
-                                -gp1.rightStickX.getCorrectedValue() * Range.scale((gp1.rightTrigger.getCorrectedValue()), -1, 1, 0, 1)
+                                -gp1.rightStickX.getCorrectedValue() * Range.scale(gp1.rightTrigger.getCorrectedValue(), -1, 1, 0, 1)
                         )
                 );
                 break;
@@ -94,17 +102,19 @@ public class TeleBase extends BaseOpMode {
 
     private void updatePosition() {
         Pose2d position = robot.drivetrain.getPoseEstimate();
-        Pose2d velocity = Objects.requireNonNull(robot.drivetrain.getPoseVelocity());
+        Pose2d velocity = robot.drivetrain.getPoseVelocity();
         PositionUtil.set(position);
         // Print pose to telemetry
-        telemetry.addData("armAngle", Math.toDegrees(robot.jankArm.getAngle()));
+        telemetry.addData("liftHeight", Math.toDegrees(robot.lift.getHeight()));
         telemetry.addData("x", position.getX());
         telemetry.addData("y", position.getY());
         telemetry.addData("h", Math.toDegrees(position.getHeading()));
         telemetry.addData("runtime",String.format(Locale.ENGLISH,"%fs",getRuntime()));
-        telemetry.addData("vX", velocity.getX());
-        telemetry.addData("vY", velocity.getY());
-        telemetry.addData("vH", Math.toDegrees(velocity.getHeading()));
+        if (velocity != null) {
+            telemetry.addData("vX", velocity.getX());
+            telemetry.addData("vY", velocity.getY());
+            telemetry.addData("vH", Math.toDegrees(velocity.getHeading()));
+        }
         telemetry.update();
     }
 }

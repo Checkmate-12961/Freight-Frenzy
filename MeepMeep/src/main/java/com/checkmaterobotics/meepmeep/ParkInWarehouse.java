@@ -31,13 +31,8 @@ public class ParkInWarehouse {
         // Grab our config
         MeepMeepConfig.getConfig()
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(10, 61, Math.toRadians(-90)))
-                                .forward(15)
-                                .addDisplacementMarker(() -> {
-                                    //robot.jankArm.setAngle(Math.toRadians(200));
-                                })
-                                .turn(Math.toRadians(90))
-                                .forward(30)
+                        drive.trajectorySequenceBuilder(new Pose2d(7, -63.75, Math.toRadians(0)))
+                                .splineTo(new Vector2d(38,-63.5), Math.toRadians(0))
                                 .build()
                 )
                 .start();

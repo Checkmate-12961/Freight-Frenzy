@@ -27,6 +27,9 @@ class Triggerables {
         var active: Boolean = false
             protected set
 
+        @JvmField
+        var onToggle: TriggerableCallback? = null
+
         /**
          * Callback for when the button is pressed
          */
@@ -89,6 +92,7 @@ class Triggerables {
                     active = true
                     // then run the activate callback (if it's set)
                     onActivate?.invoke()
+                    onToggle?.invoke()
                 } else {
                     // otherwise run the normal active callback
                     whileActive?.invoke()
@@ -102,6 +106,7 @@ class Triggerables {
                     active = false
                     // and run the deactivate callback (if it's set)
                     onDeactivate?.invoke()
+                    onToggle?.invoke()
                 } else {
                     // otherwise run the normal inactive callback
                     whileInactive?.invoke()
@@ -135,17 +140,17 @@ class Triggerables {
          * Updates the trigger state
          */
         override fun update() {
-            // update the threshold-corrected value
-            correctedValue = Range.scale(rawValue().toDouble(), 0.0, 1.0, activationThreshold, 1.0).toFloat()
-
             // if it's over the threshold
             if (rawValue() >= activationThreshold) {
+                // set the corrected value
+                correctedValue = Range.scale(rawValue().toDouble(), activationThreshold, 1.0, 0.0, 1.0).toFloat()
                 // and it doesn't know it's active
                 if (!active) {
                     // set it as active
                     active = true
                     // and run the callback (if it's set)
                     onActivate?.invoke()
+                    onToggle?.invoke()
                 } else {
                     // then run the repeat callback (if it's set)
                     whileActive?.invoke()
@@ -153,12 +158,15 @@ class Triggerables {
             }
             // if it's under the threshold
             else if (rawValue() < activationThreshold) {
+                // zero the corrected value
+                correctedValue = 0F
                 // and it thinks it's active
                 if (active) {
                     // set it as inactive
                     active = false
                     // and run the callback (if it's set)
                     onDeactivate?.invoke()
+                    onToggle?.invoke()
                 } else {
                     // then run the repeat callback (if it's set)
                     whileInactive?.invoke()
@@ -218,11 +226,14 @@ class Triggerables {
          */
         override fun update() {
             // update the threshold-corrected value
-            correctedValue = if (rawValue() >= 0) {
-                Range.scale(rawValue().toDouble(), 0.0, 1.0, activationThreshold, 1.0).toFloat()
+            correctedValue = if (rawValue() >= activationThreshold) {
+                Range.scale(rawValue().toDouble(), activationThreshold, 1.0, 0.0, 1.0).toFloat()
+            } else if (rawValue() <= -activationThreshold) {
+                -Range.scale(-rawValue().toDouble(), activationThreshold, 1.0, 0.0, 1.0).toFloat()
             } else {
-                -Range.scale(-rawValue().toDouble(), 0.0, 1.0, activationThreshold, 1.0).toFloat()
+                0f
             }
+
 
             when (state) {
                 // if it thinks it's up
@@ -234,6 +245,7 @@ class Triggerables {
                         state = TriggerDirection.OFF
                         // and run the deactivate callback (if it's set)
                         onDeactivate?.invoke()
+                        onToggle?.invoke()
                     } else {
                         // otherwise run the normal up callback (if it's set)
                         whileActive?.invoke()
@@ -248,6 +260,7 @@ class Triggerables {
                         state = TriggerDirection.UP
                         // and run the activate callback (if it's set)
                         onActivate?.invoke()
+                        onToggle?.invoke()
                     }
                     // but it's down
                     else if (rawValue() <= -activationThreshold) {
@@ -256,6 +269,7 @@ class Triggerables {
                         state = TriggerDirection.DOWN
                         // and run the negative active callback (if it's set)
                         onActivateNeg?.invoke()
+                        onToggle?.invoke()
                     } else {
                         // otherwise run the normal off callback (if it's set)
                         whileInactive?.invoke()
@@ -270,6 +284,7 @@ class Triggerables {
                         state = TriggerDirection.OFF
                         // and run the negative deactivation callback (if it's set)
                         onDeactivateNeg?.invoke()
+                        onToggle?.invoke()
                     } else {
                         // otherwise run the normal down callback (if it's set)
                         whileActiveNeg?.invoke()

@@ -21,26 +21,22 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractRobot;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
-import org.firstinspires.ftc.teamcode.robot.subsystems.JankArm;
-import org.firstinspires.ftc.teamcode.robot.subsystems.JankHand;
-import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
 
 /**
  * The 2021-2022 robot class
  */
 public class CheckmateRobot extends AbstractRobot {
     public final Drivetrain drivetrain;
-    public final Carousel carousel;
-    public final JankArm jankArm;
-    public final JankHand jankHand;
-    //public final Lift lift;
+    //public final Carousel carousel;
+    public final Lift lift;
+    public final Intake intake;
 
     /**
      * Set up the robot and initialize the subsystems you want to use
@@ -49,26 +45,20 @@ public class CheckmateRobot extends AbstractRobot {
     public CheckmateRobot(HardwareMap hardwareMap) {
         super();
 
-        // Set up the Realsense camera
-        addSubsystem(new RealsenseLoader(hardwareMap));
-
         // Set up the drivetrain
         drivetrain = new Drivetrain(hardwareMap);
         addSubsystem(drivetrain);
 
         // Set up the carousel motor
-        carousel = new Carousel(hardwareMap);
-        addSubsystem(carousel);
+        //carousel = new Carousel(hardwareMap);
+        //addSubsystem(carousel);
 
-        // Set up the janky arm & hand
-        jankArm = new JankArm(hardwareMap);
-        jankHand = new JankHand(hardwareMap);
-        addSubsystem(jankArm);
-        addSubsystem(jankHand);
-
+        // Set up the intake
+        intake = new Intake(hardwareMap);
+        addSubsystem(intake);
 
         // Set up the lift
-        //lift = new Lift(hardwareMap);
-        //addSubsystem(lift);
+        lift = new Lift(hardwareMap);
+        addSubsystem(lift);
     }
 }

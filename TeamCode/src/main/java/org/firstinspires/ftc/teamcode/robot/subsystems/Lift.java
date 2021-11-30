@@ -23,28 +23,61 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import static java.lang.Math.round;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.robot.HardwareNames;
+import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
+
+import java.util.function.DoubleSupplier;
 
 /**
  * Subsystem to manage the lift on the front of the robot
  */
+@Config
 public class Lift implements AbstractSubsystem {
     // Motor that does the lifting
     private final DcMotorEx liftMotor;
+
+    // Variables to store the target positions of the lift
+    public static double targetLow = 5;
+    public static double targetMid = 10;
+    public static double targetHigh = 15;
+
+    // Double suppliers because enum
+    private static double getTargetRest() { return 0; }
+    private static double getTargetLow() { return targetLow; }
+    private static double getTargetMid() { return targetMid; }
+    private static double getTargetHigh() { return targetHigh; }
+
+    public enum SetPoints {
+        LOW(Lift::getTargetLow),
+        MID(Lift::getTargetMid),
+        HIGH(Lift::getTargetHigh),
+        REST(Lift::getTargetRest);
+
+        private final DoubleSupplier doubleSupplier;
+
+        public double getValue() {
+            return doubleSupplier.getAsDouble();
+        }
+
+        SetPoints(DoubleSupplier doubleSupplier) {
+            this.doubleSupplier = doubleSupplier;
+        }
+    }
 
     // Variable to store how high up we want the lift to be in inches
     private double targetHeight; // inches
 
     // Constants to manage the height of the lift
     private static final double spoolDiameter = 1.5; // inches
-    private static final double encoderTicksPerRev = 751.8;
-    private static final double maxHeight = 20.0; // inches
+    private static final double encoderTicksPerRev = 537.7;
+    private static final double maxHeight = 20000.0; // inches
 
     // Math for going from height to revolutions to geared ticks to ticks:
     /*
@@ -56,38 +89,19 @@ public class Lift implements AbstractSubsystem {
     private static final double ticksPerInch = encoderTicksPerRev / (spoolDiameter * Math.PI);
 
     /**
-     * Updates the target height of the lift based on targetHeight
-     */
-    @Override
-    public void update() {
-        liftMotor.setPower(1);
-
-        // Quick and dirty protection just in case I try something really stupid
-        if (targetHeight > maxHeight) {
-            targetHeight = maxHeight;
-        } else if (targetHeight < 0) {
-            targetHeight = 0;
-        }
-        liftMotor.setTargetPosition((int)round(targetHeight * ticksPerInch));
-    }
-
-    /**
-     * Resets the target height of the lift to 0
-     */
-    @Override
-    public void cleanup() {
-        // Setting targetHeight here just in case we get one last robot update
-        targetHeight = 0;
-
-        liftMotor.setTargetPosition(0);
-    }
-
-    /**
      * Gets the target height of the lift in inches (not the actual height)
      * @return Target height in inches
      */
-    public double getHeight() {
+    public double getTargetHeight() {
         return targetHeight;
+    }
+
+    /**
+     * Gets the real height of the lift in inches
+     * @return Real height in inches
+     */
+    public double getHeight() {
+        return liftMotor.getCurrentPosition() / ticksPerInch;
     }
 
     /**
@@ -95,7 +109,15 @@ public class Lift implements AbstractSubsystem {
      * @param targetHeight Target height in inches
      */
     public void setHeight(double targetHeight) {
-        this.targetHeight = targetHeight;
+        this.targetHeight = Range.clip(targetHeight, 0, maxHeight);
+        liftMotor.setTargetPosition((int)round(this.targetHeight * ticksPerInch));
+    }
+
+    /**
+     * Sets the target point of the lift
+     */
+    public void setTarget(SetPoints target) {
+        setHeight(target.getValue());
     }
 
     /**
@@ -104,18 +126,17 @@ public class Lift implements AbstractSubsystem {
      */
     public Lift(HardwareMap hardwareMap) {
         // Initialize the motor
-        liftMotor = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.LIFT.name);
+        liftMotor = hardwareMap.get(DcMotorEx.class, Motors.LIFT.name);
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Reverse the motor if we set it that way in the config
-        if (HardwareNames.Motors.LIFT.reverse) {
+        if (Motors.LIFT.reverse) {
             liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
         // Set it to run to a target position and hold the position
-        liftMotor.setTargetPosition(0);
+        setHeight(0);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Initialize the target height
-        targetHeight = 0;
+        liftMotor.setPower(1);
     }
 }

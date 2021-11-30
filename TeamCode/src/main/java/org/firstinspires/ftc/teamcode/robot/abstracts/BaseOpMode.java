@@ -69,7 +69,7 @@ public abstract class BaseOpMode extends OpMode {
     /**
      * Runs when the OpMode initializes
      */
-    public abstract void setup();
+    public void setup() { }
 
     /**
      * Internal method, do not call or overwrite
@@ -88,7 +88,7 @@ public abstract class BaseOpMode extends OpMode {
     /**
      * Main OpMode loop, automatically updates the robot
      */
-    public abstract void run_loop();
+    public void run_loop() { }
 
     /**
      * Internal method, do not call or overwrite
@@ -100,9 +100,7 @@ public abstract class BaseOpMode extends OpMode {
     }
 
     /**
-     * Optional, runs when the OpMode is stopped
+     * Runs when the OpMode is stopped
      */
-    public void cleanup() {
-
-    }
+    public void cleanup() { }
 }
