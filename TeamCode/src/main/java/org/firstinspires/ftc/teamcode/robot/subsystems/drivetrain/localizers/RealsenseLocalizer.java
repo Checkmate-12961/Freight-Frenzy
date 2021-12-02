@@ -19,7 +19,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.bilocalizer;
+package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +29,7 @@ import com.acmerobotics.roadrunner.localization.Localizer;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.realsenseloader.RealsenseManager;
+import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
 import org.firstinspires.ftc.teamcode.robot.util.PoseUtil;
 
 /**
@@ -46,8 +46,8 @@ public class RealsenseLocalizer implements Localizer {
     public RealsenseLocalizer(HardwareMap hardwareMap) {
         super();
 
-        if (RealsenseManager.slamera != null) {
-            slamera = RealsenseManager.slamera;
+        if (RealsenseLoader.slamera != null) {
+            slamera = RealsenseLoader.slamera;
         } else {
             throw new RuntimeException("Realsense camera was not initialized before attempting to use it!");
         }

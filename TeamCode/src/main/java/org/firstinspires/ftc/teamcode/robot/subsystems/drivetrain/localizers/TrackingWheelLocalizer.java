@@ -19,7 +19,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.bilocalizer;
+package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers;
 
 import androidx.annotation.NonNull;
 
