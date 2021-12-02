@@ -21,18 +21,23 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.tele;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.robot.util.PositionUtil;
 
 import java.util.Locale;
 
+@Config
 @TeleOp(name = "TeleOp")
 public class MainTeleOp extends BaseOpMode {
+    public static double liftChangeSpeed = 0.2;
+
     @Override
     public void setup(){
         // Retrieve our pose from the PoseStorage.currentPose static field
@@ -48,14 +53,23 @@ public class MainTeleOp extends BaseOpMode {
 
         // Left stick Y axis runs the arm
         gp2.leftStickY.setActivationThreshold(0.4);
-        gp2.leftStickY.whileActive = () -> robot.lift.setHeight(robot.lift.getHeight() - 2);
-        gp2.leftStickY.whileActiveNeg = () -> robot.lift.setHeight(robot.lift.getHeight() + 2);
+        gp2.leftStickY.whileActive = () -> robot.lift.setHeight(robot.lift.getHeight() - liftChangeSpeed);
+        gp2.leftStickY.whileActiveNeg = () -> robot.lift.setHeight(robot.lift.getHeight() + liftChangeSpeed);
 
         // Dpad does set points
-        ///gp2.dpadUp.onActivate = () -> robot.lift.setTarget(Lift.SetPoints.HIGH);
-        ///gp2.dpadRight.onActivate = () -> robot.lift.setTarget(Lift.SetPoints.MID);
-        ///gp2.dpadLeft.onActivate = () -> robot.lift.setTarget(Lift.SetPoints.MID);
-        ///gp2.dpadDown.onActivate = () -> robot.lift.setTarget(Lift.SetPoints.REST);
+        gp2.dpadUp.onActivate = () -> robot.lift.setTarget(Lift.Points.HIGH);
+        gp2.dpadRight.onActivate = () -> robot.lift.setTarget(Lift.Points.LOW);
+        gp2.dpadLeft.onActivate = () -> robot.lift.setTarget(Lift.Points.LOW);
+        gp2.dpadDown.onActivate = () -> robot.lift.setTarget(Lift.Points.MIN);
+
+        // X wiggles the bucket
+        gp2.x.onActivate = () -> robot.bucket.setPosition(Bucket.Positions.REST);
+        gp2.x.onDeactivate = () -> robot.bucket.setPosition(Bucket.Positions.ZERO);
+
+        // Right trigger dumps the bucket
+        gp2.rightTrigger.setActivationThreshold(0.5);
+        gp2.rightTrigger.onActivate = () -> robot.bucket.setPosition(Bucket.Positions.DUMP);
+        gp2.rightTrigger.onDeactivate = () -> robot.bucket.setPosition(Bucket.Positions.REST);
 
         // A & B run the intake
         gp2.a.onActivate = () -> robot.intake.setPower(1);
@@ -105,7 +119,7 @@ public class MainTeleOp extends BaseOpMode {
         Pose2d velocity = robot.drivetrain.getPoseVelocity();
         PositionUtil.set(position);
         // Print pose to telemetry
-        telemetry.addData("liftHeight", Math.toDegrees(robot.lift.getHeight()));
+        telemetry.addData("liftHeight", robot.lift.getHeight());
         telemetry.addData("x", position.getX());
         telemetry.addData("y", position.getY());
         telemetry.addData("h", Math.toDegrees(position.getHeading()));
