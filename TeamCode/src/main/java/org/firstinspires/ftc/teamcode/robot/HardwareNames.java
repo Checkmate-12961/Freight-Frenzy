@@ -39,7 +39,7 @@ public class HardwareNames {
         CAROUSEL ("carousel", false),
 
         // Intake mechanism
-        INTAKE ("intake", false),
+        INTAKE ("intake", true),
 
         // Lift mechanism
         LIFT ("lift", false);
@@ -71,16 +71,14 @@ public class HardwareNames {
      * Contains hardware info for servos
      */
     public enum Servos {
-        GRIPPER ("gripper", 0, 1);
+        BUCKET ("bucket", false);
 
         public final String name;
-        public final double upperLimit;
-        public final double lowerLimit;
+        public final boolean reversed;
 
-        Servos(String name, double lowerLimit, double upperLimit){
+        Servos(String name, boolean reversed){
             this.name = name;
-            this.upperLimit = upperLimit;
-            this.lowerLimit = lowerLimit;
+            this.reversed = reversed;
         }
     }
 

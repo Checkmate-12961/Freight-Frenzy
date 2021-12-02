@@ -21,13 +21,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractRobot;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
 
 /**
  * The 2021-2022 robot class
@@ -37,6 +38,7 @@ public class CheckmateRobot extends AbstractRobot {
     //public final Carousel carousel;
     public final Lift lift;
     public final Intake intake;
+    public final Bucket bucket;
 
     /**
      * Set up the robot and initialize the subsystems you want to use
@@ -49,6 +51,8 @@ public class CheckmateRobot extends AbstractRobot {
         drivetrain = new Drivetrain(hardwareMap);
         addSubsystem(drivetrain);
 
+        //addSubsystem(new RealsenseLoader(hardwareMap));
+
         // Set up the carousel motor
         //carousel = new Carousel(hardwareMap);
         //addSubsystem(carousel);
@@ -57,8 +61,12 @@ public class CheckmateRobot extends AbstractRobot {
         intake = new Intake(hardwareMap);
         addSubsystem(intake);
 
-        // Set up the lift
-        lift = new Lift(hardwareMap);
+        // Set up the bucket
+        bucket = new Bucket(hardwareMap);
+        addSubsystem(bucket);
+
+        // Set up the lift (it needs access to the bucket)
+        lift = new Lift(hardwareMap, bucket);
         addSubsystem(lift);
     }
 }
