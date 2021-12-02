@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
-import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import kotlin.math.PI
@@ -14,17 +13,11 @@ import kotlin.math.PI
 class Lift(hardwareMap: HardwareMap, private val bucket: Bucket) : AbstractSubsystem {
     private val liftMotor: DcMotorEx
 
+    // This is weird because of the dashboard
     @Config
-    object LiftBounds {
-        // Values to manage the height of the lift
-        @JvmField var maxHeight = 20.0
-        @JvmField var minHeight = 0.0
-    }
-    @Config
-    object LiftSetPoints {
-        @JvmField var low = 12.0
-        @JvmField var mid = 15.0
-        @JvmField var high = 20.0
+    object Lift {
+        @JvmField var liftBounds = LiftBounds(0.0, 20.0)
+        @JvmField var liftSetPoints = LiftSetPoints(12.0, 15.0, 20.0)
     }
 
     enum class Points {
@@ -34,17 +27,28 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket) : AbstractSubsy
     // Multiplier for the height of the lift
     private val spoolDiameter = 1.5 // inches
     private val encoderTicksPerRev = 537.7
-    private var ticksPerInch = encoderTicksPerRev / (spoolDiameter * PI)
+    private val ticksPerInch = encoderTicksPerRev / (spoolDiameter * PI)
+
+    private var zeroPositionLatch = false
+
+    override fun update() {
+        if (!liftMotor.isBusy && bucket.position != Bucket.Positions.ZERO && height == 0.0) {
+            if (!zeroPositionLatch) {
+                zeroPositionLatch = true
+                bucket.position = Bucket.Positions.ZERO
+            }
+        } else {
+            zeroPositionLatch = false
+        }
+    }
 
     var height: Double
         set(value) {
             val temp = (
                     Range.clip(
-                        value, LiftBounds.minHeight, LiftBounds.maxHeight
+                        value, Lift.liftBounds.min, Lift.liftBounds.max
                     ) * ticksPerInch).toInt()
-            if (temp == 0) {
-                //bucket.position = Bucket.Positions.ZERO
-            } else {
+            if (temp != 0) {
                 bucket.position = Bucket.Positions.REST
             }
             liftMotor.targetPosition = temp
@@ -57,11 +61,11 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket) : AbstractSubsy
         set(value) {
             field = value
             when (value) {
-                Points.MIN -> height = LiftBounds.minHeight
-                Points.LOW -> height = LiftSetPoints.low
-                Points.MID -> height = LiftSetPoints.mid
-                Points.HIGH -> height = LiftSetPoints.high
-                Points.MAX -> height = LiftBounds.maxHeight
+                Points.MIN -> height = Lift.liftBounds.min
+                Points.LOW -> height = Lift.liftSetPoints.low
+                Points.MID -> height = Lift.liftSetPoints.mid
+                Points.HIGH -> height = Lift.liftSetPoints.high
+                Points.MAX -> height = Lift.liftBounds.max
             }
         }
 
@@ -81,4 +85,7 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket) : AbstractSubsy
         liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         liftMotor.power = 1.0
     }
+
+    data class LiftBounds(var min: Double, var max: Double)
+    data class LiftSetPoints(var low: Double, var mid: Double, var high: Double)
 }
