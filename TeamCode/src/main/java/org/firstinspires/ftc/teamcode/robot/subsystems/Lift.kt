@@ -6,25 +6,22 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
-import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import kotlin.math.PI
 
-class Lift(hardwareMap: HardwareMap, private val bucket: Bucket) : AbstractSubsystem {
+class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake) : AbstractSubsystem {
     private val liftMotor: DcMotorEx
 
+    // Keep track of the last position the motor was set to
+    private var lastPosition = 0.0
+
+    // This is weird because of the dashboard
     @Config
-    object LiftBounds {
-        // Values to manage the height of the lift
-        @JvmField var maxHeight = 20.0
-        @JvmField var minHeight = 0.0
-    }
-    @Config
-    object LiftSetPoints {
-        @JvmField var low = 12.0
-        @JvmField var mid = 15.0
-        @JvmField var high = 20.0
+    object Lift {
+        @JvmField var liftBounds = LiftBounds(0.0, 20.0)
+        @JvmField var liftSetPoints = LiftSetPoints(12.0, 15.0, 20.0)
+        @JvmField var runIntakeThreshold = 5.2
     }
 
     enum class Points {
@@ -34,34 +31,60 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket) : AbstractSubsy
     // Multiplier for the height of the lift
     private val spoolDiameter = 1.5 // inches
     private val encoderTicksPerRev = 537.7
-    private var ticksPerInch = encoderTicksPerRev / (spoolDiameter * PI)
+    private val ticksPerInch = encoderTicksPerRev / (spoolDiameter * PI)
+
+    // Latches to prevent calling functions multiple times per triggering event
+    private var zeroPositionLatch = false
+    private var runIntakeLatch = false
+
+    override fun update() {
+        val tempHeight = height
+
+        if (!liftMotor.isBusy) {
+            if (runIntakeLatch) {
+                runIntakeLatch = false
+                intake.power = 0.0
+            }
+        } else {
+            if (tempHeight < lastPosition && tempHeight < Lift.runIntakeThreshold && !runIntakeLatch) {
+                runIntakeLatch = true
+                intake.power = .5
+            }
+        }
+
+        if (!liftMotor.isBusy && tempHeight == 0.0) {
+            if (!zeroPositionLatch) {
+                zeroPositionLatch = true
+                bucket.position = Bucket.Positions.ZERO
+            }
+        } else {
+            zeroPositionLatch = false
+        }
+    }
 
     var height: Double
         set(value) {
+            lastPosition = height
             val temp = (
                     Range.clip(
-                        value, LiftBounds.minHeight, LiftBounds.maxHeight
+                        value, Lift.liftBounds.min, Lift.liftBounds.max
                     ) * ticksPerInch).toInt()
-            if (temp == 0) {
-                //bucket.position = Bucket.Positions.ZERO
-            } else {
+            if (temp != 0) {
                 bucket.position = Bucket.Positions.REST
             }
             liftMotor.targetPosition = temp
         }
-        get() {
-            return liftMotor.targetPosition.toDouble() / ticksPerInch
-        }
+        get() = liftMotor.targetPosition.toDouble() / ticksPerInch
 
     var target: Points? = null
         set(value) {
             field = value
             when (value) {
-                Points.MIN -> height = LiftBounds.minHeight
-                Points.LOW -> height = LiftSetPoints.low
-                Points.MID -> height = LiftSetPoints.mid
-                Points.HIGH -> height = LiftSetPoints.high
-                Points.MAX -> height = LiftBounds.maxHeight
+                Points.MIN -> height = Lift.liftBounds.min
+                Points.LOW -> height = Lift.liftSetPoints.low
+                Points.MID -> height = Lift.liftSetPoints.mid
+                Points.HIGH -> height = Lift.liftSetPoints.high
+                Points.MAX -> height = Lift.liftBounds.max
             }
         }
 
@@ -81,4 +104,8 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket) : AbstractSubsy
         liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         liftMotor.power = 1.0
     }
+
+    data class LiftBounds(@JvmField var min: Double, @JvmField var max: Double)
+    data class LiftSetPoints(
+        @JvmField var low: Double, @JvmField var mid: Double, @JvmField var high: Double)
 }
