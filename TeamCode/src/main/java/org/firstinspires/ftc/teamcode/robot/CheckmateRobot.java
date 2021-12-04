@@ -24,6 +24,7 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractRobot;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Barcode;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
@@ -39,6 +40,7 @@ public class CheckmateRobot extends AbstractRobot {
     public final Lift lift;
     public final Intake intake;
     public final Bucket bucket;
+    public final Barcode barcode;
 
     /**
      * Set up the robot and initialize the subsystems you want to use
@@ -56,6 +58,10 @@ public class CheckmateRobot extends AbstractRobot {
         // Set up the carousel motor
         //carousel = new Carousel(hardwareMap);
         //addSubsystem(carousel);
+
+        // Set up camera
+        barcode = new Barcode(hardwareMap);
+        addSubsystem(barcode);
 
         // Set up the intake
         intake = new Intake(hardwareMap);
