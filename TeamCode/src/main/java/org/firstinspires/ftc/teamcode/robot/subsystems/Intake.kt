@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
+import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 
@@ -16,8 +17,11 @@ class Intake(hardwareMap: HardwareMap) : AbstractSubsystem {
     }
 
     var power: Double
+        /**
+         * Positive values push stuff out, negative values pull stuff in (intake)
+         */
         set(value) {
-            intakeMotor.power = value * IntakePower.coefficient
+            intakeMotor.power = Range.clip(value, -1.0, 1.0) * IntakePower.coefficient
         }
         get() {
             return intakeMotor.power / IntakePower.coefficient

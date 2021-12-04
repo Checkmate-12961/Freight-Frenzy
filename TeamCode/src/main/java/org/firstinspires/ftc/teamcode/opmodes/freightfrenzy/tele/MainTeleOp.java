@@ -72,9 +72,9 @@ public class MainTeleOp extends BaseOpMode {
         gp2.rightTrigger.onDeactivate = () -> robot.bucket.setPosition(Bucket.Positions.REST);
 
         // A & B run the intake
-        gp2.a.onActivate = () -> robot.intake.setPower(1);
+        gp2.a.onActivate = () -> robot.intake.setPower(-1);
         gp2.a.onDeactivate = () -> robot.intake.setPower(0);
-        gp2.b.onActivate = () -> robot.intake.setPower(-1);
+        gp2.b.onActivate = () -> robot.intake.setPower(1);
         gp2.b.onDeactivate = () -> robot.intake.setPower(0);
 
     }

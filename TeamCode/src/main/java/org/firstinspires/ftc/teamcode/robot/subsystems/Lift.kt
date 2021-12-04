@@ -10,14 +10,18 @@ import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import kotlin.math.PI
 
-class Lift(hardwareMap: HardwareMap, private val bucket: Bucket) : AbstractSubsystem {
+class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake) : AbstractSubsystem {
     private val liftMotor: DcMotorEx
+
+    // Keep track of the last position the motor was set to
+    private var lastPosition = 0.0
 
     // This is weird because of the dashboard
     @Config
     object Lift {
         @JvmField var liftBounds = LiftBounds(0.0, 20.0)
         @JvmField var liftSetPoints = LiftSetPoints(12.0, 15.0, 20.0)
+        @JvmField var runIntakeThreshold = 5.2
     }
 
     enum class Points {
@@ -29,10 +33,26 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket) : AbstractSubsy
     private val encoderTicksPerRev = 537.7
     private val ticksPerInch = encoderTicksPerRev / (spoolDiameter * PI)
 
+    // Latches to prevent calling functions multiple times per triggering event
     private var zeroPositionLatch = false
+    private var runIntakeLatch = false
 
     override fun update() {
-        if (!liftMotor.isBusy && bucket.position != Bucket.Positions.ZERO && height == 0.0) {
+        val tempHeight = height
+
+        if (!liftMotor.isBusy) {
+            if (runIntakeLatch) {
+                runIntakeLatch = false
+                intake.power = 0.0
+            }
+        } else {
+            if (tempHeight < lastPosition && tempHeight < Lift.runIntakeThreshold && !runIntakeLatch) {
+                runIntakeLatch = true
+                intake.power = .5
+            }
+        }
+
+        if (!liftMotor.isBusy && tempHeight == 0.0) {
             if (!zeroPositionLatch) {
                 zeroPositionLatch = true
                 bucket.position = Bucket.Positions.ZERO
@@ -44,6 +64,7 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket) : AbstractSubsy
 
     var height: Double
         set(value) {
+            lastPosition = height
             val temp = (
                     Range.clip(
                         value, Lift.liftBounds.min, Lift.liftBounds.max
@@ -53,9 +74,7 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket) : AbstractSubsy
             }
             liftMotor.targetPosition = temp
         }
-        get() {
-            return liftMotor.targetPosition.toDouble() / ticksPerInch
-        }
+        get() = liftMotor.targetPosition.toDouble() / ticksPerInch
 
     var target: Points? = null
         set(value) {
@@ -86,6 +105,7 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket) : AbstractSubsy
         liftMotor.power = 1.0
     }
 
-    data class LiftBounds(var min: Double, var max: Double)
-    data class LiftSetPoints(var low: Double, var mid: Double, var high: Double)
+    data class LiftBounds(@JvmField var min: Double, @JvmField var max: Double)
+    data class LiftSetPoints(
+        @JvmField var low: Double, @JvmField var mid: Double, @JvmField var high: Double)
 }
