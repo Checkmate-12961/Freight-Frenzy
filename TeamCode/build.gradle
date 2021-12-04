@@ -45,6 +45,8 @@ dependencies {
 
     // Realsense wrapper dependency
     implementation 'com.spartronics4915.lib:ftc265:2.1.9'
+
+    implementation 'org.openftc:apriltag:1.0.0'
 }
 
 repositories {

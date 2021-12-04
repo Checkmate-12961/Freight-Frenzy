@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 
 import java.util.Objects;
 
@@ -43,7 +44,7 @@ import java.util.Objects;
 
 
 @Config
-@Disabled
+
 @Autonomous(group = "drive")
 @SuppressWarnings("unused")
 public class ManualFeedforwardTuner extends LinearOpMode {
@@ -66,7 +67,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
+        Drivetrain drivetrain = new Drivetrain(hardwareMap);
 
         Mode mode = Mode.TUNING_MODE;
 
@@ -86,7 +87,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
 
         while (!isStopRequested()) {
-            robot.update();
+            //drivetrain.update();
             telemetry.addData("mode", mode);
 
             switch (mode) {
@@ -108,10 +109,10 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     MotionState motionState = activeProfile.get(profileTime);
                     double targetPower = Kinematics.calculateMotorFeedforward(motionState.getV(), motionState.getA(), kV, kA, kStatic);
 
-                    robot.drivetrain.setDrivePower(new Pose2d(targetPower, 0, 0));
-                    robot.drivetrain.updatePoseEstimate();
+                    drivetrain.setDrivePower(new Pose2d(targetPower, 0, 0));
+                    drivetrain.updatePoseEstimate();
 
-                    Pose2d poseVelo = Objects.requireNonNull(robot.drivetrain.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
+                    Pose2d poseVelo = Objects.requireNonNull(drivetrain.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
                     double currentVelo = poseVelo.getX();
 
                     // update telemetry
@@ -128,7 +129,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                         profileStart = clock.seconds();
                     }
 
-                    robot.drivetrain.setWeightedDrivePower(
+                    drivetrain.setWeightedDrivePower(
                             new Pose2d(
                                     -gamepad1.left_stick_y,
                                     -gamepad1.left_stick_x,
@@ -140,6 +141,5 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
             telemetry.update();
         }
-        robot.cleanup();
     }
 }

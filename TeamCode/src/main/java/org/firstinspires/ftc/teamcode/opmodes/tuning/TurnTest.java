@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 /**
  * This is a simple routine to test turning capabilities.
  */
-@Disabled
+
 @SuppressWarnings("unused")
 @Config
 @Autonomous(group = "drive")

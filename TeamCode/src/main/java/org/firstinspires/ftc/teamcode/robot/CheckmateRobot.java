@@ -24,11 +24,10 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractRobot;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Barcode;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Carousel;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
-import org.firstinspires.ftc.teamcode.robot.subsystems.JankArm;
-import org.firstinspires.ftc.teamcode.robot.subsystems.JankHand;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
 
 /**
@@ -36,11 +35,10 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
  */
 public class CheckmateRobot extends AbstractRobot {
     public final Drivetrain drivetrain;
-    public final Carousel carousel;
-    public final Barcode barcode;
-    public final JankArm jankArm;
-    public final JankHand jankHand;
-    //public final Lift lift;
+    //public final Carousel carousel;
+    public final Lift lift;
+    public final Intake intake;
+    public final Bucket bucket;
 
     /**
      * Set up the robot and initialize the subsystems you want to use
@@ -49,29 +47,26 @@ public class CheckmateRobot extends AbstractRobot {
     public CheckmateRobot(HardwareMap hardwareMap) {
         super();
 
-        // Set up the Realsense camera
-        addSubsystem(new RealsenseLoader(hardwareMap));
-
         // Set up the drivetrain
         drivetrain = new Drivetrain(hardwareMap);
         addSubsystem(drivetrain);
 
+        //addSubsystem(new RealsenseLoader(hardwareMap));
+
         // Set up the carousel motor
-        carousel = new Carousel(hardwareMap);
-        addSubsystem(carousel);
+        //carousel = new Carousel(hardwareMap);
+        //addSubsystem(carousel);
 
-        // Set up the OpenCV camera
-        barcode = new Barcode(hardwareMap);
-        addSubsystem(barcode);
+        // Set up the intake
+        intake = new Intake(hardwareMap);
+        addSubsystem(intake);
 
-        // Set up the janky arm & hand
-        jankArm = new JankArm(hardwareMap);
-        jankHand = new JankHand(hardwareMap);
-        addSubsystem(jankArm);
-        addSubsystem(jankHand);
+        // Set up the bucket
+        bucket = new Bucket(hardwareMap);
+        addSubsystem(bucket);
 
-        // Set up the lift
-        //lift = new Lift(hardwareMap);
-        //addSubsystem(lift);
+        // Set up the lift (it needs access to the bucket)
+        lift = new Lift(hardwareMap, bucket);
+        addSubsystem(lift);
     }
 }

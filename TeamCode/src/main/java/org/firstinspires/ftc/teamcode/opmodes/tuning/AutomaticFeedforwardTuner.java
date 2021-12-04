@@ -33,7 +33,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @Config
-@Disabled
+
 @Autonomous(group = "drive")
 public class AutomaticFeedforwardTuner extends LinearOpMode {
     public static final double MAX_POWER = 0.7;

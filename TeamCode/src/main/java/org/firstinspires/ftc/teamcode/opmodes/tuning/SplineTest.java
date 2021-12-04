@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
  */
 
 @SuppressWarnings("unused")
-@Disabled
+
 @Autonomous(group = "drive")
 public class SplineTest extends LinearOpMode {
     @Override

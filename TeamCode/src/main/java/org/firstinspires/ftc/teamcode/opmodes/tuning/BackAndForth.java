@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
  */
 @SuppressWarnings("unused")
 @Config
-@Disabled
+
 @Autonomous(group = "drive")
 public class BackAndForth extends LinearOpMode {
 

@@ -57,9 +57,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.robot.HardwareNames;
+import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors;
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.bilocalizer.RealsenseLocalizer;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.RealsenseLocalizer;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.SuperTrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.robot.util.LynxModuleUtil;
@@ -100,23 +100,25 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
         TrajectoryFollower follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
+        // TODO: this does not belong here
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
+        // TODO: this does not belong here
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        imu = hardwareMap.get(/*riley was here*/BNO055IMU.class, "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.LEFT_FRONT.name);
-        leftRear = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.LEFT_REAR.name);
-        rightRear = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.RIGHT_REAR.name);
-        rightFront = hardwareMap.get(DcMotorEx.class, HardwareNames.Motors.RIGHT_FRONT.name);
+        leftFront = hardwareMap.get(DcMotorEx.class, Motors.LEFT_FRONT.name);
+        leftRear = hardwareMap.get(DcMotorEx.class, Motors.LEFT_REAR.name);
+        rightRear = hardwareMap.get(DcMotorEx.class, Motors.RIGHT_REAR.name);
+        rightFront = hardwareMap.get(DcMotorEx.class, Motors.RIGHT_FRONT.name);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -127,22 +129,23 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
         }
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        if (HardwareNames.Motors.LEFT_FRONT.reverse){
+        if (Motors.LEFT_FRONT.reverse){
             leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         }
-        if (HardwareNames.Motors.LEFT_REAR.reverse){
+        if (Motors.LEFT_REAR.reverse){
             leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         }
-        if (HardwareNames.Motors.RIGHT_REAR.reverse){
+        if (Motors.RIGHT_REAR.reverse){
             rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
         }
-        if (HardwareNames.Motors.RIGHT_FRONT.reverse){
+        if (Motors.RIGHT_FRONT.reverse){
             rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         // DONE: if desired, use setLocalizer() to change the localization method
-        setLocalizer(new RealsenseLocalizer(hardwareMap));
+        //setLocalizer(new RealsenseLocalizer(hardwareMap));
 
         trajectorySequenceRunner = new SuperTrajectorySequenceRunner(follower, HEADING_PID);
     }
@@ -190,7 +193,7 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
 
     public void followTrajectory(Trajectory trajectory) {
         followTrajectoryAsync(trajectory);
-        waitForIdle();// Maddy was here mwahahahaha
+        waitForIdle();
     }
 
     public void followTrajectorySequenceAsync(org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence trajectorySequence) {
@@ -326,7 +329,4 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
     }
-
-    @Override
-    public void cleanup() { }
 }

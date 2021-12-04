@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants
  */
 @SuppressWarnings("unused")
 @Config
-@Disabled
+
 @Autonomous(group = "drive")
 public class TrackWidthTuner extends LinearOpMode {
     public static double ANGLE = 180; // deg

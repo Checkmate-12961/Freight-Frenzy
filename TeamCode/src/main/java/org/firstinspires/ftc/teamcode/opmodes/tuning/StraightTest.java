@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 
 @SuppressWarnings("unused")
 @Config
-@Disabled
+
 @Autonomous(group = "drive")
 public class StraightTest extends LinearOpMode {
     public static double DISTANCE = 60; // in

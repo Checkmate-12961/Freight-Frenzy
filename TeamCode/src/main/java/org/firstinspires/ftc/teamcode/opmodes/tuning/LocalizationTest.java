@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 
 @SuppressWarnings("unused")
 @Config
-@Disabled
+
 @TeleOp(group = "drive")
 public class LocalizationTest extends LinearOpMode {
     @Override
