@@ -66,7 +66,7 @@ public class CheckmateRobot extends AbstractRobot {
         addSubsystem(bucket);
 
         // Set up the lift (it needs access to the bucket)
-        lift = new Lift(hardwareMap, bucket);
+        lift = new Lift(hardwareMap, bucket, intake);
         addSubsystem(lift);
     }
 }
