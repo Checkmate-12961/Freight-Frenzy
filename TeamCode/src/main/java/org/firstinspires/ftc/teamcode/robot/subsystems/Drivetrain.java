@@ -315,7 +315,7 @@ public class Drivetrain extends MecanumDrive implements AbstractSubsystem {
         // Rotate about the z axis is the default assuming your REV Hub/Control Hub is laying
         // flat on a surface
 
-        return (double) imu.getAngularVelocity().xRotationRate;
+        return (double) -imu.getAngularVelocity().yRotationRate;
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
