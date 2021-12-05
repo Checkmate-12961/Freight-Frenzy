@@ -5,13 +5,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.MovingStatistics;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants;
 
 /**
@@ -25,8 +23,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants
  */
 @SuppressWarnings("unused")
 @Config
-@Disabled
-@Autonomous(group = "drive")
 public class TrackWidthTuner extends LinearOpMode {
     public static double ANGLE = 180; // deg
     public static int NUM_TRIALS = 5;
@@ -36,7 +32,7 @@ public class TrackWidthTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
+        Drivetrain robot = new Drivetrain(hardwareMap);
         // TODO: if you haven't already, set the localizer to something that doesn't depend on
         //  drive encoders for computing the heading
 
@@ -54,16 +50,16 @@ public class TrackWidthTuner extends LinearOpMode {
 
         MovingStatistics trackWidthStats = new MovingStatistics(NUM_TRIALS);
         for (int i = 0; i < NUM_TRIALS; i++) {
-            robot.drivetrain.setPoseEstimate(new Pose2d());
+            robot.setPoseEstimate(new Pose2d());
 
             // it is important to handle heading wraparounds
             double headingAccumulator = 0;
             double lastHeading = 0;
 
-            robot.drivetrain.turnAsync(Math.toRadians(ANGLE));
+            robot.turnAsync(Math.toRadians(ANGLE));
 
-            while (!isStopRequested() && robot.drivetrain.isBusy()) {
-                double heading = robot.drivetrain.getPoseEstimate().getHeading();
+            while (!isStopRequested() && robot.isBusy()) {
+                double heading = robot.getPoseEstimate().getHeading();
                 headingAccumulator += Angle.norm(heading - lastHeading);
                 lastHeading = heading;
 
