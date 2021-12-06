@@ -44,12 +44,12 @@ public class MainTeleOp extends BaseOpMode {
         robot.drivetrain.setPoseEstimate(PositionUtil.get());
 
         // Right bumper runs the carousel
-        //gp2.rightBumper.onActivate = () -> robot.carousel.setPower(1);
-        //gp2.rightBumper.onDeactivate = () -> robot.carousel.setPower(0);
+        gp2.rightBumper.onActivate = () -> robot.carousel.setPower(1);
+        gp2.rightBumper.onDeactivate = () -> robot.carousel.setPower(0);
 
         // Left bumper runs the carousel the other way
-        //gp2.leftBumper.onActivate = () -> robot.carousel.setPower(-1);
-        //gp2.leftBumper.onDeactivate = () -> robot.carousel.setPower(0);
+        gp2.leftBumper.onActivate = () -> robot.carousel.setPower(-1);
+        gp2.leftBumper.onDeactivate = () -> robot.carousel.setPower(0);
 
         // Left stick Y axis runs the arm
         gp2.leftStickY.setActivationThreshold(0.4);

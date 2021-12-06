@@ -25,6 +25,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractRobot;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
@@ -35,7 +36,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.RealsenseLoader;
  */
 public class CheckmateRobot extends AbstractRobot {
     public final Drivetrain drivetrain;
-    //public final Carousel carousel;
+    public final Carousel carousel;
     public final Lift lift;
     public final Intake intake;
     public final Bucket bucket;
@@ -54,8 +55,8 @@ public class CheckmateRobot extends AbstractRobot {
         //addSubsystem(new RealsenseLoader(hardwareMap));
 
         // Set up the carousel motor
-        //carousel = new Carousel(hardwareMap);
-        //addSubsystem(carousel);
+        carousel = new Carousel(hardwareMap);
+        addSubsystem(carousel);
 
         // Set up the intake
         intake = new Intake(hardwareMap);
