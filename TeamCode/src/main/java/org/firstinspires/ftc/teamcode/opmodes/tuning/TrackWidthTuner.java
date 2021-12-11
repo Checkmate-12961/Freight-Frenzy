@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
@@ -22,7 +21,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants
  * accurate track width estimate is important or else the angular constraints will be thrown off.
  */
 @SuppressWarnings("unused")
-@Config
 public class TrackWidthTuner extends LinearOpMode {
     public static double ANGLE = 180; // deg
     public static int NUM_TRIALS = 5;

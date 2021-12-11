@@ -7,7 +7,6 @@ import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveCo
 import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.kV;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.kinematics.Kinematics;
@@ -39,8 +38,6 @@ import java.util.Objects;
  * control back to the tuning process.
  */
 
-
-@Config
 @SuppressWarnings("unused")
 public class ManualFeedforwardTuner extends LinearOpMode {
     public static double DISTANCE = 72; // in
