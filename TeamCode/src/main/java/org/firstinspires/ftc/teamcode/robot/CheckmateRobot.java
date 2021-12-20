@@ -21,6 +21,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractRobot;
@@ -29,6 +30,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.robot.util.LynxModuleUtil;
 
 /**
  * The 2021-2022 robot class
@@ -46,6 +48,11 @@ public class CheckmateRobot extends AbstractRobot {
      */
     public CheckmateRobot(HardwareMap hardwareMap) {
         super();
+
+        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
 
         // Set up the drivetrain
         drivetrain = new Drivetrain(hardwareMap);

@@ -20,13 +20,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 package org.firstinspires.ftc.teamcode.robot.abstracts
 
-import java.util.ArrayList
-
 /**
  * Class that all robots need to extend
  */
 abstract class AbstractRobot {
-    private val subsystems: ArrayList<AbstractSubsystem> = ArrayList()
+    private val subsystems: ArrayList<AbstractSubsystem> = arrayListOf()
 
     /**
      * Updates all subsystems

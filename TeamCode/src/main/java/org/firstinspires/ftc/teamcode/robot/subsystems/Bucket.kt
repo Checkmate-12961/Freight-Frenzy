@@ -61,7 +61,7 @@ class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
 
     init {
         // Grab the servo from the hardware map
-        bucketServo = hardwareMap.get(Servo::class.java, Servos.BUCKET.name)
+        bucketServo = hardwareMap.get(Servo::class.java, Servos.BUCKET.id)
 
         // If the servo is reversed in the config, reverse it
         if (Servos.BUCKET.reversed) {

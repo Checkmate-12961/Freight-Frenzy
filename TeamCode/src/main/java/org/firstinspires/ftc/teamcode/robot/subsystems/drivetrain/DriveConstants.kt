@@ -18,10 +18,10 @@ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain
 
-package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain;
-
-import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.config.Config
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants
 
 /*
  * Constants shared between multiple drive types.
@@ -37,13 +37,12 @@ import com.acmerobotics.dashboard.config.Config;
  * and op modes themselves.
  */
 @Config
-public class DriveConstants {
-
+object DriveConstants {
     /*
      * These are motor constants that should be listed online for your motors.
      */
-    public static double TICKS_PER_REV = 537.7;
-    public static double MAX_RPM = 312;
+    @JvmField var TICKS_PER_REV = 537.7
+    @JvmField var MAX_RPM = 312.0
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -53,9 +52,9 @@ public class DriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 4.8 / 2.54; // in
-    public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 12; // in
+    @JvmField var WHEEL_RADIUS = 4.8 / 2.54 // in
+    @JvmField var GEAR_RATIO = 1.0 // output (wheel) speed / input (motor) speed
+    @JvmField var TRACK_WIDTH = 12.0 // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -64,9 +63,9 @@ public class DriveConstants {
      * empirically tuned.
      */
     // TODO: tune for the robot
-    public static double kV = 0.021;
-    public static double kA = 0.004;
-    public static double kStatic = 0;
+    @JvmField var kV = 0.021
+    @JvmField var kA = 0.004
+    @JvmField var kStatic = 0.0
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -97,23 +96,20 @@ public class DriveConstants {
 
      */
     // TODO: re-tune the robot
-    public static double MAX_VEL = 35;
-    public static double MAX_ACCEL = 30;
-    public static double MAX_ANG_VEL = 3;
-    public static double MAX_ANG_ACCEL = Math.toRadians(180);
-
-
-
-    public static double encoderTicksToInches(double ticks) {
-        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+    @JvmField var MAX_VEL = 35.0
+    @JvmField var MAX_ACCEL = 30.0
+    @JvmField var MAX_ANG_VEL = 3.0
+    @JvmField var MAX_ANG_ACCEL = Math.toRadians(180.0)
+    @JvmStatic fun encoderTicksToInches(ticks: Double): Double {
+        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV
     }
 
-    public static double rpmToVelocity(double rpm) {
-        return rpm * GEAR_RATIO * 2 * Math.PI * WHEEL_RADIUS / 60.0;
+    @JvmStatic fun rpmToVelocity(rpm: Double): Double {
+        return rpm * GEAR_RATIO * 2 * Math.PI * WHEEL_RADIUS / 60.0
     }
 
-    public static double getMotorVelocityF(double ticksPerSecond) {
+    @JvmStatic fun getMotorVelocityF(ticksPerSecond: Double): Double {
         // see https://docs.google.com/document/d/1tyWrXDfMidwYyP_5H4mZyVgaEswhOC35gvdmP-V-5hA/edit#heading=h.61g9ixenznbx
-        return 32767 / ticksPerSecond;
+        return 32767 / ticksPerSecond
     }
 }

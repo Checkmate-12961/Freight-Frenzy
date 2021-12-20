@@ -19,7 +19,7 @@ public class SharedBlue extends BaseOpMode {
     Pose2d startPose = new Pose2d(7, 63.75, Math.toRadians(0));
 
     @Override
-    public void pre_setup() {
+    public void preSetup() {
         PositionUtil.set(startPose);
     }
 
@@ -45,7 +45,7 @@ public class SharedBlue extends BaseOpMode {
      * Main OpMode loop, automatically updates the robot
      */
     @Override
-    public void run_loop() {
+    public void runLoop() {
         Pose2d position = robot.drivetrain.getPoseEstimate();
         Pose2d velocity = Objects.requireNonNull(robot.drivetrain.getPoseVelocity());
         PositionUtil.set(position);
