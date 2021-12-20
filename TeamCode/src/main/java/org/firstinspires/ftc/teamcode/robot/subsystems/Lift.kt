@@ -31,6 +31,7 @@ import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import kotlin.math.PI
 
+@Config
 class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake) : AbstractSubsystem {
     private val liftMotor: DcMotorEx
 
@@ -38,12 +39,14 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
     private var lastPosition = 0.0
 
     // This is weird because of the dashboard
-    @Config
-    object Lift {
+    companion object {
         @JvmField var liftBounds = LiftBounds(0.0, 20.0)
         @JvmField var liftSetPoints = LiftSetPoints(12.0, 15.0, 20.0)
         @JvmField var runIntakeThreshold = 5.2
     }
+    data class LiftBounds(@JvmField var min: Double, @JvmField var max: Double)
+    data class LiftSetPoints(
+        @JvmField var low: Double, @JvmField var mid: Double, @JvmField var high: Double)
 
     enum class Points {
         LOW, MID, HIGH, MIN, MAX
@@ -64,11 +67,14 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
         if (!liftMotor.isBusy) {
             if (runIntakeLatch) {
                 runIntakeLatch = false
+                // When the lift stops moving, stop the intake
                 intake.power = 0.0
             }
         } else {
-            if (tempHeight < lastPosition && tempHeight < Lift.runIntakeThreshold && !runIntakeLatch) {
+            if (tempHeight < lastPosition && tempHeight < runIntakeThreshold
+                    && !runIntakeLatch) {
                 runIntakeLatch = true
+                // When the lift starts moving down below the threshold, run the intake
                 intake.power = .5
             }
         }
@@ -76,6 +82,8 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
         if (!liftMotor.isBusy && tempHeight == 0.0) {
             if (!zeroPositionLatch) {
                 zeroPositionLatch = true
+                // When the lift stops moving at the 0 point, set the set the bucket position
+                //  to ZERO
                 bucket.position = Bucket.Positions.ZERO
             }
         } else {
@@ -85,15 +93,17 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
 
     var height: Double
         set(value) {
-            lastPosition = height
-            val temp = (
-                    Range.clip(
-                        value, Lift.liftBounds.min, Lift.liftBounds.max
-                    ) * ticksPerInch).toInt()
-            if (temp != 0) {
+            // If this value is different from the last
+            if (height != value) {
+                lastPosition = height
+                // Calculate the ticks
+                val positionTicks = (
+                        Range.clip(
+                            value, liftBounds.min, liftBounds.max
+                        ) * ticksPerInch).toInt()
                 bucket.position = Bucket.Positions.REST
+                liftMotor.targetPosition = positionTicks
             }
-            liftMotor.targetPosition = temp
         }
         get() = liftMotor.targetPosition.toDouble() / ticksPerInch
 
@@ -101,17 +111,17 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
         set(value) {
             field = value
             when (value) {
-                Points.MIN -> height = Lift.liftBounds.min
-                Points.LOW -> height = Lift.liftSetPoints.low
-                Points.MID -> height = Lift.liftSetPoints.mid
-                Points.HIGH -> height = Lift.liftSetPoints.high
-                Points.MAX -> height = Lift.liftBounds.max
+                Points.MIN -> height = liftBounds.min
+                Points.LOW -> height = liftSetPoints.low
+                Points.MID -> height = liftSetPoints.mid
+                Points.HIGH -> height = liftSetPoints.high
+                Points.MAX -> height = liftBounds.max
             }
         }
 
     init {
         // Initialize the motor
-        liftMotor = hardwareMap.get(DcMotorEx::class.java, Motors.LIFT.name)
+        liftMotor = hardwareMap.get(DcMotorEx::class.java, Motors.LIFT.id)
         liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
 
         // Reverse the motor if the config says to
@@ -120,13 +130,9 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
         }
 
         // Set it to run to a target position and hold it
-        height = 0.0
+        liftMotor.targetPosition = 0
         liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
         liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         liftMotor.power = 1.0
     }
-
-    data class LiftBounds(@JvmField var min: Double, @JvmField var max: Double)
-    data class LiftSetPoints(
-        @JvmField var low: Double, @JvmField var mid: Double, @JvmField var high: Double)
 }

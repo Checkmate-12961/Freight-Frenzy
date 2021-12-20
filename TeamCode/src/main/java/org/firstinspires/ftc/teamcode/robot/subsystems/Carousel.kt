@@ -18,63 +18,62 @@ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+package org.firstinspires.ftc.teamcode.robot.subsystems
 
-package org.firstinspires.ftc.teamcode.robot.subsystems;
-
-import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors;
-import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem;
+import com.acmerobotics.dashboard.config.Config
+import com.qualcomm.robotcore.hardware.HardwareMap
+import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
+import com.qualcomm.robotcore.hardware.DcMotorEx
+import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
+import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.util.Range
+import org.firstinspires.ftc.teamcode.robot.subsystems.Carousel.Carousel.maxPower
 
 /**
  * Subsystem to manage the carousel spinner on the front of the robot
+ * @param hardwareMap HardwareMap passed in from the op mode
  */
-@Config
-public class Carousel implements AbstractSubsystem {
+class Carousel(hardwareMap: HardwareMap) : AbstractSubsystem {
     /**
      * The motor that spins the carousel
      */
-    private final DcMotorEx carouselMotor;
+    private val carouselMotor: DcMotorEx
 
-    /**
-     * Maximum power the motor can spin at
-     */
-    public static double maxPower = 0.5;
+    var power: Double
+        /**
+         * Get the power of the carousel motor
+         * @return The motor's power
+         */
+        get() = carouselMotor.power
+        /**
+         * Set the power of the carousel motor
+         * @param power The motor's power, must fit in [0, 1]
+         */
+        set(power) {
+            carouselMotor.power = Range.clip(power, -1.0, 1.0) * maxPower
+        }
 
-    /**
-     * Get the power of the carousel motor
-     * @return The motor's power
-     */
-    public double getPower() {
-        return carouselMotor.getPower();
-    }
-
-    /**
-     * Set the power of the carousel motor
-     * @param power The motor's power, must fit in [0, 1]
-     */
-    public void setPower(double power) {
-        carouselMotor.setPower(Range.clip(power, -1, 1) * maxPower);
+    @Config
+    object Carousel {
+        /**
+         * Maximum power the motor can spin at
+         */
+        @JvmField var maxPower = 0.5
     }
 
     /**
      * Initialize the carousel subsystem
-     * @param hardwareMap HardwareMap passed in from the op mode
      */
-    public Carousel(HardwareMap hardwareMap) {
+    init {
         // Initialize the servo
-        carouselMotor = hardwareMap.get(DcMotorEx.class, Motors.CAROUSEL.name);
+        carouselMotor = hardwareMap.get(DcMotorEx::class.java, Motors.CAROUSEL.id)
 
         // Reverse the motor if we set it that way in the config
         if (Motors.CAROUSEL.reverse) {
-            carouselMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            carouselMotor.direction = DcMotorSimple.Direction.REVERSE
         }
 
         // Set the power to 0 just in case
-        carouselMotor.setPower(0);
+        carouselMotor.power = 0.0
     }
 }

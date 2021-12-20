@@ -18,89 +18,74 @@ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+package org.firstinspires.ftc.teamcode.robot.abstracts
 
-package org.firstinspires.ftc.teamcode.robot.abstracts;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
+import org.firstinspires.ftc.teamcode.robot.CheckmateRobot
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 
 /**
  * Basic OpMode class that all OpModes should extend
  */
-public abstract class BaseOpMode extends OpMode {
-    protected CheckmateRobot robot;
+abstract class BaseOpMode : LinearOpMode() {
+    protected lateinit var robot: CheckmateRobot
+    protected lateinit var gp1: SuperController
+    protected lateinit var gp2: SuperController
 
-    protected  SuperController gp1;
-    protected  SuperController gp2;
-
-    protected enum OpModeType {
-        TeleOp,
-        Autonomous
+    protected enum class OpModeType {
+        TeleOp, Autonomous
     }
 
-    protected OpModeType opModeType = null;
-
-    /**
-     * Internal method, do not call or overwrite
-     */
-    @Override
-    final public void init() {
-        if (this.getClass().getAnnotation(TeleOp.class) != null) {
-            opModeType = OpModeType.TeleOp;
-        } else if (this.getClass().getAnnotation(Autonomous.class) != null) {
-            opModeType = OpModeType.Autonomous;
-        }
-
-        pre_setup();
-        robot = new CheckmateRobot(hardwareMap);
-        gp1 = new SuperController(gamepad1);
-        gp2 = new SuperController(gamepad2);
-        setup();
-    }
+    @JvmField protected var opModeType: OpModeType? = null
 
     /**
      * Runs before the hardware initializes
      */
-    public void pre_setup() { }
+    open fun preSetup() {}
 
     /**
      * Runs when the OpMode initializes
      */
-    public void setup() { }
+    open fun setup() {}
 
     /**
-     * Internal method, do not call or overwrite
+     * Runs once before the loop starts
      */
-    @Override
-    final public void loop() {
-        if (opModeType == OpModeType.TeleOp) {
-            gp1.update();
-            gp2.update();
-        }
-
-        robot.update();
-        run_loop();
-    }
+    open fun preRunLoop() {}
 
     /**
      * Main OpMode loop, automatically updates the robot
      */
-    public void run_loop() { }
-
-    /**
-     * Internal method, do not call or overwrite
-     */
-    @Override
-    final public void stop() {
-        robot.cleanup();
-        cleanup();
-    }
+    open fun runLoop() {}
 
     /**
      * Runs when the OpMode is stopped
      */
-    public void cleanup() { }
+    fun cleanup() {}
+
+    final override fun runOpMode() {
+        if (this.javaClass.getAnnotation(TeleOp::class.java) != null) {
+            opModeType = OpModeType.TeleOp
+        } else if (this.javaClass.getAnnotation(Autonomous::class.java) != null) {
+            opModeType = OpModeType.Autonomous
+        }
+        preSetup()
+        robot = CheckmateRobot(hardwareMap)
+        gp1 = SuperController(gamepad1)
+        gp2 = SuperController(gamepad2)
+        setup()
+        waitForStart()
+        preRunLoop()
+        while (opModeIsActive() && !isStopRequested) {
+            if (opModeType == OpModeType.TeleOp) {
+                gp1.update()
+                gp2.update()
+            }
+            robot.update()
+            runLoop()
+        }
+        robot.cleanup()
+        cleanup()
+    }
 }

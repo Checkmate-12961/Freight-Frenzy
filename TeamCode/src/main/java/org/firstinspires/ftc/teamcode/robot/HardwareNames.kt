@@ -18,82 +18,48 @@ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.robot
 
 /**
  * Class to manage names of hardware connected to the robot
  */
-public class HardwareNames {
+class HardwareNames {
     /**
      * Contains hardware info for motors
      */
-    public enum Motors {
+    enum class Motors(val id: String, val reverse: Boolean) {
+
         // Drivetrain
-        RIGHT_FRONT ("rightFront", false),
-        RIGHT_REAR ("rightRear", false),
-        LEFT_FRONT ("leftFront", true),
-        LEFT_REAR ("leftRear", true),
-
+        RIGHT_FRONT("rightFront", false),
+        RIGHT_REAR("rightRear", false),
+        LEFT_FRONT("leftFront",true),
+        LEFT_REAR("leftRear", true),
         // Carousel mechanism
-        CAROUSEL ("carousel", false),
-
+        CAROUSEL("carousel", false),
         // Intake mechanism
-        INTAKE ("intake", true),
-
+        INTAKE("intake", true),
         // Lift mechanism
-        LIFT ("lift", false);
-
-        public final String name;
-        public final boolean reverse;
-
-        Motors(String name, boolean reverse){
-            this.name = name;
-            this.reverse = reverse;
-        }
+        LIFT("lift", false);
     }
 
-    public enum Encoders {
-        LEFT ("leftRear", true),
-        FRONT ("leftFront", false),
-        RIGHT ("rightRear", false);
-
-        public final String name;
-        public final boolean reverse;
-
-        Encoders(String name, boolean reverse){
-            this.name = name;
-            this.reverse = reverse;
-        }
+    enum class Encoders(val id: String, val reverse: Boolean) {
+        LEFT("leftRear", true),
+        FRONT("leftFront", false),
+        RIGHT("rightRear", false)
     }
 
     /**
      * Contains hardware info for servos
      */
-    public enum Servos {
-        BUCKET ("bucket", false);
-
-        public final String name;
-        public final boolean reversed;
-
-        Servos(String name, boolean reversed){
-            this.name = name;
-            this.reversed = reversed;
-        }
+    enum class Servos(val id: String, val reversed: Boolean) {
+        BUCKET("bucket", false),
+        FLOPPA_INTAKE("floppaIntake", false)
     }
 
     /**
      * Contains hardware info for continuous rotation servos
      */
-    public enum CRServos {
-        DUMMY ("", false);
-
-        public final String name;
-        public final boolean reverse;
-
-        CRServos(String name, boolean reverse) {
-            this.name = name;
-            this.reverse = reverse;
-        }
+    enum class CRServos(val id: String, val reverse: Boolean) {
+        DUMMY("", false)
     }
 }

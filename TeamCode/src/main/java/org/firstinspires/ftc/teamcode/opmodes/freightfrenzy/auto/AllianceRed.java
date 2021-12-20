@@ -19,7 +19,7 @@ public class AllianceRed extends BaseOpMode {
     Pose2d startPose = new Pose2d(-34, -61, Math.toRadians(90));
 
     @Override
-    public void pre_setup() {
+    public void preSetup() {
         PositionUtil.set(startPose);
     }
 
@@ -46,7 +46,7 @@ public class AllianceRed extends BaseOpMode {
      * Main OpMode loop, automatically updates the robot
      */
     @Override
-    public void run_loop() {
+    public void runLoop() {
         Pose2d position = robot.drivetrain.getPoseEstimate();
         Pose2d velocity = Objects.requireNonNull(robot.drivetrain.getPoseVelocity());
         PositionUtil.set(position);
