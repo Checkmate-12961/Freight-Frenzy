@@ -67,10 +67,10 @@ public class Barcode implements AbstractSubsystem {
 
     public enum BarcodePosition {LEFT, MIDDLE, RIGHT}
 
-    private final RingDeterminationPipeline pipeline = new RingDeterminationPipeline();
+    private final BarcodeDeterminationPipeline pipeline = new BarcodeDeterminationPipeline();
 
 
-    private static class RingDeterminationPipeline extends OpenCvPipeline {
+    private static class BarcodeDeterminationPipeline extends OpenCvPipeline {
         //Some color constants
         //These dictate the color of the boxes when you see the camera output
         private static final Scalar RED = new Scalar(255, 0, 0);
