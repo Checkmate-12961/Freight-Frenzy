@@ -21,6 +21,7 @@
 
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -44,13 +45,14 @@ public class AprilTagDemo extends LinearOpMode
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
     // You will need to do your own calibration for other configurations!
-    double fx = 578.272;
-    double fy = 578.272;
-    double cx = 161.145;
-    double cy = 119.506;
+    //578.272
+    double fx = 592.942;
+    double fy = 592.942;
+    double cx = 643.264;
+    double cy = 506.326;
 
     // UNITS ARE METERS
-    double tagsize = 0.166;
+    double tagsize = 0.040;
 
     int numFramesWithoutDetection = 0;
 
@@ -81,6 +83,7 @@ public class AprilTagDemo extends LinearOpMode
 
             }
         });
+        FtcDashboard.getInstance().startCameraStream(camera, 12);
 
         waitForStart();
 

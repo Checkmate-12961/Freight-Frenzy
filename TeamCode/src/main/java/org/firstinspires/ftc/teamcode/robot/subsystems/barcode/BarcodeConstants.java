@@ -7,10 +7,10 @@ import org.opencv.core.Rect;
 
 @Config
 public class BarcodeConstants {
-    public static int leftBoxX = 0;
-    public static int leftBoxY = 0;
-    public static int leftBoxWidth = 0;
-    public static int leftBoxHeight = 0;
+    public static int leftBoxX = 20;
+    public static int leftBoxY = 145;
+    public static int leftBoxWidth = 50;
+    public static int leftBoxHeight = 50;
 
     public static Point getLeftBoxPointA() {
         return new Point(
@@ -30,10 +30,10 @@ public class BarcodeConstants {
                 BarcodeConstants.getLeftBoxPointB());
     }
 
-    public static int middleBoxX = 0;
-    public static int middleBoxY = 0;
-    public static int middleBoxWidth = 0;
-    public static int middleBoxHeight = 0;
+    public static int middleBoxX = 225;
+    public static int middleBoxY = 145;
+    public static int middleBoxWidth = 50;
+    public static int middleBoxHeight = 50;
 
     public static Point getMiddleBoxPointA() {
         return new Point(
