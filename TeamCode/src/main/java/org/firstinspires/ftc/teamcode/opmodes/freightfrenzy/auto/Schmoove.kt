@@ -14,15 +14,11 @@ class Schmoove : BaseOpMode() {
     /**
      * when you you you you when you run button
      */
-    override fun start() {
+    override fun preRunLoop() {
         // go
         robot.drivetrain.setWeightedDrivePower(Pose2d(1.0, 0.0, 0.0))
-
         // wait
-        try {
-            Thread.sleep(schmooveLength)
-        } catch (ignored: InterruptedException) {}
-
+        sleep(schmooveLength)
         // stop going
         robot.drivetrain.setWeightedDrivePower(Pose2d(0.0, 0.0, 0.0))
     }

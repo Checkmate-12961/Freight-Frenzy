@@ -24,6 +24,8 @@ import org.firstinspires.ftc.teamcode.robot.CheckmateRobot
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import org.firstinspires.ftc.teamcode.robot.util.PositionUtil
+import java.util.*
 
 /**
  * Basic OpMode class that all OpModes should extend
@@ -78,6 +80,7 @@ abstract class BaseOpMode : LinearOpMode() {
         waitForStart()
         preRunLoop()
         while (opModeIsActive() && !isStopRequested) {
+            updateTelemetry()
             if (opModeType == OpModeType.TeleOp) {
                 gp1.update()
                 gp2.update()
@@ -87,5 +90,23 @@ abstract class BaseOpMode : LinearOpMode() {
         }
         robot.cleanup()
         cleanup()
+    }
+
+    private fun updateTelemetry() {
+        val position = robot.drivetrain.poseEstimate
+        val velocity = robot.drivetrain.poseVelocity
+        PositionUtil.set(position)
+        // Print pose to telemetry
+        telemetry.addData("liftHeight", robot.lift.height)
+        telemetry.addData("x", position.x)
+        telemetry.addData("y", position.y)
+        telemetry.addData("h", Math.toDegrees(position.heading))
+        telemetry.addData("runtime", String.format(Locale.ENGLISH, "%fs", runtime))
+        if (velocity != null) {
+            telemetry.addData("vX", velocity.x)
+            telemetry.addData("vY", velocity.y)
+            telemetry.addData("vH", Math.toDegrees(velocity.heading))
+        }
+        telemetry.update()
     }
 }

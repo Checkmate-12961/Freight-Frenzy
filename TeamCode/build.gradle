@@ -44,7 +44,7 @@ dependencies {
     implementation 'org.openftc:easyopencv:1.4.4'
 
     // Realsense wrapper dependency
-    implementation 'com.spartronics4915.lib:ftc265:2.1.9'
+    implementation files('lib/ftc265-3.0.0-debug.aar')
 }
 
 repositories {

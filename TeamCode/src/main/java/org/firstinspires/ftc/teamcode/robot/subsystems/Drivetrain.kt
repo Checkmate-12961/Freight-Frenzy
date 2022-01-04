@@ -31,6 +31,9 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder
 import com.acmerobotics.roadrunner.trajectory.constraints.*
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.robotcore.hardware.*
+import com.spartronics4915.lib.T265Camera
+import com.spartronics4915.lib.T265Localizer
+import com.spartronics4915.lib.T265Helper
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants
@@ -279,7 +282,14 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
         }
 
         // DONE: if desired, use setLocalizer() to change the localization method
-        //setLocalizer(new RealsenseLocalizer(hardwareMap));
+        localizer = T265Localizer(
+            T265Helper.getCamera(
+                T265Camera.OdometryInfo(
+                    Pose2d(),
+                    0.8
+                ), hardwareMap.appContext
+            )
+        )
         trajectorySequenceRunner = SuperTrajectorySequenceRunner(follower, HEADING_PID)
     }
 }
