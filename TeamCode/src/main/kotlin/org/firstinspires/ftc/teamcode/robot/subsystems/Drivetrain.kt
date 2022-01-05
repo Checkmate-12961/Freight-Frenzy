@@ -285,7 +285,7 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
         localizer = T265Localizer(
             T265Helper.getCamera(
                 T265Camera.OdometryInfo(
-                    Pose2d(),
+                    Pose2d(-6.0, -6.0, -kotlin.math.PI),
                     0.8
                 ), hardwareMap.appContext
             )

@@ -18,11 +18,10 @@ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence
 
-package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence;
-
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
+import com.acmerobotics.roadrunner.control.PIDCoefficients
+import com.acmerobotics.roadrunner.followers.TrajectoryFollower
 
 /**
  * I have the best trajectory sequence runners.
@@ -47,19 +46,19 @@ import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
  * And I tell them, yes I know, but you know, I am a very humble guy, maybe the most humble guy, with really medium hands though.
  * And these trajectory sequence runners I have, well, they are the best trajectory sequence runners. They are going to be HUGE.
  * We are going to make trajectory sequence runners GREAT again.
- * If you listen to the FAKE NEWS guy Noah, he says, you know, that we already have good enough trajectory sequence runners, but he is a liar, and, frankly, a loser.
+ * If you listen to the FAKE NEWS guys over at ACME, they say, you know, that we already have good enough trajectory sequence runners, but they are liars, and, frankly, losers.
  * ok, ok, thank you, ok, goodnight, ok.
  *
  * Parody of AMCE Robotics "SuperArrayList"
  * See https://github.com/acmerobotics/rover-ruckus/blob/master/src/com/acmerobotics/roverruckus/util/SuperArrayList.java
- * All opinions are my own, but in an alternate universe where Noah sucks.
+ * All opinions are my own, but in an alternate universe where ACME sucks.
  */
-public class SuperTrajectorySequenceRunner extends TrajectorySequenceRunner{
-    public SuperTrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
-        super(follower, headingPIDCoefficients);
-    }
+class SuperTrajectorySequenceRunner(
+    follower: TrajectoryFollower,
+    headingPIDCoefficients: PIDCoefficients
+) : TrajectorySequenceRunner(follower, headingPIDCoefficients) {
 
-    public void cancelSequence() {
-        super.currentTrajectorySequence = null;
+    fun cancelSequence() {
+        currentTrajectorySequence = null
     }
 }
