@@ -26,6 +26,8 @@ class BlueCarousel: BaseOpMode() {
     }
 
     override fun setup() {
+        robot.drivetrain.poseEstimate = pose0Start.pose2d
+
         sequence = robot.drivetrain.trajectorySequenceBuilder(pose0Start.pose2d)
             .setReversed(true)
             .splineTo(pose1ReOrient.vector2d, pose1ReOrient.hRad)
