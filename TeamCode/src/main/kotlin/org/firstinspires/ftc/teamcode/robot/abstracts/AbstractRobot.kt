@@ -18,23 +18,38 @@ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+package org.firstinspires.ftc.teamcode.robot.abstracts
 
-package com.checkmaterobotics.meepmeep;
+/**
+ * Class that all robots need to extend
+ */
+abstract class AbstractRobot {
+    private val subsystems: ArrayList<AbstractSubsystem> = arrayListOf()
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-
-public class ParkInWarehouse {
-    public static void main(String[] args) {
-        System.setProperty("sun.java2d.opengl", "true");
-
-        // Grab our config
-        MeepMeepConfig.getConfig()
-                .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(7, -63.75, Math.toRadians(0)))
-                                .splineTo(new Vector2d(38,-63.5), Math.toRadians(0))
-                                .build()
-                )
-                .start();
+    /**
+     * Updates all subsystems
+     */
+    fun update() {
+        for (subsystem in subsystems) {
+            subsystem.update()
+        }
     }
+
+    /**
+     * Runs cleanup() on all subsystems
+     */
+    fun cleanup() {
+        for (subsystem in subsystems) {
+            subsystem.cleanup()
+        }
+    }
+
+    /**
+     * Adds a new subsystem
+     * @param subsystem Subsystem to add. Must implement the Subsystem class
+     */
+    protected fun addSubsystem(subsystem: AbstractSubsystem) {
+        subsystems.add(subsystem)
+    }
+
 }

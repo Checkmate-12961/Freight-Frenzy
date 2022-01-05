@@ -21,8 +21,13 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.reflection.ReflectionConfig;
+import com.acmerobotics.dashboard.config.variable.CustomVariable;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
+
+import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 
 /**
  * Awful class that enables or disables all tuning OpModes at once
@@ -38,20 +43,75 @@ public class TuningMode {
      */
     @OpModeRegistrar
     public static void registerTuningOpModes(OpModeManager manager) {
+        CustomVariable config = FtcDashboard.getInstance().getConfigRoot();
+
         if (isTuning) {
+            OpModeMeta.Builder metaBuilder = new OpModeMeta.Builder()
+                    .setGroup("tuning")
+                    .setFlavor(OpModeMeta.Flavor.AUTONOMOUS);
+
             // i am sad
-            manager.register(AutomaticFeedforwardTuner.class.getSimpleName(), new AutomaticFeedforwardTuner());
-            manager.register(BackAndForth.class.getSimpleName(), new BackAndForth());
-            manager.register(FollowerPIDTuner.class.getSimpleName(), new FollowerPIDTuner());
-            manager.register(LocalizationTest.class.getSimpleName(), new LocalizationTest());
-            manager.register(ManualFeedforwardTuner.class.getSimpleName(), new ManualFeedforwardTuner());
-            manager.register(MaxVelocityTuner.class.getSimpleName(), new MaxVelocityTuner());
-            manager.register(SplineTest.class.getSimpleName(), new SplineTest());
-            manager.register(StrafeTest.class.getSimpleName(), new StrafeTest());
-            manager.register(StraightTest.class.getSimpleName(), new StraightTest());
-            manager.register(TrackingWheelLateralDistanceTuner.class.getSimpleName(), new TrackingWheelLateralDistanceTuner());
-            manager.register(TrackWidthTuner.class.getSimpleName(), new TrackWidthTuner());
-            manager.register(TurnTest.class.getSimpleName(), new TurnTest());
+            manager.register(
+                    metaBuilder.setName(AutomaticFeedforwardTuner.class.getSimpleName()).build(),
+                    new AutomaticFeedforwardTuner());
+            config.putVariable(AutomaticFeedforwardTuner.class.getSimpleName(),
+                    ReflectionConfig.createVariableFromClass(AutomaticFeedforwardTuner.class));
+            manager.register(
+                    metaBuilder.setName(BackAndForth.class.getSimpleName()).build(),
+                    new BackAndForth());
+            config.putVariable(BackAndForth.class.getSimpleName(),
+                    ReflectionConfig.createVariableFromClass(BackAndForth.class));
+            manager.register(
+                    metaBuilder.setName(FollowerPIDTuner.class.getSimpleName()).build(),
+                    new FollowerPIDTuner());
+            config.putVariable(FollowerPIDTuner.class.getSimpleName(),
+                    ReflectionConfig.createVariableFromClass(FollowerPIDTuner.class));
+            manager.register(
+                    metaBuilder.setName(LocalizationTest.class.getSimpleName()).build(),
+                    new LocalizationTest());
+            config.putVariable(LocalizationTest.class.getSimpleName(),
+                    ReflectionConfig.createVariableFromClass(LocalizationTest.class));
+            manager.register(
+                    metaBuilder.setName(MaxVelocityTuner.class.getSimpleName()).build(),
+                    new MaxVelocityTuner());
+            config.putVariable(MaxVelocityTuner.class.getSimpleName(),
+                    ReflectionConfig.createVariableFromClass(MaxVelocityTuner.class));
+            manager.register(
+                    metaBuilder.setName(SplineTest.class.getSimpleName()).build(),
+                    new SplineTest());
+            config.putVariable(SplineTest.class.getSimpleName(),
+                    ReflectionConfig.createVariableFromClass(SplineTest.class));
+            manager.register(
+                    metaBuilder.setName(StrafeTest.class.getSimpleName()).build(),
+                    new StrafeTest());
+            config.putVariable(StrafeTest.class.getSimpleName(),
+                    ReflectionConfig.createVariableFromClass(StrafeTest.class));
+            manager.register(
+                    metaBuilder.setName(StraightTest.class.getSimpleName()).build(),
+                    new StraightTest());
+            config.putVariable(StraightTest.class.getSimpleName(),
+                    ReflectionConfig.createVariableFromClass(StraightTest.class));
+            manager.register(
+                    metaBuilder.setName(TrackWidthTuner.class.getSimpleName()).build(),
+                    new TrackWidthTuner());
+            config.putVariable(TrackWidthTuner.class.getSimpleName(),
+                    ReflectionConfig.createVariableFromClass(TrackWidthTuner.class));
+            manager.register(
+                    metaBuilder.setName(TurnTest.class.getSimpleName()).build(),
+                    new TurnTest());
+            config.putVariable(TurnTest.class.getSimpleName(),
+                    ReflectionConfig.createVariableFromClass(TurnTest.class));
+            metaBuilder.setFlavor(OpModeMeta.Flavor.TELEOP);
+            manager.register(
+                    metaBuilder.setName(ManualFeedforwardTuner.class.getSimpleName()).build(),
+                    new ManualFeedforwardTuner());
+            config.putVariable(ManualFeedforwardTuner.class.getSimpleName(),
+                    ReflectionConfig.createVariableFromClass(ManualFeedforwardTuner.class));
+            manager.register(
+                    metaBuilder.setName(TrackingWheelLateralDistanceTuner.class.getSimpleName()).build(),
+                    new TrackingWheelLateralDistanceTuner());
+            config.putVariable(TrackingWheelLateralDistanceTuner.class.getSimpleName(),
+                    ReflectionConfig.createVariableFromClass(TrackingWheelLateralDistanceTuner.class));
         }
     }
 }

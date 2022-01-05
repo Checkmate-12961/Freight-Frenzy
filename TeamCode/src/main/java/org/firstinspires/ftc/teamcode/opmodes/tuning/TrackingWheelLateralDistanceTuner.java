@@ -1,15 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.bilocalizer.TrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.TrackingWheelLocalizer;
 
 /**
  * Opmode designed to assist the user in tuning the `StandardTrackingWheelLocalizer`'s
@@ -64,17 +61,14 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.bilocalizer.Tr
  */
 
 @SuppressWarnings("unused")
-@Config
-@Disabled
-@TeleOp(group = "drive")
 public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
     public static int NUM_TURNS = 10;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
+        Drivetrain robot = new Drivetrain(hardwareMap);
 
-        if (!(robot.drivetrain.getLocalizer() instanceof TrackingWheelLocalizer)) {
+        if (!(robot.getLocalizer() instanceof TrackingWheelLocalizer)) {
             RobotLog.setGlobalErrorMsg("StandardTrackingWheelLocalizer is not being set in the "
                     + "drive class. Ensure that \"setLocalizer(new StandardTrackingWheelLocalizer"
                     + "(hardwareMap));\" is called in SampleMecanumDrive.java");
@@ -101,11 +95,11 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
 
         while (!isStopRequested() && !tuningFinished) {
             Pose2d vel = new Pose2d(0, 0, -gamepad1.right_stick_x);
-            robot.drivetrain.setDrivePower(vel);
+            robot.setDrivePower(vel);
 
             robot.update();
 
-            double heading = robot.drivetrain.getPoseEstimate().getHeading();
+            double heading = robot.getPoseEstimate().getHeading();
             double deltaHeading = heading - lastHeading;
 
             headingAccumulator += Angle.normDelta(deltaHeading);

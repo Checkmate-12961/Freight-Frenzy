@@ -18,23 +18,9 @@ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+package org.firstinspires.ftc.teamcode.robot.abstracts
 
-package com.checkmaterobotics.meepmeep;
-
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-
-public class ParkInWarehouse {
-    public static void main(String[] args) {
-        System.setProperty("sun.java2d.opengl", "true");
-
-        // Grab our config
-        MeepMeepConfig.getConfig()
-                .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(7, -63.75, Math.toRadians(0)))
-                                .splineTo(new Vector2d(38,-63.5), Math.toRadians(0))
-                                .build()
-                )
-                .start();
-    }
+interface AbstractSubsystem {
+    fun update() {}
+    fun cleanup() {}
 }
