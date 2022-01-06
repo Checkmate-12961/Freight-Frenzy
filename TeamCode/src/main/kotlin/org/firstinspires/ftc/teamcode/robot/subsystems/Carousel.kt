@@ -37,7 +37,7 @@ class Carousel(hardwareMap: HardwareMap) : AbstractSubsystem {
     /**
      * The motor that spins the carousel
      */
-    private val carouselMotor: DcMotorEx
+    private val carouselMotor = hardwareMap.get(DcMotorEx::class.java, Motors.CAROUSEL.id)
 
     var power: Double
         /**
@@ -66,7 +66,6 @@ class Carousel(hardwareMap: HardwareMap) : AbstractSubsystem {
      */
     init {
         // Initialize the servo
-        carouselMotor = hardwareMap.get(DcMotorEx::class.java, Motors.CAROUSEL.id)
 
         // Reverse the motor if we set it that way in the config
         if (Motors.CAROUSEL.reverse) {

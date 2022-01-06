@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
  * Bucket thingy on the lift. There is no direct access to the servo position for a reason.
  */
 class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
-    private var bucketServo: Servo
+    private var bucketServo = hardwareMap.get(Servo::class.java, Servos.BUCKET.id)
 
     /**
      * Set positions for the bucket.
@@ -61,7 +61,6 @@ class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
 
     init {
         // Grab the servo from the hardware map
-        bucketServo = hardwareMap.get(Servo::class.java, Servos.BUCKET.id)
 
         // If the servo is reversed in the config, reverse it
         if (Servos.BUCKET.reversed) {

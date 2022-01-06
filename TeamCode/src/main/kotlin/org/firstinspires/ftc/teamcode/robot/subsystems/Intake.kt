@@ -34,7 +34,7 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 @Config
 class Intake(hardwareMap: HardwareMap) : AbstractSubsystem {
     // This subsystem has two motors because each motor is useless without the other
-    private val intakeMotor: DcMotorEx
+    private val intakeMotor = hardwareMap.get(DcMotorEx::class.java, Motors.INTAKE.id)
     private val floppaServo: Servo
 
     companion object{
@@ -61,7 +61,6 @@ class Intake(hardwareMap: HardwareMap) : AbstractSubsystem {
 
     init {
         // Set up the intake motor
-        intakeMotor = hardwareMap.get(DcMotorEx::class.java, Motors.INTAKE.id)
         intakeMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         intakeMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         intakeMotor.power = 0.0

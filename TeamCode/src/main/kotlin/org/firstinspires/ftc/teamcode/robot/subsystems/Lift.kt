@@ -33,7 +33,7 @@ import kotlin.math.PI
 
 @Config
 class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake) : AbstractSubsystem {
-    private val liftMotor: DcMotorEx
+    private val liftMotor = hardwareMap.get(DcMotorEx::class.java, Motors.LIFT.id)
 
     // Keep track of the last position the motor was set to
     private var lastPosition = 0.0
@@ -121,7 +121,6 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
 
     init {
         // Initialize the motor
-        liftMotor = hardwareMap.get(DcMotorEx::class.java, Motors.LIFT.id)
         liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
 
         // Reverse the motor if the config says to
