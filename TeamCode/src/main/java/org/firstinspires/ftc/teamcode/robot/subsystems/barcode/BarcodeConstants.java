@@ -8,11 +8,13 @@ import org.opencv.core.Rect;
 @Config
 public class BarcodeConstants {
     //These define the location and size of the left box.
-    public static int leftBoxX = 20;
+    public static int leftBoxX = 225;
     public static int leftBoxY = 145;
     public static int leftBoxWidth = 50;
     public static int leftBoxHeight = 50;
-    public static int leftThreshold = 0;
+    public static int leftThreshold = 125;
+
+
 
     //Defines a point with the left boxes coordinates
     public static Point getLeftBoxPointA() {
@@ -37,11 +39,11 @@ public class BarcodeConstants {
 
     //These define the location and size of the middle box
     //There is no right box because it would be out of frame
-    public static int middleBoxX = 225;
+    public static int middleBoxX = 20;
     public static int middleBoxY = 145;
     public static int middleBoxWidth = 50;
     public static int middleBoxHeight = 50;
-    public static int middleThreshold = 0;
+    public static int middleThreshold = 125;
 
     //Two points and a rectangle are created similar to the left box.
     public static Point getMiddleBoxPointA() {
