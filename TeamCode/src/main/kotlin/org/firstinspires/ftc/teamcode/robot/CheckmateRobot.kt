@@ -35,6 +35,7 @@ class CheckmateRobot(hardwareMap: HardwareMap) : AbstractRobot() {
     val lift: Lift
     val intake: Intake
     val bucket: Bucket
+    val barcode: Barcode
 
     /**
      * Set up the robot and initialize the subsystems you want to use
@@ -66,5 +67,9 @@ class CheckmateRobot(hardwareMap: HardwareMap) : AbstractRobot() {
         // Set up the lift (it needs access to the bucket)
         lift = Lift(hardwareMap, bucket, intake)
         addSubsystem(lift)
+
+        // Set up the barcode stuff
+        barcode = Barcode(hardwareMap)
+        addSubsystem(barcode)
     }
 }

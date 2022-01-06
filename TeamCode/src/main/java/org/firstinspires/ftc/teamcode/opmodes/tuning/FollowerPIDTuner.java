@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
@@ -26,26 +28,25 @@ public class FollowerPIDTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain robot = new Drivetrain(hardwareMap);
+        Drivetrain drivetrain = new Drivetrain(hardwareMap);
 
         Pose2d startPose = new Pose2d(-DISTANCE / 2, -DISTANCE / 2, 0);
 
-        robot.setPoseEstimate(startPose);
+        drivetrain.setPoseEstimate(startPose);
 
         waitForStart();
 
         if (isStopRequested()) return;
 
         while (!isStopRequested()) {
-            robot.update();
-            Trajectory traj = robot.trajectoryBuilder(startPose)
+            drivetrain.update();
+            Trajectory traj = drivetrain.trajectoryBuilder(startPose)
                     .forward(DISTANCE)
                     .build();
-            robot.followTrajectory(traj);
-            robot.turn(Math.toRadians(90));
+            drivetrain.followTrajectory(traj);
+            drivetrain.turn(Math.toRadians(90));
 
             startPose = traj.end().plus(new Pose2d(0, 0, Math.toRadians(90)));
         }
-        robot.cleanup();
     }
 }

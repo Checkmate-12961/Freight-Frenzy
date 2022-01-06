@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
@@ -66,9 +68,9 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain robot = new Drivetrain(hardwareMap);
+        Drivetrain drivetrain = new Drivetrain(hardwareMap);
 
-        if (!(robot.getLocalizer() instanceof TrackingWheelLocalizer)) {
+        if (!(drivetrain.getLocalizer() instanceof TrackingWheelLocalizer)) {
             RobotLog.setGlobalErrorMsg("StandardTrackingWheelLocalizer is not being set in the "
                     + "drive class. Ensure that \"setLocalizer(new StandardTrackingWheelLocalizer"
                     + "(hardwareMap));\" is called in SampleMecanumDrive.java");
@@ -95,11 +97,11 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
 
         while (!isStopRequested() && !tuningFinished) {
             Pose2d vel = new Pose2d(0, 0, -gamepad1.right_stick_x);
-            robot.setDrivePower(vel);
+            drivetrain.setDrivePower(vel);
 
-            robot.update();
+            drivetrain.update();
 
-            double heading = robot.getPoseEstimate().getHeading();
+            double heading = drivetrain.getPoseEstimate().getHeading();
             double deltaHeading = heading - lastHeading;
 
             headingAccumulator += Angle.normDelta(deltaHeading);
@@ -124,6 +126,5 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
         telemetry.update();
 
         while (!isStopRequested()) idle();
-        robot.cleanup();
     }
 }
