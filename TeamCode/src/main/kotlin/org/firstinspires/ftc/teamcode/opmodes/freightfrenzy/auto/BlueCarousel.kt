@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto.util.OpModeUtil
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence
 
-@Autonomous
+@Autonomous(preselectTeleOp = "TeleOp")
 @Config
 class BlueCarousel: BaseOpMode() {
     private lateinit var sequence: TrajectorySequence

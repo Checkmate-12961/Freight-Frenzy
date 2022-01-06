@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence
 
 @Disabled
-@Autonomous
+@Autonomous(preselectTeleOp = "TeleOp")
 @Config
 class JustGo : BaseOpMode() {
     lateinit var traj: TrajectorySequence
