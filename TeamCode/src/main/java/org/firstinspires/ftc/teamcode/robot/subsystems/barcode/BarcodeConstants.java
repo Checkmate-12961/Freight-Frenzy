@@ -7,34 +7,43 @@ import org.opencv.core.Rect;
 
 @Config
 public class BarcodeConstants {
+    //These define the location and size of the left box.
     public static int leftBoxX = 20;
     public static int leftBoxY = 145;
     public static int leftBoxWidth = 50;
     public static int leftBoxHeight = 50;
+    public static int leftThreshold = 0;
 
+    //Defines a point with the left boxes coordinates
     public static Point getLeftBoxPointA() {
         return new Point(
                 BarcodeConstants.leftBoxX,
                 BarcodeConstants.leftBoxY);
     }
 
+    //Defines a second point by adding the length and width to the first point.
     public static Point getLeftBoxPointB() {
         return new Point(
                 BarcodeConstants.leftBoxX + BarcodeConstants.leftBoxWidth,
                 BarcodeConstants.leftBoxY + BarcodeConstants.leftBoxHeight);
     }
-    
+
+    //Defines a rectangle with the two points as corners.
     public static Rect getLeftBox() {
         return new Rect(
                 BarcodeConstants.getLeftBoxPointA(),
                 BarcodeConstants.getLeftBoxPointB());
     }
 
+    //These define the location and size of the middle box
+    //There is no right box because it would be out of frame
     public static int middleBoxX = 225;
     public static int middleBoxY = 145;
     public static int middleBoxWidth = 50;
     public static int middleBoxHeight = 50;
+    public static int middleThreshold = 0;
 
+    //Two points and a rectangle are created similar to the left box.
     public static Point getMiddleBoxPointA() {
         return new Point(
                 BarcodeConstants.middleBoxX,
@@ -53,26 +62,5 @@ public class BarcodeConstants {
                 BarcodeConstants.getMiddleBoxPointB());
     }
 
-    public static int rightBoxX = 0;
-    public static int rightBoxY = 0;
-    public static int rightBoxWidth = 0;
-    public static int rightBoxHeight = 0;
 
-    public static Point getRightBoxPointA() {
-        return new Point(
-                BarcodeConstants.rightBoxX,
-                BarcodeConstants.rightBoxY);
-    }
-
-    public static Point getRightBoxPointB() {
-        return new Point(
-                BarcodeConstants.rightBoxX + BarcodeConstants.rightBoxWidth,
-                BarcodeConstants.rightBoxY + BarcodeConstants.rightBoxHeight);
-    }
-
-    public static Rect getRightBox() {
-        return new Rect(
-                BarcodeConstants.getRightBoxPointA(),
-                BarcodeConstants.getRightBoxPointB());
-    }
 }

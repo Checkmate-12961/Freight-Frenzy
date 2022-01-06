@@ -22,12 +22,13 @@ import org.openftc.easyopencv.OpenCvWebcam;
 import java.util.Arrays;
 import java.util.List;
 
-//TODO Andrew fix issue where no symbols can be resolved
 public class Barcode implements AbstractSubsystem {
     private final OpenCvCamera webcam;
 
 
     public Barcode(HardwareMap hardwareMap) {
+
+        //Instantiates the webcam "webcam" for OpenCv to use
         webcam = OpenCvCameraFactory.getInstance().createWebcam(
                 hardwareMap.get(WebcamName.class, HardwareNames.Cameras.WEBCAM.getId()),
                 hardwareMap.appContext.getResources().getIdentifier(
@@ -50,9 +51,11 @@ public class Barcode implements AbstractSubsystem {
 
         });
 
+        //Streams camera output to the FTCDashboard
         FtcDashboard.getInstance().startCameraStream(webcam, 12);
     }
 
+    //The stop() function closes the camera
     public void stop() {
         webcam.stopStreaming();
     }
@@ -75,6 +78,7 @@ public class Barcode implements AbstractSubsystem {
         // TODO: cleanup properly
     }
 
+    //getPosition returns where the barcode is located in a BarcodePosition
     public enum BarcodePosition {LEFT, MIDDLE, RIGHT}
 
     private final BarcodeDeterminationPipeline pipeline = new BarcodeDeterminationPipeline();
@@ -84,21 +88,19 @@ public class Barcode implements AbstractSubsystem {
         //Some color constants
         //These dictate the color of the boxes when you see the camera output
         private static final Scalar RED = new Scalar(255, 0, 0);
-        private static final Scalar YELLOW = new Scalar(255, 255, 0);
         private static final Scalar BLUE = new Scalar(0, 0, 255);
         private static final Scalar PURPLE = new Scalar(51, 12, 47);
 
         /*
          * Working variables
+         * Cb is the used to isolate the blue in the feed.
          */
         private Mat LEFTBOX_Cb;
         private Mat MIDDLEBOX_Cb;
-        private Mat RIGHTBOX_Cb;
         private final Mat YCrCb = new Mat();
         private final Mat Cb = new Mat();
         private int leftValue;
         private int middleValue;
-        private int rightValue;
 
         // Volatile since accessed by OpMode thread w/o synchronization
         private volatile BarcodePosition position = BarcodePosition.LEFT;
@@ -116,18 +118,18 @@ public class Barcode implements AbstractSubsystem {
         public void init(Mat firstFrame) {
             inputToCb(firstFrame);
 
+            //LEFTBOX_Cb and MIDDLEBOX_Cb are the blue content of their respective boxes.
             LEFTBOX_Cb = Cb.submat(BarcodeConstants.getLeftBox());
             MIDDLEBOX_Cb = Cb.submat(BarcodeConstants.getMiddleBox());
-            RIGHTBOX_Cb = Cb.submat(BarcodeConstants.getRightBox());
         }
 
         @Override
         public Mat processFrame(Mat input) {
             inputToCb(input);
 
+            //
             leftValue = (int) Core.mean(LEFTBOX_Cb).val[0];
             middleValue = (int) Core.mean(MIDDLEBOX_Cb).val[0];
-            rightValue = (int) Core.mean(RIGHTBOX_Cb).val[0];
 
             Imgproc.rectangle(
                     input, // Buffer to draw on
@@ -143,18 +145,10 @@ public class Barcode implements AbstractSubsystem {
                     PURPLE, // The color the rectangle is drawn in
                     2); // Thickness of the rectangle lines
 
-            Imgproc.rectangle(
-                    input, // Buffer to draw on
-                    BarcodeConstants.getRightBoxPointA(), // First point which defines the rectangle
-                    BarcodeConstants.getRightBoxPointB(), // Second point which defines the rectangle
-                    PURPLE, // The color the rectangle is drawn in
-                    2); // Thickness of the rectangle lines
-
-
             position = BarcodePosition.LEFT; // Record our analysis
-            if ((leftValue>middleValue) && (leftValue>rightValue)) {
+            if ((leftValue>middleValue) && (leftValue>BarcodeConstants.leftThreshold)) {
                 position = BarcodePosition.LEFT;
-            } else if (middleValue>rightValue) {
+            } else if (middleValue>BarcodeConstants.middleThreshold) {
                 position = BarcodePosition.MIDDLE;
             } else {
                 position = BarcodePosition.RIGHT;
@@ -171,13 +165,6 @@ public class Barcode implements AbstractSubsystem {
                     input, // Buffer to draw on
                     BarcodeConstants.getMiddleBoxPointA(), // First point which defines the rectangle
                     BarcodeConstants.getMiddleBoxPointB(), // Second point which defines the rectangle
-                    YELLOW, // The color the rectangle is drawn in
-                    -1); // Negative thickness means solid fill
-
-            Imgproc.rectangle(
-                    input, // Buffer to draw on
-                    BarcodeConstants.getRightBoxPointA(), // First point which defines the rectangle
-                    BarcodeConstants.getRightBoxPointB(), // Second point which defines the rectangle
                     BLUE, // The color the rectangle is drawn in
                     -1); // Negative thickness means solid fill
 
@@ -185,7 +172,7 @@ public class Barcode implements AbstractSubsystem {
         }
 
         public List<Integer> getAnalysis() {
-            return Arrays.asList(leftValue, middleValue, rightValue);
+            return Arrays.asList(leftValue, middleValue);
         }
 
         public BarcodePosition getPosition() {

@@ -46,8 +46,6 @@ dependencies {
 
     // Realsense wrapper dependency
     implementation files('lib/ftc265-3.0.0-debug.aar')
-
-    implementation 'org.openftc:apriltag:1.0.0'
 }
 
 repositories {
