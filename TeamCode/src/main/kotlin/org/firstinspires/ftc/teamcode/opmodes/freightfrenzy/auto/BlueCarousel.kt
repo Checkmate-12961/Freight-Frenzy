@@ -13,16 +13,16 @@ class BlueCarousel: BaseOpMode() {
 
     companion object {
         // start
-        @JvmField var pose0Start = SuperPose2d(-38.0, 56.0, -90.0)
+        @JvmField var pose0Start = SuperPose2d(-45.0, 62.0, 90.0)
         // reverse
         // go forward and spin the right way
-        @JvmField var pose1ReOrient = SuperPose2d(-38.0, 54.0, 0.0)
+        @JvmField var pose1ReOrient = SuperPose2d(-38.0, 54.0, 90.0)
         // back up to the carousel
-        @JvmField var pose2ToCarousel = SuperPose2d(-56.0, 54.0, 0.0)
+        @JvmField var pose2ToCarousel = SuperPose2d(-56.0, 54.0, -180.0)
         // spin 
         // un-reverse
         // go to box
-        @JvmField var pose3ToBox = SuperPose2d(-61.0, 38.0, 90.0)
+        @JvmField var pose3ToBox = SuperPose2d(-61.0, 38.0, -90.0)
     }
 
     override fun setup() {
