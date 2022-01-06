@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.test
+package org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
 
-@Autonomous
+@Autonomous(preselectTeleOp = "TeleBasic")
 class OpenCvTest : BaseOpMode() {
     /**
      * Runs when the OpMode initializes

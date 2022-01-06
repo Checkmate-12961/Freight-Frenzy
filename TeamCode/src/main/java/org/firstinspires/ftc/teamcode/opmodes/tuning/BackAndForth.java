@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
@@ -22,21 +25,23 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
  * This opmode is designed as a convenient, coarse tuning for the follower PID coefficients. It
  * is recommended that you use the FollowerPIDTuner opmode for further fine tuning.
  */
-
 @SuppressWarnings("unused")
+@Config
+
+@Autonomous(group = "drive")
 public class BackAndForth extends LinearOpMode {
 
     public static double DISTANCE = 50;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain robot = new Drivetrain(hardwareMap);
+        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
 
-        Trajectory trajectoryForward = robot.trajectoryBuilder(new Pose2d())
+        Trajectory trajectoryForward = robot.drivetrain.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)
                 .build();
 
-        Trajectory trajectoryBackward = robot.trajectoryBuilder(trajectoryForward.end())
+        Trajectory trajectoryBackward = robot.drivetrain.trajectoryBuilder(trajectoryForward.end())
                 .back(DISTANCE)
                 .build();
 
@@ -44,8 +49,8 @@ public class BackAndForth extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested()) {
             robot.update();
-            robot.followTrajectory(trajectoryForward);
-            robot.followTrajectory(trajectoryBackward);
+            robot.drivetrain.followTrajectory(trajectoryForward);
+            robot.drivetrain.followTrajectory(trajectoryBackward);
         }
         robot.cleanup();
     }

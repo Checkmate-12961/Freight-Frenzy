@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -15,12 +17,15 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.Arrays;
 import java.util.List;
 
+//TODO Andrew fix issue where no symbols can be resolved
 public class Barcode implements AbstractSubsystem {
     private final OpenCvCamera webcam;
+
 
     public Barcode(HardwareMap hardwareMap) {
         webcam = OpenCvCameraFactory.getInstance().createWebcam(
@@ -42,6 +47,7 @@ public class Barcode implements AbstractSubsystem {
             public void onError(int errorCode) {
 
             }
+
         });
 
         FtcDashboard.getInstance().startCameraStream(webcam, 12);

@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
@@ -21,16 +24,19 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
  */
 
 @SuppressWarnings("unused")
+@Config
+
+@Autonomous(group = "drive")
 public class FollowerPIDTuner extends LinearOpMode {
     public static double DISTANCE = 48; // in
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain robot = new Drivetrain(hardwareMap);
+        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
 
         Pose2d startPose = new Pose2d(-DISTANCE / 2, -DISTANCE / 2, 0);
 
-        robot.setPoseEstimate(startPose);
+        robot.drivetrain.setPoseEstimate(startPose);
 
         waitForStart();
 
@@ -38,11 +44,11 @@ public class FollowerPIDTuner extends LinearOpMode {
 
         while (!isStopRequested()) {
             robot.update();
-            Trajectory traj = robot.trajectoryBuilder(startPose)
+            Trajectory traj = robot.drivetrain.trajectoryBuilder(startPose)
                     .forward(DISTANCE)
                     .build();
-            robot.followTrajectory(traj);
-            robot.turn(Math.toRadians(90));
+            robot.drivetrain.followTrajectory(traj);
+            robot.drivetrain.turn(Math.toRadians(90));
 
             startPose = traj.end().plus(new Pose2d(0, 0, Math.toRadians(90)));
         }

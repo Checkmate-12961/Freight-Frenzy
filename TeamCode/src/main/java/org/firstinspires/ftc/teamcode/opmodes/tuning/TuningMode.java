@@ -32,7 +32,7 @@ import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 /**
  * Awful class that enables or disables all tuning OpModes at once
  */
-@SuppressWarnings("unused")
+
 public class TuningMode {
     // true for tuning mode on and false for tuning mode off
     public static final boolean isTuning = false;

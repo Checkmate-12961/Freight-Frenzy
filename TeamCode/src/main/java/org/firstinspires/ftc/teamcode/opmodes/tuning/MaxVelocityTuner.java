@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants;
 
 import java.util.Objects;
@@ -21,6 +24,9 @@ import java.util.Objects;
  */
 
 @SuppressWarnings("unused")
+@Config
+
+@Autonomous(group = "drive")
 public class MaxVelocityTuner extends LinearOpMode {
     public static double RUNTIME = 2.0;
 
@@ -28,9 +34,9 @@ public class MaxVelocityTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain robot = new Drivetrain(hardwareMap);
+        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
 
-        robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.drivetrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         VoltageSensor batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
@@ -45,19 +51,19 @@ public class MaxVelocityTuner extends LinearOpMode {
         telemetry.clearAll();
         telemetry.update();
 
-        robot.setDrivePower(new Pose2d(1, 0, 0));
+        robot.drivetrain.setDrivePower(new Pose2d(1, 0, 0));
         ElapsedTime timer = new ElapsedTime();
 
         while (!isStopRequested() && timer.seconds() < RUNTIME) {
             robot.update();
-            robot.updatePoseEstimate();
+            robot.drivetrain.updatePoseEstimate();
 
-            Pose2d poseVelo = Objects.requireNonNull(robot.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
+            Pose2d poseVelo = Objects.requireNonNull(robot.drivetrain.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
 
             maxVelocity = Math.max(poseVelo.vec().norm(), maxVelocity);
         }
 
-        robot.setDrivePower(new Pose2d());
+        robot.drivetrain.setDrivePower(new Pose2d());
 
         double effectiveKf = DriveConstants.getMotorVelocityF(veloInchesToTicks(maxVelocity));
 

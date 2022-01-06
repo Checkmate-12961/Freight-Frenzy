@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -15,17 +18,20 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
  */
 
 @SuppressWarnings("unused")
+@Config
+
+@TeleOp(group = "drive")
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain robot = new Drivetrain(hardwareMap);
+        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
 
-        robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.drivetrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
 
         while (!isStopRequested()) {
-            robot.setWeightedDrivePower(
+            robot.drivetrain.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad1.left_stick_y,
                             -gamepad1.left_stick_x,
@@ -35,7 +41,7 @@ public class LocalizationTest extends LinearOpMode {
 
             robot.update();
 
-            Pose2d poseEstimate = robot.getPoseEstimate();
+            Pose2d poseEstimate = robot.drivetrain.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
