@@ -24,7 +24,6 @@ import org.firstinspires.ftc.teamcode.robot.CheckmateRobot
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import org.firstinspires.ftc.teamcode.robot.util.PositionUtil
 import java.util.*
 
 /**
@@ -64,7 +63,7 @@ abstract class BaseOpMode : LinearOpMode() {
     /**
      * Runs when the OpMode is stopped
      */
-    fun cleanup() {}
+    open fun cleanup() {}
 
     final override fun runOpMode() {
         if (this.javaClass.getAnnotation(TeleOp::class.java) != null) {
@@ -95,7 +94,6 @@ abstract class BaseOpMode : LinearOpMode() {
     private fun updateTelemetry() {
         val position = robot.drivetrain.poseEstimate
         val velocity = robot.drivetrain.poseVelocity
-        PositionUtil.set(position)
         // Print pose to telemetry
         telemetry.addData("liftHeight", robot.lift.height)
         telemetry.addData("x", position.x)

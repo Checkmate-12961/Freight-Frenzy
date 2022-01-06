@@ -25,19 +25,14 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
-import org.firstinspires.ftc.teamcode.robot.util.PositionUtil
 import org.firstinspires.ftc.teamcode.robot.abstracts.Triggerables.TriggerableCallback
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift
 import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket
-import java.util.*
 
 @Config
 @TeleOp(name = "TeleOp")
 class MainTeleOp : BaseOpMode() {
     override fun setup() {
-        // Retrieve our pose from the PoseStorage.currentPose static field
-        robot.drivetrain.poseEstimate = PositionUtil.get()
-
         // Right bumper runs the carousel
         gp2.rightBumper.onActivate = TriggerableCallback { robot.carousel.power = 1.0 }
         gp2.rightBumper.onDeactivate = TriggerableCallback { robot.carousel.power = 0.0 }
@@ -82,7 +77,6 @@ class MainTeleOp : BaseOpMode() {
     }
 
     override fun runLoop() {
-        updatePosition()
         when (opModeType) {
             OpModeType.TeleOp ->
                 // Moves the robot based on the GP1 left stick
@@ -122,24 +116,6 @@ class MainTeleOp : BaseOpMode() {
                 //  it and move on.
                 opModeType = OpModeType.TeleOp
         }
-    }
-
-    private fun updatePosition() {
-        val position = robot.drivetrain.poseEstimate
-        val velocity = robot.drivetrain.poseVelocity
-        PositionUtil.set(position)
-        // Print pose to telemetry
-        telemetry.addData("liftHeight", robot.lift.height)
-        telemetry.addData("x", position.x)
-        telemetry.addData("y", position.y)
-        telemetry.addData("h", Math.toDegrees(position.heading))
-        telemetry.addData("runtime", String.format(Locale.ENGLISH, "%fs", runtime))
-        if (velocity != null) {
-            telemetry.addData("vX", velocity.x)
-            telemetry.addData("vY", velocity.y)
-            telemetry.addData("vH", Math.toDegrees(velocity.heading))
-        }
-        telemetry.update()
     }
 
     companion object {

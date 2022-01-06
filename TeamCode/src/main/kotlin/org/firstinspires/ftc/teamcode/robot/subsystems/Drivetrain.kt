@@ -31,6 +31,8 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder
 import com.acmerobotics.roadrunner.trajectory.constraints.*
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.robotcore.hardware.*
+import org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto.util.OpModeUtil
+import org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto.util.toSuperPose2d
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants
@@ -115,11 +117,12 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
         waitForIdle()
     }
 
-    val lastError
+    val lastError: Pose2d?
         get() = trajectorySequenceRunner.lastPoseError
 
     override fun update() {
         updatePoseEstimate()
+        persistentPoseEstimate = poseEstimate.toSuperPose2d()
         trajectorySequenceRunner.update(poseEstimate, poseVelocity)?.let { setDriveSignal(it) }
     }
 
@@ -140,14 +143,11 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
         }
     }
 
-    val voltage
-        get() = batteryVoltageSensor.voltage
-
     fun setWeightedDrivePower(drivePower: Pose2d) {
         var vel = drivePower
         if ((abs(drivePower.x) + abs(drivePower.y) + abs(drivePower.heading)) > 1) {
             // re-normalize the powers according to the weights
-            val denom =
+            val denominator =
                 VX_WEIGHT * abs(drivePower.x) + VY_WEIGHT * abs(drivePower.y) + OMEGA_WEIGHT * abs(
                     drivePower.heading
                 )
@@ -155,7 +155,7 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
                 VX_WEIGHT * drivePower.x,
                 VY_WEIGHT * drivePower.y,
                 OMEGA_WEIGHT * drivePower.heading
-            ).div(denom)
+            ).div(denominator)
         }
         setDrivePower(vel)
     }
@@ -209,6 +209,8 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
     }
 
     companion object {
+        @JvmField var persistentPoseEstimate = OpModeUtil.SuperPose2d()
+
         @JvmField var TRANSLATIONAL_PID = PIDCoefficients(8.0, 0.0, 1.0)
         @JvmField var HEADING_PID = PIDCoefficients(8.0, 0.0, 1.0)
         @JvmField var LATERAL_MULTIPLIER = 1.0
@@ -291,5 +293,6 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
         localizer.update()*/
 
         trajectorySequenceRunner = SuperTrajectorySequenceRunner(follower, HEADING_PID)
+        poseEstimate = persistentPoseEstimate.pose2d
     }
 }
