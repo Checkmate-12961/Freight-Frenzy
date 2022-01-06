@@ -57,3 +57,7 @@ class OpModeUtil {
         }
     }
 }
+
+fun Pose2d.toSuperPose2d(): OpModeUtil.SuperPose2d {
+    return OpModeUtil.SuperPose2d.fromPose2d(this)
+}
