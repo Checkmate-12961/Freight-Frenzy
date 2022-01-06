@@ -8,9 +8,6 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
 @Config
 @Autonomous(name = "schmoove", preselectTeleOp = "TeleOp")
 class Schmoove : BaseOpMode() {
-    @JvmField
-    var schmooveLength = 750L
-
     /**
      * when you you you you when you run button
      */
@@ -21,5 +18,9 @@ class Schmoove : BaseOpMode() {
         sleep(schmooveLength)
         // stop going
         robot.drivetrain.setWeightedDrivePower(Pose2d(0.0, 0.0, 0.0))
+    }
+
+    companion object {
+        @JvmField var schmooveLength = 750L
     }
 }
