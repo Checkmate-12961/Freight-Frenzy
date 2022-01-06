@@ -63,9 +63,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.Tra
  */
 
 @SuppressWarnings("unused")
-@Config
-
-@TeleOp(group = "drive")
 public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
     public static int NUM_TURNS = 10;
 

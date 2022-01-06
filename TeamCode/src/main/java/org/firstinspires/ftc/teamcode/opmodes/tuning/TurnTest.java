@@ -11,8 +11,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
  */
 
 @SuppressWarnings("unused")
-@Config
-@Autonomous(group = "drive")
 public class TurnTest extends LinearOpMode {
     public static double ANGLE = 90; // deg
 

@@ -13,8 +13,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
  */
 
 @SuppressWarnings("unused")
-
-@Autonomous(group = "drive")
 public class SplineTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

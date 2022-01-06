@@ -25,9 +25,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
  * is recommended that you use the FollowerPIDTuner opmode for further fine tuning.
  */
 @SuppressWarnings("unused")
-@Config
-
-@Autonomous(group = "drive")
 public class BackAndForth extends LinearOpMode {
 
     public static double DISTANCE = 50;

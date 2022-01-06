@@ -13,9 +13,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
  */
 
 @SuppressWarnings("unused")
-@Config
-
-@Autonomous(group = "drive")
 public class StrafeTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
 

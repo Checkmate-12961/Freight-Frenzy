@@ -42,10 +42,6 @@ import java.util.Objects;
  * control back to the tuning process.
  */
 
-
-@Config
-
-@Autonomous(group = "drive")
 @SuppressWarnings("unused")
 public class ManualFeedforwardTuner extends LinearOpMode {
     public static double DISTANCE = 72; // in
