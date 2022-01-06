@@ -46,6 +46,7 @@ dependencies {
 
     // Realsense wrapper dependency
     implementation files('lib/ftc265-3.0.0-debug.aar')
+    implementation 'com.intel.realsense:librealsense:2.41.1-ftc265@aar'
 }
 
 repositories {

@@ -282,6 +282,7 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
         }
 
         // DONE: if desired, use setLocalizer() to change the localization method
+        /*
         localizer = T265Localizer(
             T265Helper.getCamera(
                 T265Camera.OdometryInfo(
@@ -290,7 +291,7 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
                 ), hardwareMap.appContext
             )
         )
-        localizer.update()
+        localizer.update()*/
 
         trajectorySequenceRunner = SuperTrajectorySequenceRunner(follower, HEADING_PID)
     }
