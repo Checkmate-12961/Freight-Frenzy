@@ -77,6 +77,7 @@ abstract class BaseOpMode : LinearOpMode() {
         gp2 = SuperController(gamepad2)
         setup()
         waitForStart()
+        robot.preLoop()
         preRunLoop()
         while (opModeIsActive() && !isStopRequested) {
             if (opModeType == OpModeType.TeleOp) {

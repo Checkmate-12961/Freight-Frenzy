@@ -20,8 +20,8 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.barcode.BarcodeConstants
 class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
     private val webcam: OpenCvCamera
 
-    // The stop() function closes the camera
-    fun stop() {
+    // Closes the camera
+    override fun preLoop() {
         webcam.stopStreaming()
     }
 

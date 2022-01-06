@@ -27,6 +27,15 @@ abstract class AbstractRobot {
     private val subsystems: ArrayList<AbstractSubsystem> = arrayListOf()
 
     /**
+     * Runs once before the loop
+     */
+    fun preLoop() {
+        for (subsystem in subsystems) {
+            subsystem.preLoop()
+        }
+    }
+
+    /**
      * Updates all subsystems
      */
     fun update() {

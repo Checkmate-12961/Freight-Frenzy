@@ -21,6 +21,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.firstinspires.ftc.teamcode.robot.abstracts
 
 interface AbstractSubsystem {
+    fun preLoop() {}
     fun update() {}
     fun cleanup() {}
 }
