@@ -20,7 +20,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 package org.firstinspires.ftc.teamcode.robot.subsystems
 
-import android.util.Log
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.control.PIDCoefficients
 import com.acmerobotics.roadrunner.drive.MecanumDrive
@@ -32,10 +31,6 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder
 import com.acmerobotics.roadrunner.trajectory.constraints.*
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.robotcore.hardware.*
-import com.spartronics4915.lib.T265Camera
-import com.spartronics4915.lib.T265Localizer
-import com.spartronics4915.lib.T265Helper
-import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants
@@ -284,6 +279,7 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
         }
 
         // DONE: if desired, use setLocalizer() to change the localization method
+        /*
         localizer = T265Localizer(
             T265Helper.getCamera(
                 T265Camera.OdometryInfo(
@@ -292,7 +288,7 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
                 ), hardwareMap.appContext
             )
         )
-        localizer.update()
+        localizer.update()*/
 
         trajectorySequenceRunner = SuperTrajectorySequenceRunner(follower, HEADING_PID)
     }
