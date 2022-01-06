@@ -4,10 +4,9 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 
 /*
  * This is a simple routine to test translational drive capabilities.
@@ -22,9 +21,9 @@ public class StraightTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
+        Drivetrain drivetrain = new Drivetrain(hardwareMap);
 
-        Trajectory trajectory = robot.drivetrain.trajectoryBuilder(new Pose2d())
+        Trajectory trajectory = drivetrain.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)
                 .build();
 
@@ -32,27 +31,26 @@ public class StraightTest extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        robot.drivetrain.followTrajectoryAsync(trajectory);
+        drivetrain.followTrajectoryAsync(trajectory);
 
         while (!isStopRequested() && opModeIsActive()){
-            robot.update();
+            drivetrain.update();
 
-            Pose2d poseEstimate = robot.drivetrain.getPoseEstimate();
+            Pose2d poseEstimate = drivetrain.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.update();
 
-            if (!robot.drivetrain.isBusy()){
+            if (!drivetrain.isBusy()){
                 break;
             }
         }
 
-        Pose2d poseEstimate = robot.drivetrain.getPoseEstimate();
+        Pose2d poseEstimate = drivetrain.getPoseEstimate();
         telemetry.addData("finalX", poseEstimate.getX());
         telemetry.addData("finalY", poseEstimate.getY());
         telemetry.addData("finalHeading", poseEstimate.getHeading());
         telemetry.update();
-        robot.cleanup();
     }
 }

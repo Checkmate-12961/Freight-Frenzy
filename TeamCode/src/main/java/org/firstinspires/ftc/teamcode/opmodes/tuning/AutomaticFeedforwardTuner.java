@@ -9,11 +9,10 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.teamcode.robot.CheckmateRobot;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.util.LoggingUtil;
 import org.firstinspires.ftc.teamcode.robot.util.RegressionUtil;
 
@@ -43,7 +42,7 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        CheckmateRobot robot = new CheckmateRobot(hardwareMap);
+        Drivetrain drivetrain = new Drivetrain(hardwareMap);
 
         NanoClock clock = NanoClock.system();
 
@@ -61,7 +60,7 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
 
         boolean fitIntercept = false;
         while (!isStopRequested()) {
-            robot.update();
+            drivetrain.update();
             if (gamepad1.a) {
                 fitIntercept = true;
                 while (!isStopRequested() && gamepad1.a) {
@@ -103,7 +102,7 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
         List<Double> positionSamples = new ArrayList<>();
         List<Double> powerSamples = new ArrayList<>();
 
-        robot.drivetrain.setPoseEstimate(new Pose2d());
+        drivetrain.setPoseEstimate(new Pose2d());
 
         double startTime = clock.seconds();
         while (!isStopRequested()) {
@@ -115,13 +114,13 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
             double power = vel / maxVel;
 
             timeSamples.add(elapsedTime);
-            positionSamples.add(robot.drivetrain.getPoseEstimate().getX());
+            positionSamples.add(drivetrain.getPoseEstimate().getX());
             powerSamples.add(power);
 
-            robot.drivetrain.setDrivePower(new Pose2d(power, 0.0, 0.0));
-            robot.drivetrain.updatePoseEstimate();
+            drivetrain.setDrivePower(new Pose2d(power, 0.0, 0.0));
+            drivetrain.updatePoseEstimate();
         }
-        robot.drivetrain.setDrivePower(new Pose2d(0.0, 0.0, 0.0));
+        drivetrain.setDrivePower(new Pose2d(0.0, 0.0, 0.0));
 
         RegressionUtil.RampResult rampResult = RegressionUtil.fitRampData(
                 timeSamples, positionSamples, powerSamples, fitIntercept,
@@ -181,8 +180,8 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
             positionSamples.clear();
             powerSamples.clear();
 
-            robot.drivetrain.setPoseEstimate(new Pose2d());
-            robot.drivetrain.setDrivePower(new Pose2d(MAX_POWER, 0.0, 0.0));
+            drivetrain.setPoseEstimate(new Pose2d());
+            drivetrain.setDrivePower(new Pose2d(MAX_POWER, 0.0, 0.0));
 
             startTime = clock.seconds();
             while (!isStopRequested()) {
@@ -192,12 +191,12 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
                 }
 
                 timeSamples.add(elapsedTime);
-                positionSamples.add(robot.drivetrain.getPoseEstimate().getX());
+                positionSamples.add(drivetrain.getPoseEstimate().getX());
                 powerSamples.add(MAX_POWER);
 
-                robot.drivetrain.updatePoseEstimate();
+                drivetrain.updatePoseEstimate();
             }
-            robot.drivetrain.setDrivePower(new Pose2d(0.0, 0.0, 0.0));
+            drivetrain.setDrivePower(new Pose2d(0.0, 0.0, 0.0));
 
             RegressionUtil.AccelResult accelResult = RegressionUtil.fitAccelData(
                     timeSamples, positionSamples, powerSamples, rampResult,
@@ -214,6 +213,5 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
         while (!isStopRequested()) {
             idle();
         }
-        robot.cleanup();
     }
 }

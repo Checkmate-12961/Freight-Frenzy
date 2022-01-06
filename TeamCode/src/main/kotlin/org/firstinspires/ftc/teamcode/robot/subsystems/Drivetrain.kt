@@ -35,7 +35,6 @@ import com.qualcomm.robotcore.hardware.*
 import com.spartronics4915.lib.T265Camera
 import com.spartronics4915.lib.T265Localizer
 import com.spartronics4915.lib.T265Helper
-import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants

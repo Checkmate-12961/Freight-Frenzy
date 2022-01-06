@@ -62,4 +62,11 @@ class HardwareNames {
     enum class CRServos(val id: String, val reverse: Boolean) {
         DUMMY("", false)
     }
+
+    /**
+     * Contains hardware info for cameras
+     */
+    enum class Cameras(val id: String) {
+        WEBCAM("webcam")
+    }
 }

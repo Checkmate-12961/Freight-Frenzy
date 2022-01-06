@@ -29,7 +29,7 @@ public class Barcode implements AbstractSubsystem {
 
     public Barcode(HardwareMap hardwareMap) {
         webcam = OpenCvCameraFactory.getInstance().createWebcam(
-                hardwareMap.get(WebcamName.class, HardwareNames.Cameras.WEBCAM.name),
+                hardwareMap.get(WebcamName.class, HardwareNames.Cameras.WEBCAM.getId()),
                 hardwareMap.appContext.getResources().getIdentifier(
                         "cameraMonitorViewId",
                         "id",
@@ -51,6 +51,10 @@ public class Barcode implements AbstractSubsystem {
         });
 
         FtcDashboard.getInstance().startCameraStream(webcam, 12);
+    }
+
+    public void stop() {
+        webcam.stopStreaming();
     }
 
     public BarcodePosition getPosition() {
