@@ -80,13 +80,13 @@ abstract class BaseOpMode : LinearOpMode() {
         waitForStart()
         preRunLoop()
         while (opModeIsActive() && !isStopRequested) {
-            updateTelemetry()
             if (opModeType == OpModeType.TeleOp) {
                 gp1.update()
                 gp2.update()
             }
             robot.update()
             runLoop()
+            updateTelemetry()
         }
         robot.cleanup()
         cleanup()

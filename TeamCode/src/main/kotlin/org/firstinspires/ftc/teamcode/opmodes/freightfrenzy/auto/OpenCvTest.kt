@@ -11,6 +11,5 @@ class OpenCvTest : BaseOpMode() {
     override fun runLoop() {
         telemetry.addData("Position", robot.barcode.position)
         telemetry.addData("Analysis", robot.barcode.analysis)
-        telemetry.update()
     }
 }
