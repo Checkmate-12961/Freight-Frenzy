@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.*
  * The 2021-2022 robot class
  */
 class CheckmateRobot(hardwareMap: HardwareMap) : AbstractRobot() {
-    final val drivetrain: Drivetrain
+    val drivetrain: Drivetrain
     val carousel: Carousel
     val lift: Lift
     val intake: Intake
