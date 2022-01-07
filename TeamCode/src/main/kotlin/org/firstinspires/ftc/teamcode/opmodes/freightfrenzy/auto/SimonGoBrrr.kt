@@ -206,5 +206,5 @@ class SimonGoBrrr: BaseOpMode(){
     }
 
     // Data class to represent a set of actions. No touch.
-    data class ActionSet(@JvmField var DO: String, @JvmField var x: Double, @JvmField var y: Double, @JvmField var WAIT: Double)
+    data class ActionSet(@JvmField var DO: String, @JvmField var WAIT: Double, @JvmField var x: Double, @JvmField var y: Double)
 }
