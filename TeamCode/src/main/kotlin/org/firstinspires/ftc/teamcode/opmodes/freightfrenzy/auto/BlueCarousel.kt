@@ -15,8 +15,8 @@ class BlueCarousel: BaseOpMode() {
         // start
         @JvmField var pose0Start = SuperPose2d(-45.0, 62.0, 90.0)
         // reverse
-        // go forward and spin the right way
-        @JvmField var pose1ReOrient = SuperPose2d(-38.0, 54.0, 90.0)
+        // go backwards and spin the right way
+        @JvmField var pose1ReOrient = SuperPose2d(-38.0, 62.0, 0.0)
         // back up to the carousel
         @JvmField var pose2ToCarousel = SuperPose2d(-56.0, 54.0, -180.0)
         // spin 
@@ -31,7 +31,7 @@ class BlueCarousel: BaseOpMode() {
         sequence = robot.drivetrain.trajectorySequenceBuilder(pose0Start.pose2d)
             .setReversed(true)
             .splineTo(pose1ReOrient.vector2d, pose1ReOrient.hRad)
-            .splineTo(pose2ToCarousel.vector2d, pose2ToCarousel.hRad)
+            .lineToSplineHeading(pose2ToCarousel.pose2d)
             .addDisplacementMarker { // this is amazing! no idea why java doesn't do this
                 robot.carousel.power = 1.0
                 sleep(1000)

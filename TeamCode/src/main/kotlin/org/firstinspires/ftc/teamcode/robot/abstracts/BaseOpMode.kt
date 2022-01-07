@@ -51,6 +51,11 @@ abstract class BaseOpMode : LinearOpMode() {
     open fun setup() {}
 
     /**
+     * Runs in a loop after the op mode is initialized
+     */
+    open fun setupLoop() {}
+
+    /**
      * Runs once before the loop starts
      */
     open fun preRunLoop() {}
@@ -76,7 +81,9 @@ abstract class BaseOpMode : LinearOpMode() {
         gp1 = SuperController(gamepad1)
         gp2 = SuperController(gamepad2)
         setup()
-        waitForStart()
+        while (!isStarted) {
+            setupLoop()
+        }
         robot.preLoop()
         preRunLoop()
         while (opModeIsActive() && !isStopRequested) {

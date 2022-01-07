@@ -20,9 +20,17 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.barcode.BarcodeConstants
 class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
     private val webcam: OpenCvCamera
 
+    var isStreaming: Boolean? = null
+        private set
+
     // Closes the camera
     override fun preLoop() {
-        webcam.stopStreaming()
+        if (isStreaming == true) {
+            webcam.stopStreaming()
+            isStreaming = false
+        } else if (isStreaming == null) {
+            isStreaming = false
+        }
     }
 
     val position: BarcodePosition
@@ -40,12 +48,12 @@ class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
     private class BarcodeDeterminationPipeline : OpenCvPipeline() {
         /*
          * Working variables
-         * Cb is the used to isolate the blue in the feed.
+         * cb is the used to isolate the blue in the feed.
          */
         private var leftBoxCb: Mat? = null
         private var middleBoxCb: Mat? = null
         private val yCrCb = Mat()
-        private val cb = Mat()
+        private val y = Mat()
         private var leftValue = 0
         private var middleValue = 0
 
@@ -60,15 +68,15 @@ class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
          */
         private fun inputToCb(input: Mat) {
             Imgproc.cvtColor(input, yCrCb, Imgproc.COLOR_RGB2YCrCb)
-            Core.extractChannel(yCrCb, cb, 1)
+            Core.extractChannel(yCrCb, y, 0)
         }
 
         override fun init(firstFrame: Mat) {
             inputToCb(firstFrame)
 
             // LEFTBOX_Cb and MIDDLEBOX_Cb are the blue content of their respective boxes.
-            leftBoxCb = cb.submat(BarcodeConstants.leftBox.rectangle)
-            middleBoxCb = cb.submat(BarcodeConstants.middleBox.rectangle)
+            leftBoxCb = y.submat(BarcodeConstants.leftBox.rectangle)
+            middleBoxCb = y.submat(BarcodeConstants.middleBox.rectangle)
         }
 
         override fun processFrame(input: Mat): Mat {
@@ -144,9 +152,12 @@ class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
         // listens for when the camera is opened
         webcam.openCameraDeviceAsync(object : AsyncCameraOpenListener {
             override fun onOpened() {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT)
-                // Streams camera output to the FTCDashboard
-                FtcDashboard.getInstance().startCameraStream(webcam, 12.0)
+                if (isStreaming == null) {
+                    webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT)
+                    isStreaming = true
+                    // Streams camera output to the FTCDashboard
+                    FtcDashboard.getInstance().startCameraStream(webcam, 12.0)
+                }
             }
 
             override fun onError(errorCode: Int) {}

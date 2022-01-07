@@ -61,6 +61,9 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
     private var zeroPositionLatch = false
     private var runIntakeLatch = false
 
+    var isDown: Boolean = true
+        private set
+
     override fun update() {
         val tempHeight = height
 
@@ -80,6 +83,7 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
         }
 
         if (!liftMotor.isBusy && tempHeight == 0.0) {
+            isDown = true
             if (!zeroPositionLatch) {
                 zeroPositionLatch = true
                 // When the lift stops moving at the 0 point, set the set the bucket position
@@ -87,6 +91,7 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
                 bucket.position = Bucket.Positions.ZERO
             }
         } else {
+            isDown = false
             zeroPositionLatch = false
         }
     }

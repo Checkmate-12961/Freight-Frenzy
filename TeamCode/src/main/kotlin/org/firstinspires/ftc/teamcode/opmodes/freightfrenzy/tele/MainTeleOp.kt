@@ -32,6 +32,19 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket
 @Config
 @TeleOp(name = "TeleOp")
 class MainTeleOp : BaseOpMode() {
+    override fun preSetup() {
+        telemetry.addData("SHOULD YOU INIT", false)
+        telemetry.update()
+    }
+
+    override fun setupLoop() {
+        telemetry.addData("SHOULD YOU INIT",
+            if (robot.barcode.isStreaming != null) robot.barcode.isStreaming
+            else false
+        )
+        telemetry.update()
+    }
+
     override fun setup() {
         // Right bumper runs the carousel
         gp2.rightBumper.onActivate = TriggerableCallback { robot.carousel.power = 1.0 }
@@ -67,10 +80,10 @@ class MainTeleOp : BaseOpMode() {
             TriggerableCallback { robot.bucket.position = Bucket.Positions.REST }
 
         // A & B run the intake
-        gp2.a.onActivate = TriggerableCallback { robot.intake.power = -1.0 }
-        gp2.a.onDeactivate = TriggerableCallback { robot.intake.power = 0.0 }
-        gp2.b.onActivate = TriggerableCallback { robot.intake.power = 1.0 }
-        gp2.b.onDeactivate = TriggerableCallback { robot.intake.power = 0.0 }
+        gp2.a.onActivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = -1.0 }
+        gp2.a.onDeactivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = 0.0 }
+        gp2.b.onActivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = 1.0 }
+        gp2.b.onDeactivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = 0.0 }
 
         // Y floppas the intake
         gp2.y.onActivate = TriggerableCallback { robot.intake.floppa(true) }

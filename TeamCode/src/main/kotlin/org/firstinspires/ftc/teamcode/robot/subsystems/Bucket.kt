@@ -44,7 +44,7 @@ class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
         // The normal position
         REST(0.21),
         // The position when the bucket is all the way down
-        ZERO(0.17)
+        ZERO(0.14)
     }
 
     /**
