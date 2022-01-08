@@ -23,7 +23,7 @@ import java.util.*
  */
 @Config
 @Autonomous(preselectTeleOp = "TeleOp")
-class SimonGoBrrr: BaseOpMode(){
+class TimeRed: BaseOpMode(){
 
     /**
      * These are the DOs that are allowed in the thing.
@@ -41,95 +41,94 @@ class SimonGoBrrr: BaseOpMode(){
     // These happen in-order.
     companion object {
         // schmoovin and also to jolt the intake down
-        @JvmField var action0 = ActionSet(
+        @JvmField var action00 = ActionSet(
             "MOVE",
-            3.0,
-            -0.5,
+            .2,
+            -1.0,
             0.0
         )
         //turning to align to shipping hub
-        @JvmField var action1 = ActionSet(
+        @JvmField var action01 = ActionSet(
             "TURN",
-            2.0,
-            45.0,
+            0.0,
+            -90.0,
             0.0
         )
 
-        //intake down?
-        @JvmField var action01 = ActionSet(
-            "NONE",
-            0.0,
-            0.0,
+        //
+        @JvmField var action02 = ActionSet(
+            "MOVE",
+            .9,
+            -.5,
             0.0
         )
             //move forward again
-        @JvmField var action2 = ActionSet(
-            "NONE",
+        @JvmField var action03 = ActionSet(
+            "TURN",
             0.0,
-            0.0,
+            90.0,
             0.0
         )
         //bucket
-        @JvmField var action3 = ActionSet(
-            "NONE",
+        @JvmField var action04 = ActionSet(
+            "MOVE",
+            1.4,
+            -.3,
+            0.0
+        )
+        //
+        @JvmField var action05 = ActionSet(
+            "LIFT",
+            1.5,
+            4.0,
+            0.0
+        )
+        //
+        @JvmField var action06 = ActionSet(
+            "BUCKET",
+            1.5,
+            0.0,
+            0.0
+        )
+        //
+        @JvmField var action07 = ActionSet(
+            "MOVE",
+            .5,
+            0.4,
+            0.0
+        )
+        //
+        @JvmField var action08 = ActionSet(
+            "LIFT",
             0.0,
             0.0,
             0.0
         )
         //
-        @JvmField var action4 = ActionSet(
-            "NONE",
+        @JvmField var action09 = ActionSet(
+            "TURN",
             0.0,
-            0.0,
-            0.0
-        )
-        //
-        @JvmField var action5 = ActionSet(
-            "NONE",
-            0.0,
-            0.0,
-            0.0
-        )
-        //
-        @JvmField var action6 = ActionSet(
-            "NONE",
-            0.0,
-            0.0,
-            0.0
-        )
-        //
-        @JvmField var action7 = ActionSet(
-            "NONE",
-            0.0,
-            0.0,
-            0.0
-        )
-        //
-        @JvmField var action8 = ActionSet(
-            "NONE",
-            0.0,
-            0.0,
-            0.0
-        )
-        //
-        @JvmField var action9 = ActionSet(
-            "NONE",
-            0.0,
-            0.0,
+            -90.0,
             0.0
         )
         //
         @JvmField var action10 = ActionSet(
-            "NONE",
-            0.0,
-            0.0,
+            "MOVE",
+            2.0,
+            .5,
             0.0
         )
         //
         @JvmField var action11 = ActionSet(
-            "NONE",
+            "TURN",
             0.0,
-            0.0,
+            -85.0,
+            0.0
+        )
+        @JvmField var action12 = ActionSet(
+            "MOVE",
+            .4,
+            .5,
             0.0
         )
     }
@@ -157,8 +156,8 @@ class SimonGoBrrr: BaseOpMode(){
      */
     override fun setup() {
         val allActions = listOf(
-            action0, action1, action2, action3, action4, action5, action6, action7, action8,
-            action9, action10, action11
+            action00, action01, action02, action03, action04, action05, action06, action07,
+            action08, action09, action10, action11, action12
         )
         for (action in allActions) {
             if (action.DO.uppercase(Locale.ENGLISH) in legalDos) {
@@ -169,7 +168,7 @@ class SimonGoBrrr: BaseOpMode(){
 
     private var originTimeNano = System.nanoTime()
     private val timeDelta: Double
-            get() = (System.nanoTime() - originTimeNano).toDouble() / 1000000
+            get() = (System.nanoTime() - originTimeNano).toDouble() / 1000000000.0
 
 
     override fun preRunLoop() {
@@ -180,6 +179,7 @@ class SimonGoBrrr: BaseOpMode(){
      * No touch.
      */
     override fun runLoop() {
+        telemetry.addData("Time delta", timeDelta)
         if (currentIndex >= actions.size) {
             requestOpModeStop()
             return
@@ -196,14 +196,10 @@ class SimonGoBrrr: BaseOpMode(){
                     else throw DumbassProgrammerError(
                         "They tried to set an invalid lift position"
                     )
-                    if (liftIndex != 4) {
-                        robot.lift.target = liftIndices[liftIndex]
+                    robot.lift.target = if (liftIndex != 4) {
+                        liftIndices[liftIndex]
                     } else {
-                        robot.lift.target = when(robot.barcode.position) {
-                            Barcode.BarcodePosition.LEFT -> Lift.Points.LOW
-                            Barcode.BarcodePosition.MIDDLE -> Lift.Points.MID
-                            Barcode.BarcodePosition.RIGHT -> Lift.Points.HIGH
-                        }
+                        robot.barcode.position.toLiftPoint()
                     }
                 }
                 "BUCKET" -> {

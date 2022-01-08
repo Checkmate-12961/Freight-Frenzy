@@ -1,18 +1,20 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems.barcode
 
+import com.acmerobotics.dashboard.config.Config
 import org.opencv.core.Point
 import org.opencv.core.Rect
 
+@Config
 object BarcodeConstants {
     @JvmField var leftBox = DetectionBox(
-        225,
+        20,
         145,
         50,
         50,
         125
     )
     @JvmField var middleBox = DetectionBox(
-        20,
+        225,
         145,
         50,
         50,
