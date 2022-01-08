@@ -23,7 +23,7 @@ import java.util.*
  */
 @Config
 @Autonomous(preselectTeleOp = "TeleOp")
-class TimeBlue: BaseOpMode(){
+class TimeBlue: BaseOpMode(){/*
 
     /**
      * These are the DOs that are allowed in the thing.
@@ -41,14 +41,14 @@ class TimeBlue: BaseOpMode(){
     // These happen in-order.
     companion object {
         // schmoovin and also to jolt the intake down
-        @JvmField var action00 = ActionSet(
+        @JvmField var action00 = TimeRed.ActionSet(
             "MOVE",
             .2,
             -1.0,
             0.0
         )
         //turning to align to shipping hub
-        @JvmField var action01 = ActionSet(
+        @JvmField var action01 = TimeRed.ActionSet(
             "TURN",
             0.0,
             90.0,
@@ -56,73 +56,80 @@ class TimeBlue: BaseOpMode(){
         )
 
         //
-        @JvmField var action02 = ActionSet(
+        @JvmField var action02 = TimeRed.ActionSet(
             "MOVE",
             1.15,
             -.5,
             0.0
         )
             //move forward again
-        @JvmField var action03 = ActionSet(
-            "TURN",
-            0.0,
-            -90.0,
-            0.0
-        )
+        @JvmField var action03 = TimeRed.ActionSet(
+                "TURN",
+                0.0,
+                -90.0,
+                0.0
+            )
         //bucket
-        @JvmField var action04 = ActionSet(
+        @JvmField var action04 = TimeRed.ActionSet(
             "MOVE",
             1.2,
             -.3,
             0.0
         )
         //
-        @JvmField var action05 = ActionSet(
+        @JvmField var action05 = TimeRed.ActionSet(
             "LIFT",
             1.5,
             4.0,
             0.0
         )
         //
-        @JvmField var action06 = ActionSet(
+        @JvmField var action06 = TimeRed.ActionSet(
             "BUCKET",
             1.5,
             0.0,
             0.0
         )
         //
-        @JvmField var action07 = ActionSet(
+        @JvmField var action07 = TimeRed.ActionSet(
             "MOVE",
             .5,
             0.4,
             0.0
         )
         //
-        @JvmField var action08 = ActionSet(
+        @JvmField var action08 = TimeRed.ActionSet(
             "LIFT",
             0.0,
             0.0,
             0.0
         )
         //
-        @JvmField var action09 = ActionSet(
-            "NONE",
+        @JvmField var action09 = TimeRed.ActionSet(
+            "TURN",
             0.0,
+            90.0,
+            0.0
+        )
+        //
+        @JvmField var action10 = TimeRed.ActionSet(
+            "MOVE",
+            2.0,
             0.0,
             0.0
         )
         //
-        @JvmField var action10 = ActionSet(
-            "NONE",
+        @JvmField var action11 = TimeRed.ActionSet(
+            "TURN",
             0.0,
-            0.0,
+            85.0,
             0.0
         )
         //
-        @JvmField var action11 = ActionSet(
-            "NONE",
-            0.0,
-            0.0,
+        @JvmField var action12 = TimeRed.ActionSet(
+            "MOVE",
+            .4,
+            .5,
             0.0
         )
     }
@@ -132,7 +139,7 @@ class TimeBlue: BaseOpMode(){
     // ---------------------------------------- //
 
     // List of actions to take. No touch.
-    var actions = mutableListOf<ActionSet>()
+    var actions = mutableListOf<TimeRed.ActionSet>()
 
     private val liftIndices = listOf(
         Lift.Points.MIN,
@@ -227,4 +234,4 @@ class TimeBlue: BaseOpMode(){
 
     // Data class to represent a set of actions. No touch.
     data class ActionSet(@JvmField var DO: String, @JvmField var WAIT: Double, @JvmField var x: Double, @JvmField var y: Double)
-}
+*/}

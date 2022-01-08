@@ -108,9 +108,9 @@ class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
                 2
             ) // Thickness of the rectangle lines
             position = BarcodePosition.LEFT // Record our analysis
-            position = if (leftValue < middleValue && leftValue < BarcodeConstants.leftBox.threshold) {
+            position = if (leftValue > middleValue && leftValue > BarcodeConstants.leftBox.threshold) {
                 BarcodePosition.LEFT
-            } else if (middleValue < BarcodeConstants.middleBox.threshold) {
+            } else if (middleValue > BarcodeConstants.middleBox.threshold) {
                 BarcodePosition.MIDDLE
             } else {
                 BarcodePosition.RIGHT

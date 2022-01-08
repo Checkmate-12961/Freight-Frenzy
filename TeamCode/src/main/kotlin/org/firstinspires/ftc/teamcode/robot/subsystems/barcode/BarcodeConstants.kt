@@ -7,18 +7,18 @@ import org.opencv.core.Rect
 @Config
 object BarcodeConstants {
     @JvmField var leftBox = DetectionBox(
-        20,
-        145,
+        80,
+        130,
         50,
         50,
-        125
+        150
     )
     @JvmField var middleBox = DetectionBox(
-        225,
-        145,
+        255,
+        135,
         50,
         50,
-        125
+        150
     )
 }
 

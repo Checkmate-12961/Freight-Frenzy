@@ -109,7 +109,7 @@ abstract class BaseOpMode : LinearOpMode() {
         val position = robot.drivetrain.poseEstimate
         val velocity = robot.drivetrain.poseVelocity
         // Print pose to telemetry
-        telemetry.addData("liftHeight", robot.lift.height)
+        //telemetry.addData("liftHeight", robot.lift.height)
         telemetry.addData("x", position.x)
         telemetry.addData("y", position.y)
         telemetry.addData("h", Math.toDegrees(position.heading))

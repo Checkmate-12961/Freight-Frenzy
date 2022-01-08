@@ -38,6 +38,8 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
     // Keep track of the last position the motor was set to
     private var lastPosition = 0.0
 
+    private var offset = 0
+
     // This is weird because of the dashboard
     companion object {
         @JvmField var liftBounds = LiftBounds(0.0, 20.0)
@@ -107,10 +109,10 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
                             value, liftBounds.min, liftBounds.max
                         ) * ticksPerInch).toInt()
                 bucket.position = Bucket.Positions.REST
-                liftMotor.targetPosition = positionTicks
+                liftMotor.targetPosition = positionTicks + offset
             }
         }
-        get() = liftMotor.targetPosition.toDouble() / ticksPerInch
+        get() = liftMotor.targetPosition.toDouble() / ticksPerInch - offset
 
     var target: Points? = null
         set(value) {
@@ -127,6 +129,9 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
     init {
         // Initialize the motor
         liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+
+        offset = liftMotor.currentPosition
 
         // Reverse the motor if the config says to
         if (Motors.LIFT.reverse) {

@@ -53,7 +53,8 @@ class HardwareNames {
      */
     enum class Servos(val id: String, val reversed: Boolean) {
         BUCKET("bucket", false),
-        FLOPPA_INTAKE("floppaIntake", false)
+        CAP_SHOULDER("capShoulder", false),
+        CAP_ELBOW("capElbow", false)
     }
 
     /**
