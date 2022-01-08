@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
+import org.firstinspires.ftc.teamcode.robot.subsystems.Barcode
 import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift
 import org.firstinspires.ftc.teamcode.robot.util.DumbassProgrammerError
@@ -30,36 +31,45 @@ class SimonGoBrrr: BaseOpMode(){
      */
     private val legalDos = listOf(
         "MOVE", // Moves the bot by x, y. This is power, not inches!
-        "LIFT", // Runs the lift. x = 0: MIN, 1: LOW, 2: MID, 3: HIGH
+        "LIFT", // Runs the lift. x = 0: MIN, 1: LOW, 2: MID, 3: HIGH, 4: based on the camera value
         "BUCKET", // Makes the bucket dump.
         "CAROUSEL", // Runs the carousel at x power between -1 and 1.
         "TURN" // Turns the robot by x degrees
     )
 
     // Actions. TODO: Touch.
+    // These happen in-order.
     companion object {
-        // REMEMBER TO LEAVE COMMENTS!
+        // schmoovin and also to jolt the intake down
         @JvmField var action0 = ActionSet(
-            "NONE",
-            0.0,
-            0.0,
+            "MOVE",
+            3.0,
+            -0.5,
             0.0
         )
-        //
+        //turning to align to shipping hub
         @JvmField var action1 = ActionSet(
+            "TURN",
+            2.0,
+            45.0,
+            0.0
+        )
+
+        //intake down?
+        @JvmField var action01 = ActionSet(
             "NONE",
             0.0,
             0.0,
             0.0
         )
-        //
+            //move forward again
         @JvmField var action2 = ActionSet(
             "NONE",
             0.0,
             0.0,
             0.0
         )
-        //
+        //bucket
         @JvmField var action3 = ActionSet(
             "NONE",
             0.0,
@@ -157,28 +167,44 @@ class SimonGoBrrr: BaseOpMode(){
         }
     }
 
+    private var originTimeNano = System.nanoTime()
+    private val timeDelta: Double
+            get() = (System.nanoTime() - originTimeNano).toDouble() / 1000000
+
+
     override fun preRunLoop() {
-        time = 0.0
+        originTimeNano = System.nanoTime()
     }
 
     /**
      * No touch.
      */
     override fun runLoop() {
-        val action = actions[currentIndex]
-
         if (currentIndex >= actions.size) {
             requestOpModeStop()
-        } else if (!actionIsSet) {
+            return
+        }
+
+        val action = actions[currentIndex]
+
+        if (!actionIsSet) {
             when(action.DO) {
                 "MOVE" -> robot.drivetrain.setWeightedDrivePower(Pose2d(action.x, action.y))
                 "LIFT" -> {
                     val liftIndex: Int
-                    if (action.x in 0.0..3.0) liftIndex = action.x.toInt()
+                    if (action.x in 0.0..4.0) liftIndex = action.x.toInt()
                     else throw DumbassProgrammerError(
                         "They tried to set an invalid lift position"
                     )
-                    robot.lift.target = liftIndices[liftIndex]
+                    if (liftIndex != 4) {
+                        robot.lift.target = liftIndices[liftIndex]
+                    } else {
+                        robot.lift.target = when(robot.barcode.position) {
+                            Barcode.BarcodePosition.LEFT -> Lift.Points.LOW
+                            Barcode.BarcodePosition.MIDDLE -> Lift.Points.MID
+                            Barcode.BarcodePosition.RIGHT -> Lift.Points.HIGH
+                        }
+                    }
                 }
                 "BUCKET" -> {
                     robot.bucket.position = Bucket.Positions.DUMP
@@ -189,8 +215,8 @@ class SimonGoBrrr: BaseOpMode(){
                 "TURN" -> robot.drivetrain.turn(toRadians(action.x))
             }
             actionIsSet = true
-            time = 0.0
-        } else if (time >= action.WAIT) {
+            originTimeNano = System.nanoTime()
+        } else if (timeDelta >= action.WAIT) {
             when(action.DO) {
                 "MOVE" -> robot.drivetrain.setWeightedDrivePower(Pose2d())
                 "BUCKET" -> {
