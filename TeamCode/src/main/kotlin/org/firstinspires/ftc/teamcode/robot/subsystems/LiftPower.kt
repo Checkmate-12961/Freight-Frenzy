@@ -37,17 +37,20 @@ class LiftPower(hardwareMap: HardwareMap, private val bucket: Bucket, private va
 
     // This is weird because of the dashboard
     companion object {
-        @JvmField var powerCoefficient = 0.5
+        @JvmField var powerCoefficient = 0.7
     }
 
     var stopIntakeLatch = false
 
     var power: Double
         set(value) {
-            bucket.position = Bucket.Positions.REST
+            //bucket.position = Bucket.Positions.REST
             if (-value < 0.0) {
                 intake.power = 1.0
             } else {
+                if (bucket.position == Bucket.Positions.ZERO) {
+                    bucket.position = Bucket.Positions.REST
+                }
                 intake.power = 0.0
             }
             liftMotor.power = Range.clip(-value, -1.0, 1.0) * powerCoefficient

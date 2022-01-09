@@ -67,6 +67,11 @@ class MainTeleOp : BaseOpMode() {
         gp2.dpadLeft.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.LOW }
         gp2.dpadDown.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.MIN }*/
 
+        // Left trigger zeroes the bucket
+        gp2.leftTrigger.onActivate = TriggerableCallback {
+            robot.bucket.position = Bucket.Positions.ZERO
+        }
+
         gp2.leftStickY.whileActive = TriggerableCallback {
             robot.shitLift.power = gp2.leftStickY.correctedValue.toDouble()
         }
@@ -79,8 +84,7 @@ class MainTeleOp : BaseOpMode() {
 
         // X wiggles the bucket
         gp2.x.onActivate = TriggerableCallback { robot.bucket.position = Bucket.Positions.REST }
-        gp2.x.onDeactivate =
-            TriggerableCallback { robot.bucket.position = Bucket.Positions.ZERO }
+        //gp2.x.onDeactivate = TriggerableCallback { robot.bucket.position = Bucket.Positions.ZERO }
 
         // Right trigger dumps the bucket
         gp2.rightTrigger.activationThreshold = 0.5
@@ -90,7 +94,10 @@ class MainTeleOp : BaseOpMode() {
             TriggerableCallback { robot.bucket.position = Bucket.Positions.REST }
 
         // A & B run the intake
-        gp2.a.onActivate = TriggerableCallback { /*if (robot.lift.isDown)*/ robot.intake.power = -1.0 }
+        gp2.a.onActivate = TriggerableCallback { /*if (robot.lift.isDown)*/
+            robot.bucket.position = Bucket.Positions.ZERO
+            robot.intake.power = -1.0
+        }
         gp2.a.onDeactivate = TriggerableCallback { /*if (robot.lift.isDown)*/ robot.intake.power = 0.0 }
         gp2.b.onActivate = TriggerableCallback { /*if (robot.lift.isDown)*/robot.intake.power = 1.0 }
         gp2.b.onDeactivate = TriggerableCallback {/*if (robot.lift.isDown)*/ robot.intake.power = 0.0 }
