@@ -53,8 +53,8 @@ class MainTeleOp : BaseOpMode() {
         // Left bumper runs the carousel the other way
         gp2.leftBumper.onActivate = TriggerableCallback { robot.carousel.power = -1.0 }
         gp2.leftBumper.onDeactivate = TriggerableCallback { robot.carousel.power = 0.0 }
-
-        // Left stick Y axis runs the arm
+/*
+        // Left stick Y axis runs the lift
         gp2.leftStickY.activationThreshold = 0.4
         gp2.leftStickY.whileActive =
             TriggerableCallback { robot.lift.height = robot.lift.height - liftChangeSpeed }
@@ -65,12 +65,26 @@ class MainTeleOp : BaseOpMode() {
         gp2.dpadUp.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.HIGH }
         gp2.dpadRight.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.LOW }
         gp2.dpadLeft.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.LOW }
-        gp2.dpadDown.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.MIN }
+        gp2.dpadDown.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.MIN }*/
+
+        // Left trigger zeroes the bucket
+        gp2.leftTrigger.onActivate = TriggerableCallback {
+            robot.bucket.position = Bucket.Positions.ZERO
+        }
+
+        gp2.leftStickY.whileActive = TriggerableCallback {
+            robot.shitLift.power = gp2.leftStickY.correctedValue.toDouble()
+        }
+        gp2.leftStickY.whileActiveNeg = gp2.leftStickY.whileActive
+
+        gp2.leftStickY.onDeactivate = TriggerableCallback {
+            robot.shitLift.power = 0.0
+        }
+        gp2.leftStickY.onDeactivateNeg = gp2.leftStickY.onDeactivate
 
         // X wiggles the bucket
         gp2.x.onActivate = TriggerableCallback { robot.bucket.position = Bucket.Positions.REST }
-        gp2.x.onDeactivate =
-            TriggerableCallback { robot.bucket.position = Bucket.Positions.ZERO }
+        //gp2.x.onDeactivate = TriggerableCallback { robot.bucket.position = Bucket.Positions.ZERO }
 
         // Right trigger dumps the bucket
         gp2.rightTrigger.activationThreshold = 0.5
@@ -80,13 +94,17 @@ class MainTeleOp : BaseOpMode() {
             TriggerableCallback { robot.bucket.position = Bucket.Positions.REST }
 
         // A & B run the intake
-        gp2.a.onActivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = -1.0 }
-        gp2.a.onDeactivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = 0.0 }
-        gp2.b.onActivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = 1.0 }
-        gp2.b.onDeactivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = 0.0 }
+        gp2.a.onActivate = TriggerableCallback { /*if (robot.lift.isDown)*/
+            robot.bucket.position = Bucket.Positions.ZERO
+            robot.intake.power = -1.0
+        }
+        gp2.a.onDeactivate = TriggerableCallback { /*if (robot.lift.isDown)*/ robot.intake.power = 0.0 }
+        gp2.b.onActivate = TriggerableCallback { /*if (robot.lift.isDown)*/robot.intake.power = 1.0 }
+        gp2.b.onDeactivate = TriggerableCallback {/*if (robot.lift.isDown)*/ robot.intake.power = 0.0 }
 
-        // Y floppas the intake
-        gp2.y.onActivate = TriggerableCallback { robot.intake.floppa(true) }
+        // Right stick runs the capper
+        //gp2.rightStickY.onActivate = TriggerableCallback { robot.capper.nextPosition() }
+        //gp2.rightStickY.onActivateNeg = TriggerableCallback { robot.capper.prevPosition() }
     }
 
     override fun runLoop() {

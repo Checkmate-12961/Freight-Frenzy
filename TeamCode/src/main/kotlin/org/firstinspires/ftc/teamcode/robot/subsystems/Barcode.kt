@@ -40,7 +40,15 @@ class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
 
     // getPosition returns where the barcode is located in a BarcodePosition
     enum class BarcodePosition {
-        LEFT, MIDDLE, RIGHT
+        LEFT, MIDDLE, RIGHT;
+
+        fun toLiftPoint(): Lift.Points {
+            return when(this) {
+                LEFT -> Lift.Points.HIGH
+                MIDDLE -> Lift.Points.MID
+                RIGHT -> Lift.Points.LOW
+            }
+        }
     }
 
     private val pipeline = BarcodeDeterminationPipeline()
@@ -50,8 +58,8 @@ class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
          * Working variables
          * cb is the used to isolate the blue in the feed.
          */
-        private var leftBoxCb: Mat? = null
-        private var middleBoxCb: Mat? = null
+        private var leftBoxY: Mat? = null
+        private var middleBoxY: Mat? = null
         private val yCrCb = Mat()
         private val y = Mat()
         private var leftValue = 0
@@ -75,16 +83,16 @@ class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
             inputToCb(firstFrame)
 
             // LEFTBOX_Cb and MIDDLEBOX_Cb are the blue content of their respective boxes.
-            leftBoxCb = y.submat(BarcodeConstants.leftBox.rectangle)
-            middleBoxCb = y.submat(BarcodeConstants.middleBox.rectangle)
+            leftBoxY = y.submat(BarcodeConstants.leftBox.rectangle)
+            middleBoxY = y.submat(BarcodeConstants.middleBox.rectangle)
         }
 
         override fun processFrame(input: Mat): Mat {
             inputToCb(input)
 
             // 
-            leftValue = Core.mean(leftBoxCb).`val`[0].toInt()
-            middleValue = Core.mean(middleBoxCb).`val`[0].toInt()
+            leftValue = Core.mean(leftBoxY).`val`[0].toInt()
+            middleValue = Core.mean(middleBoxY).`val`[0].toInt()
             Imgproc.rectangle(
                 input,  // Buffer to draw on
                 BarcodeConstants.leftBox.pointA,  // First point which defines the rectangle
@@ -153,7 +161,7 @@ class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
         webcam.openCameraDeviceAsync(object : AsyncCameraOpenListener {
             override fun onOpened() {
                 if (isStreaming == null) {
-                    webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT)
+                    webcam.startStreaming(320, 240, OpenCvCameraRotation.UPSIDE_DOWN)
                     isStreaming = true
                     // Streams camera output to the FTCDashboard
                     FtcDashboard.getInstance().startCameraStream(webcam, 12.0)

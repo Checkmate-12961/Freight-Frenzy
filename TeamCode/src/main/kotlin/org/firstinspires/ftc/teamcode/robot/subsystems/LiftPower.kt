@@ -24,37 +24,48 @@ package org.firstinspires.ftc.teamcode.robot.subsystems
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
-import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.Range
-import org.firstinspires.ftc.teamcode.robot.HardwareNames
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
+import kotlin.math.PI
 
 @Config
-class Intake(hardwareMap: HardwareMap) : AbstractSubsystem {
-    // This subsystem has two motors because each motor is useless without the other
-    private val intakeMotor = hardwareMap.get(DcMotorEx::class.java, Motors.INTAKE.id)
+class LiftPower(hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake) : AbstractSubsystem {
+    private val liftMotor = hardwareMap.get(DcMotorEx::class.java, Motors.LIFT.id)
 
-    companion object{
-        @JvmField var coefficient = .7
+    // This is weird because of the dashboard
+    companion object {
+        @JvmField var powerCoefficient = 0.7
     }
 
+    var stopIntakeLatch = false
+
     var power: Double
-        /**
-         * Positive values push stuff out, negative values pull stuff in (intake)
-         */
         set(value) {
-            intakeMotor.power = Range.clip(value, -1.0, 1.0) * coefficient
+            //bucket.position = Bucket.Positions.REST
+            if (-value < 0.0) {
+                intake.power = 1.0
+            } else {
+                if (bucket.position == Bucket.Positions.ZERO) {
+                    bucket.position = Bucket.Positions.REST
+                }
+                intake.power = 0.0
+            }
+            liftMotor.power = Range.clip(-value, -1.0, 1.0) * powerCoefficient
         }
-        get() {
-            return intakeMotor.power / coefficient
-        }
+        get() = liftMotor.power
 
     init {
-        // Set up the intake motor
-        intakeMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
-        intakeMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        intakeMotor.power = 0.0
+        // Initialize the motor
+        liftMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+
+        // Reverse the motor if the config says to
+        if (Motors.LIFT.reverse) {
+            liftMotor.direction = DcMotorSimple.Direction.REVERSE
+        }
+
+        liftMotor.power = 0.0
     }
 }

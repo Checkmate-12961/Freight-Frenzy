@@ -123,7 +123,9 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
     override fun update() {
         updatePoseEstimate()
         persistentPoseEstimate = poseEstimate.toSuperPose2d()
-        trajectorySequenceRunner.update(poseEstimate, poseVelocity)?.let { setDriveSignal(it) }
+        trajectorySequenceRunner.update(poseEstimate, poseVelocity, voltage)?.let {
+            setDriveSignal(it)
+        }
     }
 
     private fun waitForIdle() {
@@ -142,6 +144,9 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
             motor.mode = runMode
         }
     }
+
+    val voltage
+        get() = batteryVoltageSensor.voltage
 
     fun setWeightedDrivePower(drivePower: Pose2d) {
         var vel = drivePower

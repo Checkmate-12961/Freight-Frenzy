@@ -32,10 +32,12 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.*
 class CheckmateRobot(hardwareMap: HardwareMap) : AbstractRobot() {
     val drivetrain: Drivetrain
     val carousel: Carousel
-    val lift: Lift
+    //val lift: Lift
     val intake: Intake
     val bucket: Bucket
     val barcode: Barcode
+    //val capper: Capper
+    val shitLift: LiftPower
 
     /**
      * Set up the robot and initialize the subsystems you want to use
@@ -65,11 +67,15 @@ class CheckmateRobot(hardwareMap: HardwareMap) : AbstractRobot() {
         addSubsystem(bucket)
 
         // Set up the lift (it needs access to the bucket)
-        lift = Lift(hardwareMap, bucket, intake)
-        addSubsystem(lift)
+        shitLift = LiftPower(hardwareMap, bucket, intake)
+        addSubsystem(shitLift)
 
         // Set up the barcode stuff
         barcode = Barcode(hardwareMap)
         addSubsystem(barcode)
+
+        // Set up the capper stuff
+        //capper = Capper(hardwareMap)
+        //addSubsystem(capper)
     }
 }

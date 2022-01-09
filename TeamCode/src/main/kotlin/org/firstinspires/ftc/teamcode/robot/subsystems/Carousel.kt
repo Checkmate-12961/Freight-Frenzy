@@ -58,7 +58,7 @@ class Carousel(hardwareMap: HardwareMap) : AbstractSubsystem {
         /**
          * Maximum power the motor can spin at
          */
-        @JvmField var maxPower = 0.5
+        @JvmField var maxPower = 0.4
     }
 
     /**
