@@ -30,14 +30,20 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.*
  * The 2021-2022 robot class
  */
 class CheckmateRobot(hardwareMap: HardwareMap) : AbstractRobot() {
+    override val tag = "CheckmateRobot"
+
     val drivetrain: Drivetrain
+        get() = subsystems["Drivetrain"] as Drivetrain
     val carousel: Carousel
-    //val lift: Lift
+        get() = subsystems["Carousel"] as Carousel
+    val lift: Lift
+        get() = subsystems["Lift"] as Lift
     val intake: Intake
+        get() = subsystems["Intake"] as Intake
     val bucket: Bucket
+        get() = subsystems["Bucket"] as Bucket
     val barcode: Barcode
-    //val capper: Capper
-    val shitLift: LiftPower
+        get() = subsystems["Barcode"] as Barcode
 
     /**
      * Set up the robot and initialize the subsystems you want to use
@@ -49,33 +55,21 @@ class CheckmateRobot(hardwareMap: HardwareMap) : AbstractRobot() {
         }
 
         // Set up the drivetrain
-        drivetrain = Drivetrain(hardwareMap)
-        addSubsystem(drivetrain)
-
-        //addSubsystem(new RealsenseLoader(hardwareMap));
+        subsystems.register(Drivetrain(hardwareMap))
 
         // Set up the carousel motor
-        carousel = Carousel(hardwareMap)
-        addSubsystem(carousel)
+        subsystems.register(Carousel(hardwareMap))
 
         // Set up the intake
-        intake = Intake(hardwareMap)
-        addSubsystem(intake)
+        subsystems.register(Intake(hardwareMap))
 
         // Set up the bucket
-        bucket = Bucket(hardwareMap)
-        addSubsystem(bucket)
+        subsystems.register(Bucket(hardwareMap))
 
-        // Set up the lift (it needs access to the bucket)
-        shitLift = LiftPower(hardwareMap, bucket, intake)
-        addSubsystem(shitLift)
+        // Set up the lift (it needs access to the bucket and the intake)
+        subsystems.register(Lift(hardwareMap, bucket, intake))
 
         // Set up the barcode stuff
-        barcode = Barcode(hardwareMap)
-        addSubsystem(barcode)
-
-        // Set up the capper stuff
-        //capper = Capper(hardwareMap)
-        //addSubsystem(capper)
+        subsystems.register(Barcode(hardwareMap))
     }
 }

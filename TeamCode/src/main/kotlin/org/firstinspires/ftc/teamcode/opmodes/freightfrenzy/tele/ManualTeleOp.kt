@@ -24,14 +24,18 @@ import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.util.Range
+import org.firstinspires.ftc.teamcode.robot.CheckmateRobot
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
 import org.firstinspires.ftc.teamcode.robot.abstracts.Triggerables.TriggerableCallback
-import org.firstinspires.ftc.teamcode.robot.subsystems.Lift
 import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket
+import org.firstinspires.ftc.teamcode.robot.subsystems.LiftPower
 
 @Config
-@TeleOp(name = "TeleOp")
-class MainTeleOp : BaseOpMode() {
+@TeleOp(name = "ManualTeleOp")
+class ManualTeleOp : BaseOpMode() {
+    private val CheckmateRobot.liftPower: LiftPower
+        get() = subsystems["Lift"] as LiftPower
+
     override fun preSetup() {
         telemetry.addData("SHOULD YOU INIT", false)
         telemetry.update()
@@ -46,6 +50,8 @@ class MainTeleOp : BaseOpMode() {
     }
 
     override fun setup() {
+        robot.subsystems["Lift"] = LiftPower(hardwareMap, robot.bucket, robot.intake)
+
         // Right bumper runs the carousel
         gp2.rightBumper.onActivate = TriggerableCallback { robot.carousel.power = 1.0 }
         gp2.rightBumper.onDeactivate = TriggerableCallback { robot.carousel.power = 0.0 }
@@ -54,23 +60,23 @@ class MainTeleOp : BaseOpMode() {
         gp2.leftBumper.onActivate = TriggerableCallback { robot.carousel.power = -1.0 }
         gp2.leftBumper.onDeactivate = TriggerableCallback { robot.carousel.power = 0.0 }
 
-        // Left stick Y axis runs the arm
-        gp2.leftStickY.activationThreshold = 0.4
-        gp2.leftStickY.whileActive =
-            TriggerableCallback { robot.lift.height = robot.lift.height - liftChangeSpeed }
-        gp2.leftStickY.whileActiveNeg =
-            TriggerableCallback { robot.lift.height = robot.lift.height + liftChangeSpeed }
+        // Left trigger zeroes the bucket
+        gp2.leftTrigger.onActivate = TriggerableCallback {
+            robot.bucket.position = Bucket.Positions.ZERO
+        }
 
-        // Dpad does set points
-        gp2.dpadUp.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.HIGH }
-        gp2.dpadRight.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.LOW }
-        gp2.dpadLeft.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.LOW }
-        gp2.dpadDown.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.MIN }
+        gp2.leftStickY.whileActive = TriggerableCallback {
+            robot.liftPower.power = gp2.leftStickY.correctedValue.toDouble()
+        }
+        gp2.leftStickY.whileActiveNeg = gp2.leftStickY.whileActive
 
-        // X wiggles the bucket
+        gp2.leftStickY.onDeactivate = TriggerableCallback {
+            robot.liftPower.power = 0.0
+        }
+        gp2.leftStickY.onDeactivateNeg = gp2.leftStickY.onDeactivate
+
+        // X rests the bucket
         gp2.x.onActivate = TriggerableCallback { robot.bucket.position = Bucket.Positions.REST }
-        gp2.x.onDeactivate =
-            TriggerableCallback { robot.bucket.position = Bucket.Positions.ZERO }
 
         // Right trigger dumps the bucket
         gp2.rightTrigger.activationThreshold = 0.5
@@ -80,10 +86,13 @@ class MainTeleOp : BaseOpMode() {
             TriggerableCallback { robot.bucket.position = Bucket.Positions.REST }
 
         // A & B run the intake
-        gp2.a.onActivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = -1.0 }
-        gp2.a.onDeactivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = 0.0 }
-        gp2.b.onActivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = 1.0 }
-        gp2.b.onDeactivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = 0.0 }
+        gp2.a.onActivate = TriggerableCallback {
+            robot.bucket.position = Bucket.Positions.ZERO
+            robot.intake.power = -1.0
+        }
+        gp2.a.onDeactivate = TriggerableCallback { robot.intake.power = 0.0 }
+        gp2.b.onActivate = TriggerableCallback { robot.intake.power = 1.0 }
+        gp2.b.onDeactivate = TriggerableCallback { robot.intake.power = 0.0 }
     }
 
     override fun runLoop() {
@@ -127,8 +136,5 @@ class MainTeleOp : BaseOpMode() {
                 opModeType = OpModeType.TeleOp
         }
     }
-
-    companion object {
-        var liftChangeSpeed = 0.2
-    }
 }
+

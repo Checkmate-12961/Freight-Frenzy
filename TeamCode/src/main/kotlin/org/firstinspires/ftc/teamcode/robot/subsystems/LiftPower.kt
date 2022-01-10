@@ -29,7 +29,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
-import kotlin.math.PI
 
 @Config
 class LiftPower(hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake) : AbstractSubsystem {
@@ -39,8 +38,6 @@ class LiftPower(hardwareMap: HardwareMap, private val bucket: Bucket, private va
     companion object {
         @JvmField var powerCoefficient = 0.7
     }
-
-    var stopIntakeLatch = false
 
     var power: Double
         set(value) {
