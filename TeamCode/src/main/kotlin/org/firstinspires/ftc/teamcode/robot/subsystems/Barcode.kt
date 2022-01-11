@@ -15,9 +15,13 @@ import org.firstinspires.ftc.teamcode.robot.HardwareNames
 import org.openftc.easyopencv.OpenCvCamera.AsyncCameraOpenListener
 import org.openftc.easyopencv.OpenCvCameraRotation
 import com.acmerobotics.dashboard.FtcDashboard
+import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 import org.firstinspires.ftc.teamcode.robot.subsystems.barcode.BarcodeConstants
 
 class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
+    override val tag = "Barcode"
+    override val subsystems = SubsystemMap{ tag }
+
     private val webcam: OpenCvCamera
 
     var isStreaming: Boolean? = null

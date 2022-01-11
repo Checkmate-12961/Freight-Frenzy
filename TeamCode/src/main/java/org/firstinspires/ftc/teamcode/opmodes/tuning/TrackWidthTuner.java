@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.MovingStatistics;
 
@@ -63,7 +61,7 @@ public class TrackWidthTuner extends LinearOpMode {
                 headingAccumulator += Angle.norm(heading - lastHeading);
                 lastHeading = heading;
 
-                drivetrain.update();
+                drivetrain.loop();
             }
 
             double trackWidth = DriveConstants.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;

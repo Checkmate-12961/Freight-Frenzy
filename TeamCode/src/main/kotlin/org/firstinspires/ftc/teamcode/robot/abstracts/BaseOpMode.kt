@@ -85,6 +85,7 @@ abstract class BaseOpMode : LinearOpMode() {
         setup()
         while (!isStarted) {
             setupLoop()
+            updateTelemetry()
         }
         robot.preLoop()
         preRunLoop()

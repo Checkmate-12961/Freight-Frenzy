@@ -29,10 +29,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
+import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 import kotlin.math.PI
 
 @Config
-class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake) : AbstractSubsystem {
+class Lift(
+    hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake
+): AbstractSubsystem {
+    override val tag = "Lift"
+    override val subsystems = SubsystemMap{ tag }
+
     private val liftMotor = hardwareMap.get(DcMotorEx::class.java, Motors.LIFT.id)
 
     // Keep track of the last position the motor was set to
@@ -66,7 +72,7 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
     var isDown: Boolean = true
         private set
 
-    override fun update() {
+    override fun loop() {
         val tempHeight = height
 
         if (!liftMotor.isBusy) {
@@ -123,6 +129,7 @@ class Lift(hardwareMap: HardwareMap, private val bucket: Bucket, private val int
                 Points.MID -> height = liftSetPoints.mid
                 Points.HIGH -> height = liftSetPoints.high
                 Points.MAX -> height = liftBounds.max
+                else -> {}
             }
         }
 

@@ -27,6 +27,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.util.Range
+import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 import org.firstinspires.ftc.teamcode.robot.subsystems.Carousel.Carousel.maxPower
 
 /**
@@ -34,6 +35,9 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Carousel.Carousel.maxPowe
  * @param hardwareMap HardwareMap passed in from the op mode
  */
 class Carousel(hardwareMap: HardwareMap) : AbstractSubsystem {
+    override val tag = "Carousel"
+    override val subsystems = SubsystemMap{ tag }
+
     /**
      * The motor that spins the carousel
      */

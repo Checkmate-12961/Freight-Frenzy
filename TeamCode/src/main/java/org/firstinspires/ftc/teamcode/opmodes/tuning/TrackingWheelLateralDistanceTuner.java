@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
@@ -99,7 +97,7 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
             Pose2d vel = new Pose2d(0, 0, -gamepad1.right_stick_x);
             drivetrain.setDrivePower(vel);
 
-            drivetrain.update();
+            drivetrain.loop();
 
             double heading = drivetrain.getPoseEstimate().getHeading();
             double deltaHeading = heading - lastHeading;

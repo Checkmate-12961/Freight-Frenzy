@@ -25,11 +25,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Servos
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
+import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 
 /**
  * Bucket thingy on the lift. There is no direct access to the servo position for a reason.
  */
 class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
+    override val tag = "Bucket"
+    override val subsystems = SubsystemMap{ tag }
+
     private var bucketServo = hardwareMap.get(Servo::class.java, Servos.BUCKET.id)
 
     /**

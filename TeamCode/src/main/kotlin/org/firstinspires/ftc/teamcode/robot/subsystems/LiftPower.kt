@@ -29,9 +29,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
+import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 
 @Config
-class LiftPower(hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake) : AbstractSubsystem {
+class LiftPower(
+    hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake
+): AbstractSubsystem {
+    override val tag = "LiftPower"
+    override val subsystems = SubsystemMap{ tag }
+
     private val liftMotor = hardwareMap.get(DcMotorEx::class.java, Motors.LIFT.id)
 
     // This is weird because of the dashboard

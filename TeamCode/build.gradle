@@ -11,7 +11,7 @@
 
 // Custom definitions may go here
 buildscript {
-    ext.kotlin_version = '1.5.31'
+    ext.kotlin_version = '1.6.10'
 
     repositories {
         mavenCentral()
@@ -45,12 +45,10 @@ dependencies {
     implementation 'org.openftc:apriltag:1.0.0'
 
     // Realsense wrapper dependency
-    implementation files('lib/ftc265-3.0.0-debug.aar')
-    implementation 'com.intel.realsense:librealsense:2.41.1-ftc265@aar'
+    implementation 'com.spartronics4915.lib:ftc265:2.1.9'
 }
 
 repositories {
     // Realsense wrapper repo
-    maven { url = "https://dl.bintray.com/first-tech-challenge/ftcsdk/" }
     maven { url = "https://maven.0x778.tk" }
 }

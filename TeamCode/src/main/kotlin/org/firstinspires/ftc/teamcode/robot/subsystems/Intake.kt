@@ -28,9 +28,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
+import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 
 @Config
 class Intake(hardwareMap: HardwareMap) : AbstractSubsystem {
+    override val tag = "Intake"
+    override val subsystems = SubsystemMap{ tag }
+
     private val intakeMotor = hardwareMap.get(DcMotorEx::class.java, Motors.INTAKE.id)
 
     companion object{

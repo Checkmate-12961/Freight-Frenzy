@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -51,7 +49,7 @@ public class MaxVelocityTuner extends LinearOpMode {
         ElapsedTime timer = new ElapsedTime();
 
         while (!isStopRequested() && timer.seconds() < RUNTIME) {
-            drivetrain.update();
+            drivetrain.loop();
             drivetrain.updatePoseEstimate();
 
             Pose2d poseVelo = Objects.requireNonNull(drivetrain.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");

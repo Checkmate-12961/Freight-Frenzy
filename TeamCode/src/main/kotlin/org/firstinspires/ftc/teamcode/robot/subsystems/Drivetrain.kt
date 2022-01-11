@@ -35,7 +35,9 @@ import org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto.util.OpModeUtil
 import org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto.util.toSuperPose2d
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
+import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.SuperTrajectorySequenceRunner
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequenceBuilder
@@ -53,6 +55,9 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
     DriveConstants.TRACK_WIDTH,
     LATERAL_MULTIPLIER
 ), AbstractSubsystem {
+    override val tag = "Drivetrain"
+    override val subsystems = SubsystemMap{ tag }
+
     private val trajectorySequenceRunner: SuperTrajectorySequenceRunner
     private val leftFront: DcMotorEx
     private val leftRear: DcMotorEx
@@ -120,7 +125,7 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
     val lastError: Pose2d?
         get() = trajectorySequenceRunner.lastPoseError
 
-    override fun update() {
+    override fun loop() {
         updatePoseEstimate()
         persistentPoseEstimate = poseEstimate.toSuperPose2d()
         trajectorySequenceRunner.update(poseEstimate, poseVelocity, voltage)?.let {
@@ -129,7 +134,7 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
     }
 
     private fun waitForIdle() {
-        while (!Thread.currentThread().isInterrupted && isBusy) update()
+        while (!Thread.currentThread().isInterrupted && isBusy) loop()
     }
 
     fun cancelSequence() {
@@ -214,6 +219,8 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
     }
 
     companion object {
+        @JvmField var cameraRobotOffset = OpModeUtil.SuperPose2d(-6.0, -6.0, 90.0)
+
         @JvmField var persistentPoseEstimate = OpModeUtil.SuperPose2d()
 
         @JvmField var TRANSLATIONAL_PID = PIDCoefficients(8.0, 0.0, 1.0)
@@ -286,16 +293,11 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
         }
 
         // DONE: if desired, use setLocalizer() to change the localization method
-        /*
-        localizer = T265Localizer(
-            T265Helper.getCamera(
-                T265Camera.OdometryInfo(
-                    Pose2d(-6.0, 6.0, kotlin.math.PI),
-                    0.8
-                ), hardwareMap.appContext
-            )
+        val t265Localizer = T265Localizer(
+            cameraRobotOffset.pose2d, .8, hardwareMap
         )
-        localizer.update()*/
+        subsystems.register(t265Localizer)
+        localizer = t265Localizer
 
         trajectorySequenceRunner = SuperTrajectorySequenceRunner(follower, HEADING_PID)
         poseEstimate = persistentPoseEstimate.pose2d

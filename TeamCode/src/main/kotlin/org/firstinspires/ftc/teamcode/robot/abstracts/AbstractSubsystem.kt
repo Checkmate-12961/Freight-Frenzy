@@ -21,7 +21,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.firstinspires.ftc.teamcode.robot.abstracts
 
 interface AbstractSubsystem {
+    val tag: String
+
     fun preLoop() {}
-    fun update() {}
+    fun loop() {}
     fun cleanup() {}
+
+    val subsystems: SubsystemMap
 }

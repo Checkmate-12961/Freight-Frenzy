@@ -4,11 +4,9 @@ import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveCo
 import static org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants.rpmToVelocity;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
@@ -57,7 +55,7 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
 
         boolean fitIntercept = false;
         while (!isStopRequested()) {
-            drivetrain.update();
+            drivetrain.loop();
             if (gamepad1.a) {
                 fitIntercept = true;
                 while (!isStopRequested() && gamepad1.a) {

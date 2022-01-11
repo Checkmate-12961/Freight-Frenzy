@@ -5,9 +5,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Servos
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
+import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 
 @Config
 class Capper(hardwareMap: HardwareMap): AbstractSubsystem {
+    override val tag = "Capper"
+    override val subsystems = SubsystemMap{ tag }
+
     private var shoulderServo = hardwareMap.get(Servo::class.java, Servos.CAP_SHOULDER.id)
     private var elbowServo = hardwareMap.get(Servo::class.java, Servos.CAP_ELBOW.id)
 
