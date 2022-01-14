@@ -15,14 +15,6 @@ jobs:
         with:
           path: Freight-Frenzy
 
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            docs_changed:
-              - 'TeamCode/build/dokka/html/**'
-          working-directory: ./Freight-Frenzy
-
       - uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
@@ -34,12 +26,10 @@ jobs:
 
       - name: Build docs
         run: './gradlew TeamCode:dokkaHtml'
-        if: steps.filter.outputs.docs_changed == 'true'
         working-directory: ./Freight-Frenzy
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: steps.filter.outputs.docs_changed == 'true'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./Freight-Frenzy/TeamCode/build/dokka/html
