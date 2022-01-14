@@ -30,7 +30,7 @@ public class TrackWidthTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        Drivetrain robot = new Drivetrain(hardwareMap);
+        Drivetrain drivetrain = new Drivetrain(hardwareMap);
         // TODO: if you haven't already, set the localizer to something that doesn't depend on
         //  drive encoders for computing the heading
 
@@ -48,20 +48,20 @@ public class TrackWidthTuner extends LinearOpMode {
 
         MovingStatistics trackWidthStats = new MovingStatistics(NUM_TRIALS);
         for (int i = 0; i < NUM_TRIALS; i++) {
-            robot.setPoseEstimate(new Pose2d());
+            drivetrain.setPoseEstimate(new Pose2d());
 
             // it is important to handle heading wraparounds
             double headingAccumulator = 0;
             double lastHeading = 0;
 
-            robot.turnAsync(Math.toRadians(ANGLE));
+            drivetrain.turnAsync(Math.toRadians(ANGLE));
 
-            while (!isStopRequested() && robot.isBusy()) {
-                double heading = robot.getPoseEstimate().getHeading();
+            while (!isStopRequested() && drivetrain.isBusy()) {
+                double heading = drivetrain.getPoseEstimate().getHeading();
                 headingAccumulator += Angle.norm(heading - lastHeading);
                 lastHeading = heading;
 
-                robot.update();
+                drivetrain.loop();
             }
 
             double trackWidth = DriveConstants.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;
@@ -80,6 +80,5 @@ public class TrackWidthTuner extends LinearOpMode {
         while (!isStopRequested()) {
             idle();
         }
-        robot.cleanup();
     }
 }

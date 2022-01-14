@@ -11,7 +11,8 @@
 
 // Custom definitions may go here
 buildscript {
-    ext.kotlin_version = '1.5.31'
+    ext.kotlin_version = '1.6.10'
+    ext.dokka_version = '1.6.10'
 
     repositories {
         mavenCentral()
@@ -19,9 +20,23 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
     }
 }
 apply plugin: "kotlin-android"
+apply plugin: "org.jetbrains.dokka"
+
+dokkaHtml.configure {
+    dokkaSourceSets {
+        commonMain {
+            noAndroidSdkLink.set(false)
+            sourceLink {
+                localDirectory.set(file("src/main/kotlin"))
+                remoteUrl.set(new URL('https://checkmate-12961.github.io/Freight-Frenzy'))
+            }
+        }
+    }
+}
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
@@ -41,7 +56,8 @@ dependencies {
 
     implementation 'com.acmerobotics.roadrunner:core:0.5.3'
 
-    implementation 'org.openftc:easyopencv:1.4.4'
+    implementation 'org.openftc:easyopencv:1.5.0'
+    implementation 'org.openftc:apriltag:1.0.0'
 
     // Realsense wrapper dependency
     implementation 'com.spartronics4915.lib:ftc265:2.1.9'
@@ -49,6 +65,5 @@ dependencies {
 
 repositories {
     // Realsense wrapper repo
-    maven { url = "https://dl.bintray.com/first-tech-challenge/ftcsdk/" }
     maven { url = "https://maven.0x778.tk" }
 }

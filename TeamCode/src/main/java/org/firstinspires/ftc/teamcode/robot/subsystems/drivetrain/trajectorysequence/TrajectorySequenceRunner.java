@@ -75,7 +75,7 @@ public class TrajectorySequenceRunner {
     }
 
     public @Nullable
-    DriveSignal update(Pose2d poseEstimate, Pose2d poseVelocity) {
+    DriveSignal update(Pose2d poseEstimate, Pose2d poseVelocity, double voltage) {
         Pose2d targetPose = null;
         DriveSignal driveSignal = null;
 
@@ -181,6 +181,8 @@ public class TrajectorySequenceRunner {
         if (POSE_HISTORY_LIMIT > -1 && poseHistory.size() > POSE_HISTORY_LIMIT) {
             poseHistory.removeFirst();
         }
+
+        packet.put("voltage", voltage);
 
         packet.put("x", poseEstimate.getX());
         packet.put("y", poseEstimate.getY());
