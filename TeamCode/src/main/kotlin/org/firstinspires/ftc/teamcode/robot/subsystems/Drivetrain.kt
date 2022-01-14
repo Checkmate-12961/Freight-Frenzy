@@ -18,7 +18,7 @@ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain
+package org.firstinspires.ftc.teamcode.robot.subsystems
 
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.control.PIDCoefficients
@@ -36,6 +36,7 @@ import org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto.util.toSuperPos
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.SuperTrajectorySequenceRunner
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence
@@ -44,6 +45,8 @@ import kotlin.math.abs
 
 /**
  * Mecanum drive implementation to work with roadrunner
+ *
+ * @see org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain
  */
 @Config
 class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
@@ -272,18 +275,6 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
             motorConfigurationType.achieveableMaxRPMFraction = 1.0
             motor.motorType = motorConfigurationType
             motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        }
-        if (Motors.LEFT_FRONT.reverse) {
-            leftFront.direction = DcMotorSimple.Direction.REVERSE
-        }
-        if (Motors.LEFT_REAR.reverse) {
-            leftRear.direction = DcMotorSimple.Direction.REVERSE
-        }
-        if (Motors.RIGHT_REAR.reverse) {
-            rightRear.direction = DcMotorSimple.Direction.REVERSE
-        }
-        if (Motors.RIGHT_FRONT.reverse) {
-            rightFront.direction = DcMotorSimple.Direction.REVERSE
         }
 
         // DONE: if desired, use setLocalizer() to change the localization method

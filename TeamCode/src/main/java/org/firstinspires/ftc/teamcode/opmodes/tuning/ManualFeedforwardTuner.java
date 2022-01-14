@@ -16,7 +16,7 @@ import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 
 import java.util.Objects;
 

@@ -25,8 +25,8 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractRobot
 import org.firstinspires.ftc.teamcode.robot.util.LynxModuleUtil
 import com.qualcomm.hardware.lynx.LynxModule
 import org.firstinspires.ftc.teamcode.robot.subsystems.*
-import org.firstinspires.ftc.teamcode.robot.subsystems.barcode.Barcode
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.Drivetrain
+import org.firstinspires.ftc.teamcode.robot.subsystems.Barcode
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain
 
 /**
  * Checkmate robot class to access subsystems.
