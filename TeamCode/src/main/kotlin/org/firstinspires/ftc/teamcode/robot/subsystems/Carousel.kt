@@ -31,51 +31,37 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 import org.firstinspires.ftc.teamcode.robot.subsystems.Carousel.Carousel.maxPower
 
 /**
- * Subsystem to manage the carousel spinner on the front of the robot
- * @param hardwareMap HardwareMap passed in from the op mode
+ * Subsystem to manage the carousel spinner mechanism.
+ *
+ * @constructor
+ * Initialize the motor and set its direction.
+ *
+ * @param hardwareMap Passed in from [org.firstinspires.ftc.teamcode.robot.CheckmateRobot].
  */
+@Config
 class Carousel(hardwareMap: HardwareMap) : AbstractSubsystem {
     override val tag = "Carousel"
     override val subsystems = SubsystemMap{ tag }
 
-    /**
-     * The motor that spins the carousel
-     */
     private val carouselMotor = Motors.CAROUSEL.get(hardwareMap)
 
+    /**
+     * The power of the carousel motor.
+     */
     var power: Double
-        /**
-         * Get the power of the carousel motor
-         * @return The motor's power
-         */
         get() = carouselMotor.power
-        /**
-         * Set the power of the carousel motor
-         * @param power The motor's power, must fit in [0, 1]
-         */
         set(power) {
             carouselMotor.power = Range.clip(power, -1.0, 1.0) * maxPower
         }
 
-    @Config
-    object Carousel {
+    companion object Carousel {
         /**
-         * Maximum power the motor can spin at
+         * Maximum power the motor can spin at.
          */
         @JvmField var maxPower = 0.4
     }
 
-    /**
-     * Initialize the carousel subsystem
-     */
     init {
-        // Initialize the servo
-
-        // Reverse the motor if we set it that way in the config
-        if (Motors.CAROUSEL.reverse) {
-            carouselMotor.direction = DcMotorSimple.Direction.REVERSE
-        }
-
         // Set the power to 0 just in case
         carouselMotor.power = 0.0
     }

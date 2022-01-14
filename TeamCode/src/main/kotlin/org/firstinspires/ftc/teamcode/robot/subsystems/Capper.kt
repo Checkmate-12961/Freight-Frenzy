@@ -7,6 +7,14 @@ import org.firstinspires.ftc.teamcode.robot.HardwareNames.Servos
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 
+/**
+ * Subsystem to manage the capper mechanism.
+ *
+ * @constructor
+ * Initialize the servos in the capper mechanism, set the direction, and set the position to [Positions.REST].
+ *
+ * @param hardwareMap Passed in from [org.firstinspires.ftc.teamcode.robot.CheckmateRobot].
+ */
 @Config
 class Capper(hardwareMap: HardwareMap): AbstractSubsystem {
     override val tag = "Capper"
@@ -15,6 +23,11 @@ class Capper(hardwareMap: HardwareMap): AbstractSubsystem {
     private var shoulderServo = Servos.CAP_SHOULDER.get(hardwareMap)
     private var elbowServo = Servos.CAP_ELBOW.get(hardwareMap)
 
+    /**
+     * Position of the capper mechanism.
+     *
+     * @see Positions
+     */
     var position = Positions.REST
         set(value) {
             field = value
@@ -30,17 +43,31 @@ class Capper(hardwareMap: HardwareMap): AbstractSubsystem {
             }
         }
 
+    /**
+     * Move the capper mechanism to the next position.
+     */
     fun nextPosition() {
         position = position.next()
     }
 
+    /**
+     * Move the capper mechanism to the previous position.
+     */
     fun prevPosition() {
         position = position.prev()
     }
 
+    /**
+     * Possible positions for the capper mechanism.
+     */
     enum class Positions {
         REST, COLLECT, CAP;
 
+        /**
+         * Get the next position in order.
+         *
+         * @return The next position.
+         */
         fun next(): Positions {
             return when(this) {
                 REST -> COLLECT
@@ -49,6 +76,11 @@ class Capper(hardwareMap: HardwareMap): AbstractSubsystem {
             }
         }
 
+        /**
+         * Get the previous position in order.
+         *
+         * @return The previous position.
+         */
         fun prev(): Positions {
             return when(this) {
                 CAP -> COLLECT
@@ -74,13 +106,6 @@ class Capper(hardwareMap: HardwareMap): AbstractSubsystem {
     }
 
     init {
-        if (Servos.CAP_ELBOW.reversed) {
-            elbowServo.direction = Servo.Direction.REVERSE
-        }
-        if (Servos.CAP_SHOULDER.reversed) {
-            shoulderServo.direction = Servo.Direction.REVERSE
-        }
-
         position = Positions.REST
     }
 }

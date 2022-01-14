@@ -29,7 +29,12 @@ import org.firstinspires.ftc.teamcode.robot.util.Encoder
  */
 class HardwareNames {
     /**
-     * Contains hardware info for motors
+     * Contains hardware info for motors.
+     *
+     * @property id Hardware ID defined in the config.
+     * @property reverse Whether the motor should be reversed.
+     *
+     * @property get Get a [DcMotorEx] with this id from the [HardwareMap].
      */
     enum class Motors(val id: String, val reverse: Boolean) {
 
@@ -54,6 +59,14 @@ class HardwareNames {
         }
     }
 
+    /**
+     * Contains hardware info for encoders.
+     *
+     * @property id Hardware ID defined in the config.
+     * @property reverse Whether the encoder should be reversed.
+     *
+     * @property get Get an [Encoder] with this id from the [HardwareMap].
+     */
     enum class Encoders(val id: String, val reverse: Boolean) {
         LEFT("leftRear", true),
         FRONT("leftFront", false),
@@ -69,7 +82,12 @@ class HardwareNames {
     }
 
     /**
-     * Contains hardware info for servos
+     * Contains hardware info for servos.
+     *
+     * @property id Hardware ID defined in the config.
+     * @property reverse Whether the servo should be reversed.
+     *
+     * @property get Get a [Servo] with this id from the [HardwareMap].
      */
     enum class Servos(val id: String, val reversed: Boolean) {
         BUCKET("bucket", false),
@@ -86,7 +104,12 @@ class HardwareNames {
     }
 
     /**
-     * Contains hardware info for continuous rotation servos
+     * Contains hardware info for continuous rotation servos.
+     *
+     * @property id Hardware ID defined in the config.
+     * @property reverse Whether the continuous rotation servo should be reversed.
+     *
+     * @property get Get a [CRServo] with this id from the [HardwareMap].
      */
     enum class CRServos(val id: String, val reverse: Boolean) {
         DUMMY("", false);
@@ -101,7 +124,11 @@ class HardwareNames {
     }
 
     /**
-     * Contains hardware info for cameras
+     * Contains hardware info for cameras.
+     *
+     * @property id Hardware ID defined in the config.
+     *
+     * @property get Get a [WebcamName] with this id from the [HardwareMap].
      */
     enum class Cameras(val id: String) {
         WEBCAM("webcam");
@@ -112,7 +139,12 @@ class HardwareNames {
     }
 
     /**
-     * Contains hardware info for digital channels
+     * Contains hardware info for digital I/O ports.
+     *
+     * @property id Hardware ID defined in the config.
+     * @property mode The mode of the digital I/O port.
+     *
+     * @property get Get a [DigitalChannel] with this id from the [HardwareMap].
      */
     enum class DigitalChannels(val id: String, val mode: DigitalChannel.Mode) {
         LEFT_LIMIT_SWITCH("leftLimitSwitch", DigitalChannel.Mode.INPUT),

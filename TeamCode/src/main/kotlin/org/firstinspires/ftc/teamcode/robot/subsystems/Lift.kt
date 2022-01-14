@@ -29,6 +29,16 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 import kotlin.math.PI
 
+/**
+ * Subsystem to manage the lift mechanism.
+ *
+ * @property bucket Instance of [Bucket] for failsafe purposes.
+ * @property intake Instance of [Intake] for failsafe purposes.
+ * @constructor
+ * Initialize the motor, set the direction, mode, etc.
+ *
+ * @param hardwareMap Passed in from [org.firstinspires.ftc.teamcode.robot.CheckmateRobot].
+ */
 @Config
 class Lift(
     hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake
@@ -43,7 +53,6 @@ class Lift(
 
     private var offset = 0
 
-    // This is weird because of the dashboard
     companion object {
         @JvmField var liftBounds = LiftBounds(0.0, 20.0)
         @JvmField var liftSetPoints = LiftSetPoints(12.0, 15.0, 20.0)
@@ -53,6 +62,9 @@ class Lift(
     data class LiftSetPoints(
         @JvmField var low: Double, @JvmField var mid: Double, @JvmField var high: Double)
 
+    /**
+     * Represents the possible positions of the lift.
+     */
     enum class Points {
         LOW, MID, HIGH, MIN, MAX
     }
@@ -66,6 +78,9 @@ class Lift(
     private var zeroPositionLatch = false
     private var runIntakeLatch = false
 
+    /**
+     * Whether the lift is at the bottom and not making corrections.
+     */
     var isDown: Boolean = true
         private set
 
@@ -101,6 +116,9 @@ class Lift(
         }
     }
 
+    /**
+     * The height of the lift in inches.
+     */
     var height: Double
         set(value) {
             // If this value is different from the last
@@ -117,6 +135,11 @@ class Lift(
         }
         get() = liftMotor.targetPosition.toDouble() / ticksPerInch - offset
 
+    /**
+     * The target position of the lift.
+     *
+     * @see Points
+     */
     var target: Points? = null
         set(value) {
             field = value
@@ -136,11 +159,6 @@ class Lift(
         liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
         offset = liftMotor.currentPosition
-
-        // Reverse the motor if the config says to
-        if (Motors.LIFT.reverse) {
-            liftMotor.direction = DcMotorSimple.Direction.REVERSE
-        }
 
         // Set it to run to a target position and hold it
         liftMotor.targetPosition = 0

@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
-import org.firstinspires.ftc.teamcode.robot.subsystems.Barcode
 import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift
 import org.firstinspires.ftc.teamcode.robot.util.DumbassProgrammerError

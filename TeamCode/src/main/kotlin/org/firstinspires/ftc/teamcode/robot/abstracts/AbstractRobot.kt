@@ -24,11 +24,18 @@ package org.firstinspires.ftc.teamcode.robot.abstracts
  * Class that all robots need to extend
  */
 abstract class AbstractRobot {
+    /**
+     * String tag for logging.
+     */
     protected abstract val tag: String
+
+    /**
+     * Storage for added subsystems.
+     */
     val subsystems = SubsystemMap{ tag }
 
     /**
-     * Runs once before the loop
+     * Runs once before the loop.
      */
     fun preLoop() {
         for (subsystem in subsystems.values) {
@@ -37,7 +44,7 @@ abstract class AbstractRobot {
     }
 
     /**
-     * Updates all subsystems
+     * Updates all subsystems.
      */
     fun update() {
         for (subsystem in subsystems.values) {
@@ -46,7 +53,7 @@ abstract class AbstractRobot {
     }
 
     /**
-     * Runs cleanup() on all subsystems
+     * Runs cleanup() on all subsystems.
      */
     fun cleanup() {
         for (subsystem in subsystems.values) {

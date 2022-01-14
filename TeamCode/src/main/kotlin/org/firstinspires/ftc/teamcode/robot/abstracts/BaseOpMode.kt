@@ -36,42 +36,51 @@ abstract class BaseOpMode : LinearOpMode() {
     protected lateinit var gp1: SuperController
     protected lateinit var gp2: SuperController
 
+    /**
+     * Type of the op mode.
+     */
     protected enum class OpModeType {
         TeleOp, Autonomous
     }
 
+    /**
+     * Type of this op mode.
+     */
     @JvmField protected var opModeType: OpModeType? = null
 
     /**
-     * Runs before the hardware initializes
+     * Runs before the hardware initializes.
      */
     open fun preSetup() {}
 
     /**
-     * Runs when the OpMode initializes
+     * Runs when the OpMode initializes.
      */
     open fun setup() {}
 
     /**
-     * Runs in a loop after the op mode is initialized
+     * Runs in a loop after the op mode is initialized.
      */
     open fun setupLoop() {}
 
     /**
-     * Runs once before the loop starts
+     * Runs once before the loop starts.
      */
     open fun preRunLoop() {}
 
     /**
-     * Main OpMode loop, automatically updates the robot
+     * Main OpMode loop, automatically updates the robot.
      */
     open fun runLoop() {}
 
     /**
-     * Runs when the OpMode is stopped
+     * Runs when the OpMode is stopped.
      */
     open fun cleanup() {}
 
+    /**
+     * Implements the above behavior.
+     */
     final override fun runOpMode() {
         if (this.javaClass.getAnnotation(TeleOp::class.java) != null) {
             opModeType = OpModeType.TeleOp

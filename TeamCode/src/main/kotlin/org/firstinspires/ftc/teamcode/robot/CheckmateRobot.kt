@@ -25,29 +25,51 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractRobot
 import org.firstinspires.ftc.teamcode.robot.util.LynxModuleUtil
 import com.qualcomm.hardware.lynx.LynxModule
 import org.firstinspires.ftc.teamcode.robot.subsystems.*
+import org.firstinspires.ftc.teamcode.robot.subsystems.barcode.Barcode
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.Drivetrain
 
 /**
- * The 2021-2022 robot class
+ * Checkmate robot class to access subsystems.
+ *
+ * @constructor
+ * Enables Lynx caching. Registers default subsystems.
+ *
+ * @param hardwareMap Passed in from [org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode].
  */
 class CheckmateRobot(hardwareMap: HardwareMap) : AbstractRobot() {
     override val tag = "CheckmateRobot"
 
+    /**
+     * Access the [Drivetrain] subsystem from the registry.
+     */
     val drivetrain: Drivetrain
         get() = subsystems["Drivetrain"] as Drivetrain
+    /**
+     * Access the [Carousel] subsystem from the registry.
+     */
     val carousel: Carousel
         get() = subsystems["Carousel"] as Carousel
+    /**
+     * Access the [Lift] subsystem from the registry.
+     */
     val lift: Lift
         get() = subsystems["Lift"] as Lift
+    /**
+     * Access the [Intake] subsystem from the registry.
+     */
     val intake: Intake
         get() = subsystems["Intake"] as Intake
+    /**
+     * Access the [Bucket] subsystem from the registry.
+     */
     val bucket: Bucket
         get() = subsystems["Bucket"] as Bucket
+    /**
+     * Access the [Barcode] subsystem from the registry.
+     */
     val barcode: Barcode
         get() = subsystems["Barcode"] as Barcode
 
-    /**
-     * Set up the robot and initialize the subsystems you want to use
-     */
     init {
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap)
         for (module in hardwareMap.getAll(LynxModule::class.java)) {
