@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.subsystems.barcode
+package org.firstinspires.ftc.teamcode.robot.subsystems
 
 import android.util.Log
 import com.acmerobotics.dashboard.FtcDashboard
@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Cameras
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
-import org.firstinspires.ftc.teamcode.robot.subsystems.Lift
+import org.firstinspires.ftc.teamcode.robot.subsystems.barcode.BarcodeConstants
 import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.Scalar
@@ -24,6 +24,8 @@ import org.openftc.easyopencv.OpenCvPipeline
  * Initializes the camera with an EOCV pipeline for barcode reading.
  *
  * @param hardwareMap Passed in from [org.firstinspires.ftc.teamcode.robot.CheckmateRobot]
+ *
+ * @see org.firstinspires.ftc.teamcode.robot.subsystems.barcode
  */
 class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
     override val tag = "Barcode"

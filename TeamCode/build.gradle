@@ -29,9 +29,8 @@ apply plugin: "org.jetbrains.dokka"
 dokkaHtml.configure {
     dokkaSourceSets {
         commonMain {
-            noAndroidSdkLink.set(false)
             sourceLink {
-                localDirectory.set(file("src/main/kotlin"))
+                localDirectory.set(file("src/main/"))
                 remoteUrl.set(new URL('https://checkmate-12961.github.io/Freight-Frenzy'))
             }
         }

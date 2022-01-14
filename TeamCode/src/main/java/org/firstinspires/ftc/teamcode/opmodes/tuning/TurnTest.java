@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 
 /**
  * This is a simple routine to test turning capabilities.

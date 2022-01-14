@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
