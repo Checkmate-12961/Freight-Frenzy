@@ -41,7 +41,7 @@ class Carousel(hardwareMap: HardwareMap) : AbstractSubsystem {
     /**
      * The motor that spins the carousel
      */
-    private val carouselMotor = hardwareMap.get(DcMotorEx::class.java, Motors.CAROUSEL.id)
+    private val carouselMotor = Motors.CAROUSEL.get(hardwareMap)
 
     var power: Double
         /**

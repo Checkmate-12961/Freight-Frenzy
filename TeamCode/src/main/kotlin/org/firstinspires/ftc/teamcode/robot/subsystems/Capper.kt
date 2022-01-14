@@ -12,8 +12,8 @@ class Capper(hardwareMap: HardwareMap): AbstractSubsystem {
     override val tag = "Capper"
     override val subsystems = SubsystemMap{ tag }
 
-    private var shoulderServo = hardwareMap.get(Servo::class.java, Servos.CAP_SHOULDER.id)
-    private var elbowServo = hardwareMap.get(Servo::class.java, Servos.CAP_ELBOW.id)
+    private var shoulderServo = Servos.CAP_SHOULDER.get(hardwareMap)
+    private var elbowServo = Servos.CAP_ELBOW.get(hardwareMap)
 
     var position = Positions.REST
         set(value) {

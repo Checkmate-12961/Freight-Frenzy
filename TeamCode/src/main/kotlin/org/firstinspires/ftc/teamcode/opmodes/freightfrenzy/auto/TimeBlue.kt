@@ -23,7 +23,7 @@ import java.util.*
  */
 @Config
 @Autonomous(preselectTeleOp = "TeleOp")
-class TimeBlue: BaseOpMode(){/*
+class TimeBlue: BaseOpMode(){
 
     /**
      * These are the DOs that are allowed in the thing.
@@ -234,4 +234,4 @@ class TimeBlue: BaseOpMode(){/*
 
     // Data class to represent a set of actions. No touch.
     data class ActionSet(@JvmField var DO: String, @JvmField var WAIT: Double, @JvmField var x: Double, @JvmField var y: Double)
-*/}
+}

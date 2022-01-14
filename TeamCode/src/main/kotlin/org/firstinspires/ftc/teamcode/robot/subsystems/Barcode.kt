@@ -1,22 +1,20 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems
 
-import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
-import org.openftc.easyopencv.OpenCvCamera
-import org.openftc.easyopencv.OpenCvPipeline
-import org.opencv.core.Mat
-import kotlin.jvm.Volatile
-import org.opencv.imgproc.Imgproc
-import org.opencv.core.Core
-import org.opencv.core.Scalar
-import org.openftc.easyopencv.OpenCvCameraFactory
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
-import org.firstinspires.ftc.teamcode.robot.HardwareNames
-import org.openftc.easyopencv.OpenCvCamera.AsyncCameraOpenListener
-import org.openftc.easyopencv.OpenCvCameraRotation
 import com.acmerobotics.dashboard.FtcDashboard
+import com.qualcomm.robotcore.hardware.HardwareMap
+import org.firstinspires.ftc.teamcode.robot.HardwareNames.Cameras
+import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 import org.firstinspires.ftc.teamcode.robot.subsystems.barcode.BarcodeConstants
+import org.opencv.core.Core
+import org.opencv.core.Mat
+import org.opencv.core.Scalar
+import org.opencv.imgproc.Imgproc
+import org.openftc.easyopencv.OpenCvCamera
+import org.openftc.easyopencv.OpenCvCamera.AsyncCameraOpenListener
+import org.openftc.easyopencv.OpenCvCameraFactory
+import org.openftc.easyopencv.OpenCvCameraRotation
+import org.openftc.easyopencv.OpenCvPipeline
 
 class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
     override val tag = "Barcode"
@@ -152,7 +150,7 @@ class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
     init {
         // Instantiates the webcam "webcam" for OpenCv to use
         webcam = OpenCvCameraFactory.getInstance().createWebcam(
-            hardwareMap.get(WebcamName::class.java, HardwareNames.Cameras.WEBCAM.id),
+            Cameras.WEBCAM.get(hardwareMap),
             hardwareMap.appContext.resources.getIdentifier(
                 "cameraMonitorViewId",
                 "id",

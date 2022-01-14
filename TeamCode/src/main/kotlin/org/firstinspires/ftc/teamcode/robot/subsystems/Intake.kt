@@ -23,7 +23,6 @@ package org.firstinspires.ftc.teamcode.robot.subsystems
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
@@ -35,7 +34,7 @@ class Intake(hardwareMap: HardwareMap) : AbstractSubsystem {
     override val tag = "Intake"
     override val subsystems = SubsystemMap{ tag }
 
-    private val intakeMotor = hardwareMap.get(DcMotorEx::class.java, Motors.INTAKE.id)
+    private val intakeMotor = Motors.INTAKE.get(hardwareMap)
 
     companion object{
         @JvmField var coefficient = .7

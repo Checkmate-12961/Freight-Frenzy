@@ -12,6 +12,7 @@
 // Custom definitions may go here
 buildscript {
     ext.kotlin_version = '1.6.10'
+    ext.dokka_version = '1.6.10'
 
     repositories {
         mavenCentral()
@@ -19,9 +20,23 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
     }
 }
 apply plugin: "kotlin-android"
+apply plugin: "org.jetbrains.dokka"
+
+dokkaHtml.configure {
+    dokkaSourceSets {
+        commonMain {
+            noAndroidSdkLink.set(false)
+            sourceLink {
+                localDirectory.set(file("src/main/kotlin"))
+                remoteUrl.set(new URL('https://checkmate-12961.github.io/Freight-Frenzy'))
+            }
+        }
+    }
+}
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'

@@ -23,7 +23,6 @@ package org.firstinspires.ftc.teamcode.robot.subsystems
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
@@ -38,7 +37,7 @@ class LiftPower(
     override val tag = "LiftPower"
     override val subsystems = SubsystemMap{ tag }
 
-    private val liftMotor = hardwareMap.get(DcMotorEx::class.java, Motors.LIFT.id)
+    private val liftMotor = Motors.LIFT.get(hardwareMap)
 
     // This is weird because of the dashboard
     companion object {

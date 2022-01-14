@@ -34,7 +34,7 @@ class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
     override val tag = "Bucket"
     override val subsystems = SubsystemMap{ tag }
 
-    private var bucketServo = hardwareMap.get(Servo::class.java, Servos.BUCKET.id)
+    private var bucketServo = Servos.BUCKET.get(hardwareMap)
 
     /**
      * Set positions for the bucket.

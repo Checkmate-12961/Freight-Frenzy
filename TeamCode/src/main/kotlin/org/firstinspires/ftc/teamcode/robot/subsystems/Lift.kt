@@ -22,10 +22,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.firstinspires.ftc.teamcode.robot.subsystems
 
 import com.acmerobotics.dashboard.config.Config
-import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorEx
-import com.qualcomm.robotcore.hardware.DcMotorSimple
-import com.qualcomm.robotcore.hardware.HardwareMap
+import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
@@ -39,7 +36,7 @@ class Lift(
     override val tag = "Lift"
     override val subsystems = SubsystemMap{ tag }
 
-    private val liftMotor = hardwareMap.get(DcMotorEx::class.java, Motors.LIFT.id)
+    private val liftMotor = Motors.LIFT.get(hardwareMap)
 
     // Keep track of the last position the motor was set to
     private var lastPosition = 0.0

@@ -20,6 +20,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 package org.firstinspires.ftc.teamcode.robot
 
+import com.qualcomm.robotcore.hardware.*
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
+import org.firstinspires.ftc.teamcode.robot.util.Encoder
+
 /**
  * Class to manage names of hardware connected to the robot
  */
@@ -40,12 +44,28 @@ class HardwareNames {
         INTAKE("intake", true),
         // Lift mechanism
         LIFT("lift", false);
+
+        fun get(hardwareMap: HardwareMap): DcMotorEx {
+            val motor = hardwareMap.get(DcMotorEx::class.java, id)
+            if (reverse) {
+                motor.direction = DcMotorSimple.Direction.REVERSE
+            }
+            return motor
+        }
     }
 
     enum class Encoders(val id: String, val reverse: Boolean) {
         LEFT("leftRear", true),
         FRONT("leftFront", false),
-        RIGHT("rightRear", false)
+        RIGHT("rightRear", false);
+
+        fun get(hardwareMap: HardwareMap): Encoder {
+            val encoder = Encoder(hardwareMap.get(DcMotorEx::class.java, id))
+            if (reverse) {
+                encoder.direction = Encoder.Direction.REVERSE
+            }
+            return encoder
+        }
     }
 
     /**
@@ -54,20 +74,54 @@ class HardwareNames {
     enum class Servos(val id: String, val reversed: Boolean) {
         BUCKET("bucket", false),
         CAP_SHOULDER("capShoulder", false),
-        CAP_ELBOW("capElbow", false)
+        CAP_ELBOW("capElbow", false);
+
+        fun get(hardwareMap: HardwareMap): Servo {
+            val servo = hardwareMap.get(Servo::class.java, id)
+            if (reversed) {
+                servo.direction = Servo.Direction.REVERSE
+            }
+            return servo
+        }
     }
 
     /**
      * Contains hardware info for continuous rotation servos
      */
     enum class CRServos(val id: String, val reverse: Boolean) {
-        DUMMY("", false)
+        DUMMY("", false);
+
+        fun get(hardwareMap: HardwareMap): CRServo {
+            val crServo = hardwareMap.get(CRServo::class.java, id)
+            if (reverse) {
+                crServo.direction = DcMotorSimple.Direction.REVERSE
+            }
+            return crServo
+        }
     }
 
     /**
      * Contains hardware info for cameras
      */
     enum class Cameras(val id: String) {
-        WEBCAM("webcam")
+        WEBCAM("webcam");
+
+        fun get(hardwareMap: HardwareMap): WebcamName {
+            return hardwareMap.get(WebcamName::class.java, id)
+        }
+    }
+
+    /**
+     * Contains hardware info for digital channels
+     */
+    enum class DigitalChannels(val id: String, val mode: DigitalChannel.Mode) {
+        LEFT_LIMIT_SWITCH("leftLimitSwitch", DigitalChannel.Mode.INPUT),
+        RIGHT_LIMIT_SWITCH("rightLimitSwitch", DigitalChannel.Mode.INPUT);
+
+        fun get(hardwareMap: HardwareMap): DigitalChannel {
+            val digitalChannel = hardwareMap.get(DigitalChannel::class.java, this.id)
+            digitalChannel.mode = this.mode
+            return digitalChannel
+        }
     }
 }

@@ -59,11 +59,11 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
     override val subsystems = SubsystemMap{ tag }
 
     private val trajectorySequenceRunner: SuperTrajectorySequenceRunner
-    private val leftFront: DcMotorEx
-    private val leftRear: DcMotorEx
-    private val rightRear: DcMotorEx
-    private val rightFront: DcMotorEx
-    private val motors: List<DcMotorEx>
+    private val leftFront = Motors.LEFT_FRONT.get(hardwareMap)
+    private val leftRear = Motors.LEFT_REAR.get(hardwareMap)
+    private val rightRear = Motors.RIGHT_REAR.get(hardwareMap)
+    private val rightFront = Motors.RIGHT_FRONT.get(hardwareMap)
+    private val motors = listOf(leftFront, leftRear, rightRear, rightFront)
     private val imu: BNO055IMU
     private val batteryVoltageSensor: VoltageSensor
 
@@ -268,11 +268,6 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
         val parameters = BNO055IMU.Parameters()
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS
         imu.initialize(parameters)
-        leftFront = hardwareMap.get(DcMotorEx::class.java, Motors.LEFT_FRONT.id)
-        leftRear = hardwareMap.get(DcMotorEx::class.java, Motors.LEFT_REAR.id)
-        rightRear = hardwareMap.get(DcMotorEx::class.java, Motors.RIGHT_REAR.id)
-        rightFront = hardwareMap.get(DcMotorEx::class.java, Motors.RIGHT_FRONT.id)
-        motors = listOf(leftFront, leftRear, rightRear, rightFront)
         for (motor in motors) {
             val motorConfigurationType = motor.motorType.clone()
             motorConfigurationType.achieveableMaxRPMFraction = 1.0
