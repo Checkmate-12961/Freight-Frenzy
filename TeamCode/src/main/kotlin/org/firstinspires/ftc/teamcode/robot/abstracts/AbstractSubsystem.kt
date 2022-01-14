@@ -20,12 +20,32 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 package org.firstinspires.ftc.teamcode.robot.abstracts
 
+/**
+ * Interface that all subsystems should implement.
+ */
 interface AbstractSubsystem {
+    /**
+     * Tag for logging purposes.
+     */
     val tag: String
 
+    /**
+     * Runs once before the loop starts.
+     */
     fun preLoop() {}
+
+    /**
+     * Runs on each loop.
+     */
     fun loop() {}
+
+    /**
+     * Runs once at the end.
+     */
     fun cleanup() {}
 
+    /**
+     * Storage for added subsystems.
+     */
     val subsystems: SubsystemMap
 }

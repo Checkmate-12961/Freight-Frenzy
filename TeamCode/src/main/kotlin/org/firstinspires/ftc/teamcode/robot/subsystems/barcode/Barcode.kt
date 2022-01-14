@@ -1,11 +1,12 @@
-package org.firstinspires.ftc.teamcode.robot.subsystems
+package org.firstinspires.ftc.teamcode.robot.subsystems.barcode
 
+import android.util.Log
 import com.acmerobotics.dashboard.FtcDashboard
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Cameras
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
-import org.firstinspires.ftc.teamcode.robot.subsystems.barcode.BarcodeConstants
+import org.firstinspires.ftc.teamcode.robot.subsystems.Lift
 import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.Scalar
@@ -16,12 +17,23 @@ import org.openftc.easyopencv.OpenCvCameraFactory
 import org.openftc.easyopencv.OpenCvCameraRotation
 import org.openftc.easyopencv.OpenCvPipeline
 
+/**
+ * Subsystem to manage the camera / barcode reading.
+ *
+ * @constructor
+ * Initializes the camera with an EOCV pipeline for barcode reading.
+ *
+ * @param hardwareMap Passed in from [org.firstinspires.ftc.teamcode.robot.CheckmateRobot]
+ */
 class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
     override val tag = "Barcode"
     override val subsystems = SubsystemMap{ tag }
 
     private val webcam: OpenCvCamera
 
+    /**
+     * Whether the camera is streaming to the pipeline.
+     */
     var isStreaming: Boolean? = null
         private set
 
@@ -35,15 +47,31 @@ class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
         }
     }
 
+    /**
+     * Detected position of the TSE on the barcode.
+     *
+     * @see BarcodePosition
+     */
     val position: BarcodePosition
         get() = pipeline.position
+
+    /**
+     * Raw analysis of the two read barcode positions.
+     */
     val analysis: List<Int>
         get() = pipeline.analysis
 
-    // getPosition returns where the barcode is located in a BarcodePosition
+    /**
+     * Represents the position of the TSE on the barcode.
+     */
     enum class BarcodePosition {
         LEFT, MIDDLE, RIGHT;
 
+        /**
+         * Get the corresponding [Lift.Points] entry.
+         *
+         * @return The corresponding [Lift.Points] entry.
+         */
         fun toLiftPoint(): Lift.Points {
             return when(this) {
                 LEFT -> Lift.Points.HIGH
@@ -170,7 +198,9 @@ class Barcode(hardwareMap: HardwareMap) : AbstractSubsystem {
                 }
             }
 
-            override fun onError(errorCode: Int) {}
+            override fun onError(errorCode: Int) {
+                Log.e(tag, "OpenCV threw error code $errorCode")
+            }
         })
     }
 }

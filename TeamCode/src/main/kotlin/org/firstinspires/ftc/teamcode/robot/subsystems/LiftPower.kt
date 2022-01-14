@@ -30,6 +30,16 @@ import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 
+/**
+ * Subsystem to manage the lift mechanism if the motor encoder breaks.
+ *
+ * @property bucket Instance of [Bucket] for failsafe purposes.
+ * @property intake Instance of [Intake] for failsafe purposes.
+ * @constructor
+ * Initialize the motor and disable the encoder.
+ *
+ * @param hardwareMap Passed in from [org.firstinspires.ftc.teamcode.robot.CheckmateRobot].
+ */
 @Config
 class LiftPower(
     hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake
@@ -39,11 +49,13 @@ class LiftPower(
 
     private val liftMotor = Motors.LIFT.get(hardwareMap)
 
-    // This is weird because of the dashboard
     companion object {
         @JvmField var powerCoefficient = 0.7
     }
 
+    /**
+     * Power of the motor. Scaled to a max of [powerCoefficient].
+     */
     var power: Double
         set(value) {
             //bucket.position = Bucket.Positions.REST
@@ -62,11 +74,6 @@ class LiftPower(
     init {
         // Initialize the motor
         liftMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-
-        // Reverse the motor if the config says to
-        if (Motors.LIFT.reverse) {
-            liftMotor.direction = DcMotorSimple.Direction.REVERSE
-        }
 
         liftMotor.power = 0.0
     }

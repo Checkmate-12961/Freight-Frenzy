@@ -10,7 +10,7 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.util.LoggingUtil;
 import org.firstinspires.ftc.teamcode.robot.util.RegressionUtil;
 

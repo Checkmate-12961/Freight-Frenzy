@@ -22,13 +22,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.firstinspires.ftc.teamcode.robot.subsystems
 
 import com.qualcomm.robotcore.hardware.HardwareMap
-import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Servos
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 
 /**
  * Bucket thingy on the lift. There is no direct access to the servo position for a reason.
+ *
+ * @constructor
+ * Initializes the servo and sets it to [Positions.REST].
+ *
+ * @param hardwareMap Passed in from [org.firstinspires.ftc.teamcode.robot.CheckmateRobot].
  */
 class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
     override val tag = "Bucket"
@@ -41,6 +45,8 @@ class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
      *
      * All of these values are derived from dinking around.
      *  DO NOT TOUCH THEM OR SIMON WILL TAKE YOUR KNEECAPS.
+     *
+     * @property position Position for the servo to travel to.
      */
     enum class Positions(@JvmField val position: Double) {
         // Position when the bucket is dumping
@@ -55,7 +61,7 @@ class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
      * The position the bucket is at
      *
      * These aren't raw double values, they're values on the enum so that programmers don't break
-     *  things
+     *  things.
      */
     var position: Positions = Positions.REST
         set(value) {
@@ -64,13 +70,6 @@ class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
         }
 
     init {
-        // Grab the servo from the hardware map
-
-        // If the servo is reversed in the config, reverse it
-        if (Servos.BUCKET.reversed) {
-            bucketServo.direction = Servo.Direction.REVERSE
-        }
-
         // Set the position to the rest position
         bucketServo.position = Positions.REST.position
     }

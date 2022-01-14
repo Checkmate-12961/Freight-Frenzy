@@ -18,7 +18,7 @@ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package org.firstinspires.ftc.teamcode.robot.subsystems
+package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain
 
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.control.PIDCoefficients
@@ -36,7 +36,6 @@ import org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto.util.toSuperPos
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.SuperTrajectorySequenceRunner
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence
