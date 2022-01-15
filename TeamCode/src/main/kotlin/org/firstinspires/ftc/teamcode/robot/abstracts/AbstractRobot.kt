@@ -38,8 +38,8 @@ abstract class AbstractRobot {
      * Runs once before the loop.
      */
     fun preLoop() {
-        for (subsystem in subsystems.values) {
-            subsystem.preLoop()
+        recursiveAction(subsystems) {
+            it.preLoop()
         }
     }
 
@@ -47,8 +47,8 @@ abstract class AbstractRobot {
      * Updates all subsystems.
      */
     fun update() {
-        for (subsystem in subsystems.values) {
-            subsystem.loop()
+        recursiveAction(subsystems) {
+            it.loop()
         }
     }
 
@@ -56,8 +56,22 @@ abstract class AbstractRobot {
      * Runs cleanup() on all subsystems.
      */
     fun cleanup() {
-        for (subsystem in subsystems.values) {
-            subsystem.cleanup()
+        recursiveAction(subsystems) {
+            it.cleanup()
+        }
+    }
+
+    /**
+     * Recursively does actions on subsystems.
+     *
+     * @param subsystemMap The initial [SubsystemMap] to recurse from.
+     */
+    private fun recursiveAction(
+        subsystemMap: SubsystemMap, action: (AbstractSubsystem) -> Unit
+    ) {
+        for (subsystem in subsystemMap.values) {
+            action.invoke(subsystem)
+            recursiveAction(subsystem.subsystems, action)
         }
     }
 }
