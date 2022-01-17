@@ -82,36 +82,53 @@ abstract class BaseOpMode : LinearOpMode() {
      * Implements the above behavior.
      */
     final override fun runOpMode() {
+        // init button pressed
+        // determine the type of op mode based on the annotation.
         if (this.javaClass.getAnnotation(TeleOp::class.java) != null) {
             opModeType = OpModeType.TeleOp
         } else if (this.javaClass.getAnnotation(Autonomous::class.java) != null) {
             opModeType = OpModeType.Autonomous
         }
+        // runs before the hardware and gamepads are initialized
         preSetup()
+        // initialize the hardware
         robot = CheckmateRobot(hardwareMap)
+        // initialize the gamepads
         gp1 = SuperController(gamepad1)
         gp2 = SuperController(gamepad2)
+        // runs after hardware is initialized
         setup()
+        // wait for the start button
         while (!isStarted) {
             setupLoop()
+            // write telemetry
             updateTelemetry()
         }
+        // start button is run
         robot.preLoop()
+        // runs once before the loop
         preRunLoop()
+        // runs until stopped
         while (opModeIsActive() && !isStopRequested) {
+            // update the gamepads in teleop
             if (opModeType == OpModeType.TeleOp) {
                 gp1.update()
                 gp2.update()
             }
+            // update the robot
             robot.update()
+            // run the opmode's code
             runLoop()
+            // update the telemetry
             updateTelemetry()
         }
+        // clean up the hardware
         robot.cleanup()
+        // clean up the op mode
         cleanup()
     }
 
-    private val dash = FtcDashboard.getInstance()
+    protected val dash = FtcDashboard.getInstance()
 
     private fun updateTelemetry() {
         telemetry.addData("Position", robot.barcode.position)

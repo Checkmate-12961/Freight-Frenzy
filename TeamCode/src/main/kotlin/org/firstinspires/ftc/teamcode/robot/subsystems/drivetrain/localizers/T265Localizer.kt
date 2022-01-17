@@ -147,19 +147,24 @@ class T265Localizer(
      * @param update the input argument
      */
     override fun accept(update: T265Camera.CameraUpdate) {
+        // synchronization to protect against tearing
         synchronized(UpdateMutex) {
             val rawPose = update.pose
+            // convert the pose to inches
             directPose = Pose2d(
                 rawPose.x * mToIn,
                 rawPose.y * mToIn,
                 rawPose.heading
             )
             val rawPoseVelocity = update.velocity
+            // convert the velocity to inches / sec
             poseVelocity = Pose2d(
                 rawPoseVelocity.vxMetersPerSecond * mToIn,
                 rawPoseVelocity.vyMetersPerSecond * mToIn,
                 rawPoseVelocity.omegaRadiansPerSecond
             )
+            // store the confidence of the camera
+            poseConfidence = update.confidence
         }
     }
 }

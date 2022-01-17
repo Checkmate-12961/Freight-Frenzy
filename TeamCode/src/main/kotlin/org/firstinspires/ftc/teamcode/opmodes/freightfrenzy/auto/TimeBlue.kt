@@ -179,15 +179,20 @@ class TimeBlue: BaseOpMode(){
      * No touch.
      */
     override fun runLoop() {
+        // add the current number on the timer to telemetry
         telemetry.addData("Time delta", timeDelta)
+        // if there are no more actions to perform, stop the op mode
         if (currentIndex >= actions.size) {
             requestOpModeStop()
             return
         }
 
+        // grab the current action
         val action = actions[currentIndex]
 
+        // if the action is ready to start
         if (!actionIsSet) {
+            // do the correct thing
             when(action.DO) {
                 "MOVE" -> robot.drivetrain.setWeightedDrivePower(Pose2d(action.x, action.y))
                 "LIFT" -> {
@@ -215,8 +220,10 @@ class TimeBlue: BaseOpMode(){
                 "TURN" -> robot.drivetrain.turn(toRadians(action.x))
             }
             actionIsSet = true
+            // reset the timer for the delay
             originTimeNano = System.nanoTime()
-        } else if (timeDelta >= action.WAIT) {
+        } else if (timeDelta >= action.WAIT) { // otherwise, if the wait is over
+            // stop the action
             when(action.DO) {
                 "MOVE" -> robot.drivetrain.setWeightedDrivePower(Pose2d())
                 "BUCKET" -> {
@@ -226,6 +233,7 @@ class TimeBlue: BaseOpMode(){
                     robot.carousel.power = 0.0
                 }
             }
+            // bump the action counter
             currentIndex += 1
             actionIsSet = false
         }
