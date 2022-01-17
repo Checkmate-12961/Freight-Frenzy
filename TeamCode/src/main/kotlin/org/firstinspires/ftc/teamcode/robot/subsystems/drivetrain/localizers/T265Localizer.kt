@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers
 
+import android.os.SystemClock.sleep
+import android.util.Log
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.localization.Localizer
 import com.arcrobotics.ftclib.geometry.Rotation2d
@@ -56,6 +58,9 @@ class T265Localizer(
     override val tag = "T265Localizer"
     override val subsystems = SubsystemMap{ tag }
 
+    // MUTEXES //
+    private object UpdateMutex
+
     // SLAMERA STUFF //
     var odometryVelocityCallback: (() -> Vector2d)? = null
 
@@ -74,9 +79,15 @@ class T265Localizer(
      */
     override var poseEstimate: Pose2d
         get() {
-            return directPose.transformBy(originOffset)
+            synchronized(originOffset) {
+                return directPose.transformBy(originOffset)
+            }
         }
-        set(value) { originOffset = directPose.calculateTransformation(value) }
+        set(value) {
+            synchronized(originOffset){
+                originOffset = directPose.calculateTransformation(value)
+            }
+        }
 
     /**
      * Current robot pose velocity
@@ -101,7 +112,9 @@ class T265Localizer(
     }
 
     init {
-        if (slamera != null) {
+        Log.d(tag, "Initializing T265")
+        if (slamera == null) {
+            Log.d(tag, "Slamera was null.")
             slamera = T265Camera(
                 Transform2d(
                     Translation2d(cameraToRobot.x * inToM, cameraToRobot.y * inToM),
@@ -111,12 +124,18 @@ class T265Localizer(
                 hardwareMap.appContext
             )
         }
-        slamera?.start()
+        synchronized(UpdateMutex) {
+            while (!isInitialized) {
+                Log.w(tag, "Camera is not ready, starting...")
+                sleep(1000)
+                slamera?.start(this)
+            }
+        }
     }
 
     companion object {
-        const val mToIn = 2.54/100.0
-        const val inToM = 100.0/2.54
+        const val mToIn = 100.0/2.54
+        const val inToM = 2.54/100.0
 
         private var slamera: T265Camera? = null
     }
@@ -128,17 +147,19 @@ class T265Localizer(
      * @param update the input argument
      */
     override fun accept(update: T265Camera.CameraUpdate) {
-        val rawPose = update.pose
-        directPose = Pose2d(
-            rawPose.x * mToIn,
-            rawPose.y * mToIn,
-            rawPose.heading
-        )
-        val rawPoseVelocity = update.velocity
-        poseVelocity = Pose2d(
-            rawPoseVelocity.vxMetersPerSecond * mToIn,
-            rawPoseVelocity.vyMetersPerSecond * mToIn,
-            rawPoseVelocity.omegaRadiansPerSecond
-        )
+        synchronized(UpdateMutex) {
+            val rawPose = update.pose
+            directPose = Pose2d(
+                rawPose.x * mToIn,
+                rawPose.y * mToIn,
+                rawPose.heading
+            )
+            val rawPoseVelocity = update.velocity
+            poseVelocity = Pose2d(
+                rawPoseVelocity.vxMetersPerSecond * mToIn,
+                rawPoseVelocity.vyMetersPerSecond * mToIn,
+                rawPoseVelocity.omegaRadiansPerSecond
+            )
+        }
     }
 }
