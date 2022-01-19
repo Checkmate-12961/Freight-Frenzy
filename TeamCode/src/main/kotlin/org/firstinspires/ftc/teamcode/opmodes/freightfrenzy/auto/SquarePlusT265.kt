@@ -26,10 +26,6 @@ class SquarePlusT265: BaseOpMode() {
             .build()
     }
 
-    override fun preRunLoop() {
-        robot.drivetrain.followTrajectorySequenceAsync(squareTrajectory)
-    }
-
     override fun runLoop() {
         if (!robot.drivetrain.isBusy) {
             robot.drivetrain.followTrajectorySequenceAsync(squareTrajectory)
@@ -37,6 +33,6 @@ class SquarePlusT265: BaseOpMode() {
     }
 
     companion object {
-        @JvmField var squareLength = 24.0
+        @JvmField var squareLength = 12.0
     }
 }
