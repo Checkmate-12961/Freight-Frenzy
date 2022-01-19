@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence
 
 /**
@@ -24,6 +26,16 @@ class SquarePlusT265: BaseOpMode() {
             .forward(squareLength)
             .turn(kotlin.math.PI / 2)
             .build()
+    }
+
+    override fun setupLoop() {
+        val packet = TelemetryPacket()
+        val poseEstimate = robot.drivetrain.poseEstimate
+        packet.put("x", poseEstimate.x)
+        packet.put("y", poseEstimate.y)
+        packet.put("heading", poseEstimate.heading * 180.0 / kotlin.math.PI)
+        packet.put("poseConfidence", (robot.drivetrain.localizer as T265Localizer).poseConfidence)
+        dash.sendTelemetryPacket(packet)
     }
 
     override fun runLoop() {

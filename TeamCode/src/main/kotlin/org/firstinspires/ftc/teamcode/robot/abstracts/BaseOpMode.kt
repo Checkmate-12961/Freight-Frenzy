@@ -111,7 +111,7 @@ abstract class BaseOpMode : LinearOpMode() {
         cleanup()
     }
 
-    private val dash = FtcDashboard.getInstance()
+    val dash = FtcDashboard.getInstance()
 
     private fun updateTelemetry() {
         telemetry.addData("Position", robot.barcode.position)
