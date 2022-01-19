@@ -160,6 +160,7 @@ class T265Localizer(
                 rawPoseVelocity.vyMetersPerSecond * mToIn,
                 rawPoseVelocity.omegaRadiansPerSecond
             )
+            poseConfidence = update.confidence
         }
     }
 }
