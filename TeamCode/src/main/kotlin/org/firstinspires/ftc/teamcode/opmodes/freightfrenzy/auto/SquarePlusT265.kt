@@ -38,6 +38,10 @@ class SquarePlusT265: BaseOpMode() {
         dash.sendTelemetryPacket(packet)
     }
 
+    override fun preRunLoop() {
+        robot.drivetrain.poseEstimate = Pose2d()
+    }
+
     override fun runLoop() {
         if (!robot.drivetrain.isBusy) {
             robot.drivetrain.followTrajectorySequenceAsync(squareTrajectory)
