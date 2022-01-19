@@ -79,12 +79,12 @@ class T265Localizer(
      */
     override var poseEstimate: Pose2d
         get() {
-            synchronized(originOffset) {
+            synchronized(UpdateMutex) {
                 return directPose.transformBy(originOffset)
             }
         }
         set(value) {
-            synchronized(originOffset){
+            synchronized(UpdateMutex){
                 originOffset = directPose.calculateTransformation(value)
             }
         }
