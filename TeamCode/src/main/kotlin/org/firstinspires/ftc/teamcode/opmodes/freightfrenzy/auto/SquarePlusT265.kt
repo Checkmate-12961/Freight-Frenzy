@@ -46,6 +46,6 @@ class SquarePlusT265: BaseOpMode() {
     override fun runLoop() {}
 
     companion object {
-        @JvmField var squareLength = 12.0
+        @JvmField var squareLength = 24.0
     }
 }

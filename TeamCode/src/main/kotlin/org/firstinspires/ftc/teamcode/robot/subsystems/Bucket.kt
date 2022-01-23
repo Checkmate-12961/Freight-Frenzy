@@ -52,7 +52,7 @@ class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
         // Position when the bucket is dumping
         DUMP(0.42),
         // The normal position
-        REST(0.21),
+        REST(0.17),
         // The position when the bucket is all the way down
         ZERO(0.14)
     }
