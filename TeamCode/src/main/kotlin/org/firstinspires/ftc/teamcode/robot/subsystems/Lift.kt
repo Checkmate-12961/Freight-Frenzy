@@ -103,6 +103,8 @@ class Lift(
         isDown = !liftMotor.isBusy && tempHeight == 0.0
         if (isDown && bucket.position != Bucket.Positions.ZERO) {
             bucket.position = Bucket.Positions.ZERO
+        } else if (!isDown && bucket.position == Bucket.Positions.ZERO) {
+            bucket.position = Bucket.Positions.REST
         }
     }
 
