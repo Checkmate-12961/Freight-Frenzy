@@ -74,10 +74,6 @@ class Lift(
     private val encoderTicksPerRev = 537.7
     private val ticksPerInch = encoderTicksPerRev / (spoolDiameter * PI)
 
-    // Latches to prevent calling functions multiple times per triggering event
-    private var zeroPositionLatch = false
-    private var runIntakeLatch = false
-
     /**
      * Whether the lift is at the bottom and not making corrections.
      */
@@ -87,32 +83,16 @@ class Lift(
     override fun loop() {
         val tempHeight = height
 
-        if (!liftMotor.isBusy) {
-            if (runIntakeLatch) {
-                runIntakeLatch = false
-                // When the lift stops moving, stop the intake
-                intake.power = 0.0
-            }
-        } else {
-            if (tempHeight < lastPosition && tempHeight < runIntakeThreshold
-                    && !runIntakeLatch) {
-                runIntakeLatch = true
-                // When the lift starts moving down below the threshold, run the intake
-                intake.power = .5
-            }
+        // Run the intake when the lift is moving while under the threshold
+        if (liftMotor.isBusy && tempHeight < liftSetPoints.low) {
+            if (intake.power != .5) intake.power = .5
+            if (bucket.position == Bucket.Positions.DUMP) bucket.position = Bucket.Positions.REST
         }
 
+        // Zero the bucket when the lift is all the way down
         if (!liftMotor.isBusy && tempHeight == 0.0) {
             isDown = true
-            if (!zeroPositionLatch) {
-                zeroPositionLatch = true
-                // When the lift stops moving at the 0 point, set the set the bucket position
-                //  to ZERO
-                bucket.position = Bucket.Positions.ZERO
-            }
-        } else {
-            isDown = false
-            zeroPositionLatch = false
+            if (bucket.position != Bucket.Positions.ZERO) bucket.position = Bucket.Positions.ZERO
         }
     }
 
