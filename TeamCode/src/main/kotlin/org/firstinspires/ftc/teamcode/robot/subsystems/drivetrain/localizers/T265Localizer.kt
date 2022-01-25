@@ -3,11 +3,9 @@ package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers
 import android.os.SystemClock.sleep
 import android.util.Log
 import com.acmerobotics.roadrunner.geometry.Pose2d
+import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.localization.Localizer
-import com.arcrobotics.ftclib.geometry.Rotation2d
 import com.arcrobotics.ftclib.geometry.Transform2d
-import com.arcrobotics.ftclib.geometry.Translation2d
-import com.arcrobotics.ftclib.geometry.Vector2d
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.spartronics4915.lib.T265Camera
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
@@ -50,8 +48,24 @@ fun Pose2d.calculateTransformation(r: Pose2d): Pose2d {
     )
 }
 
+/**
+ * Rotates a Vector2d object.
+ * [A simulator for this behavior can be found here.](https://www.desmos.com/calculator/ath6szfezx)
+ *
+ * @param heading The new heading.
+ * @return The rotated vector.
+ */
+fun Vector2d.rotateBy(heading: Double): Vector2d {
+    val cosH = cos(heading)
+    val sinH = sin(heading)
+    return Vector2d(
+        x * cosH - y * sinH,
+        x * sinH + y * cosH
+    )
+}
+
 class T265Localizer(
-    cameraToRobot: Pose2d,
+    private val cameraToRobot: Pose2d,
     odometryCovariance: Double,
     hardwareMap: HardwareMap,
 ): Localizer, Consumer<T265Camera.CameraUpdate>, AbstractSubsystem {
@@ -62,14 +76,13 @@ class T265Localizer(
     private object UpdateMutex
 
     // SLAMERA STUFF //
+    @Volatile private var updatesReceived = 0
+
     var odometryVelocityCallback: (() -> Vector2d)? = null
 
     private var originOffset = Pose2d()
 
     private var directPose = Pose2d()
-
-    val isInitialized: Boolean
-        get() = slamera?.isStarted == true
 
     var poseConfidence = T265Camera.PoseConfidence.Failed
         private set
@@ -79,6 +92,8 @@ class T265Localizer(
      */
     override var poseEstimate: Pose2d
         get() {
+            val lastUpdateReceived = updatesReceived
+            while (updatesReceived > lastUpdateReceived) continue
             synchronized(UpdateMutex) {
                 return directPose.transformBy(originOffset)
             }
@@ -116,21 +131,18 @@ class T265Localizer(
         if (slamera == null) {
             Log.d(tag, "Slamera was null.")
             slamera = T265Camera(
-                Transform2d(
-                    Translation2d(cameraToRobot.x * inToM, cameraToRobot.y * inToM),
-                    Rotation2d(cameraToRobot.heading)
-                ),
+                Transform2d(),
                 odometryCovariance,
                 hardwareMap.appContext
             )
         }
         synchronized(UpdateMutex) {
-            while (!isInitialized) {
-                Log.w(tag, "Camera is not ready, starting...")
-                sleep(1000)
-                slamera?.start(this)
-            }
+            sleep(1000)
+            slamera?.start(this)
         }
+        logPose(poseEstimate)
+        poseEstimate = Pose2d()
+        logPose(poseEstimate)
     }
 
     companion object {
@@ -147,20 +159,26 @@ class T265Localizer(
      * @param update the input argument
      */
     override fun accept(update: T265Camera.CameraUpdate) {
+        updatesReceived++
         synchronized(UpdateMutex) {
             val rawPose = update.pose
             directPose = Pose2d(
                 rawPose.x * mToIn,
                 rawPose.y * mToIn,
                 rawPose.heading
-            )
+            ).transformBy(cameraToRobot)
             val rawPoseVelocity = update.velocity
             poseVelocity = Pose2d(
-                rawPoseVelocity.vxMetersPerSecond * mToIn,
-                rawPoseVelocity.vyMetersPerSecond * mToIn,
+                Vector2d(rawPoseVelocity.vxMetersPerSecond * mToIn,
+                rawPoseVelocity.vyMetersPerSecond * mToIn
+                ).rotateBy(cameraToRobot.heading),
                 rawPoseVelocity.omegaRadiansPerSecond
             )
             poseConfidence = update.confidence
         }
+    }
+
+    private fun logPose(pose: Pose2d) {
+        Log.d(tag, "${pose.x}, ${pose.y}, ${pose.heading}")
     }
 }

@@ -26,6 +26,7 @@ class SquarePlusT265: BaseOpMode() {
     override fun setup() {
         squareTrajectory = robot.drivetrain.trajectorySequenceBuilder(Pose2d())
             .forward(squareLength)
+            .turn(kotlin.math.PI)
             .build()
     }
 
@@ -43,7 +44,11 @@ class SquarePlusT265: BaseOpMode() {
         robot.drivetrain.poseEstimate = Pose2d()
     }
 
-    override fun runLoop() {}
+    override fun runLoop() {
+        if (!robot.drivetrain.isBusy) {
+            robot.drivetrain.followTrajectorySequenceAsync(squareTrajectory)
+        }
+    }
 
     companion object {
         @JvmField var squareLength = 24.0
