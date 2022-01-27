@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
+import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemContext
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 import kotlin.math.PI
 
@@ -37,16 +38,19 @@ import kotlin.math.PI
  * @constructor
  * Initialize the motor, set the direction, mode, etc.
  *
- * @param hardwareMap Passed in from [org.firstinspires.ftc.teamcode.robot.CheckmateRobot].
+ * @param context Passed in from [org.firstinspires.ftc.teamcode.robot.CheckmateRobot].
  */
 @Config
 class Lift(
-    hardwareMap: HardwareMap, private val bucket: Bucket, private val intake: Intake
+    context: SubsystemContext
 ): AbstractSubsystem {
     override val tag = "Lift"
     override val subsystems = SubsystemMap{ tag }
 
-    private val liftMotor = Motors.LIFT.get(hardwareMap)
+    private val intake: Intake = context.subsystems["Intake"]!! as Intake
+    private val bucket: Bucket = context.subsystems["Bucket"]!! as Bucket
+
+    private val liftMotor = Motors.LIFT.get(context.hardwareMap)
 
     // Keep track of the last position the motor was set to
     private var lastPosition = 0.0
@@ -147,13 +151,13 @@ class Lift(
 
     init {
         // Initialize the motor
-        liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        liftMotor.power = 0.0
         liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
         offset = liftMotor.currentPosition
 
         // Set it to run to a target position and hold it
-        liftMotor.targetPosition = 0
+        liftMotor.targetPosition = offset
         liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
         liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         liftMotor.power = 1.0

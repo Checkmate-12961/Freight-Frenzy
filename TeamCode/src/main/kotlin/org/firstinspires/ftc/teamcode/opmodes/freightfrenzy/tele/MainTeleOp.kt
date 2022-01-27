@@ -24,66 +24,109 @@ import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.util.Range
+import org.firstinspires.ftc.teamcode.robot.CheckmateRobot
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
-import org.firstinspires.ftc.teamcode.robot.abstracts.Triggerables.TriggerableCallback
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift
 import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket
+import org.firstinspires.ftc.teamcode.robot.subsystems.LiftPower
 
 @Config
-@TeleOp(name = "TeleOp")
+@TeleOp(name = "TeleOp") // TODO: create a failure backup function
 class MainTeleOp : BaseOpMode() {
+    private val CheckmateRobot.liftPower: LiftPower
+        get() = subsystems["Lift"]!! as LiftPower
+
     override fun preSetup() {
         telemetry.addData("SHOULD YOU INIT", false)
         telemetry.update()
     }
 
     override fun setupLoop() {
-        telemetry.addData("SHOULD YOU INIT",
-            if (robot.barcode.isStreaming != null) robot.barcode.isStreaming
-            else false
-        )
+        telemetry.addData("SHOULD YOU INIT",robot.barcode.isStreaming ?: false)
         telemetry.update()
     }
 
-    override fun setup() {
+    private fun activateEither() {
+        gp2.resetBinds()
+
         // Right bumper runs the carousel
-        gp2.rightBumper.onActivate = TriggerableCallback { robot.carousel.power = 1.0 }
-        gp2.rightBumper.onDeactivate = TriggerableCallback { robot.carousel.power = 0.0 }
+        gp2.rightBumper.onActivate = { robot.carousel.power = 1.0 }
+        gp2.rightBumper.onDeactivate = { robot.carousel.power = 0.0 }
 
         // Left bumper runs the carousel the other way
-        gp2.leftBumper.onActivate = TriggerableCallback { robot.carousel.power = -1.0 }
-        gp2.leftBumper.onDeactivate = TriggerableCallback { robot.carousel.power = 0.0 }
-
-        // Left stick Y axis runs the arm
-        gp2.leftStickY.activationThreshold = 0.4
-        gp2.leftStickY.whileActive =
-            TriggerableCallback { robot.lift.height = robot.lift.height - liftChangeSpeed }
-        gp2.leftStickY.whileActiveNeg =
-            TriggerableCallback { robot.lift.height = robot.lift.height + liftChangeSpeed }
-
-        // Dpad does set points
-        gp2.dpadUp.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.HIGH }
-        gp2.dpadRight.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.LOW }
-        gp2.dpadLeft.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.LOW }
-        gp2.dpadDown.onActivate = TriggerableCallback { robot.lift.target = Lift.Points.MIN }
-
-        // X wiggles the bucket
-        gp2.x.onActivate = TriggerableCallback { robot.bucket.position = Bucket.Positions.REST }
-        gp2.x.onDeactivate =
-            TriggerableCallback { robot.bucket.position = Bucket.Positions.ZERO }
+        gp2.leftBumper.onActivate = { robot.carousel.power = -1.0 }
+        gp2.leftBumper.onDeactivate = { robot.carousel.power = 0.0 }
 
         // Right trigger dumps the bucket
         gp2.rightTrigger.activationThreshold = 0.5
         gp2.rightTrigger.onActivate =
-            TriggerableCallback { robot.bucket.position = Bucket.Positions.DUMP }
+             { robot.bucket.position = Bucket.Positions.DUMP }
         gp2.rightTrigger.onDeactivate =
-            TriggerableCallback { robot.bucket.position = Bucket.Positions.REST }
+             { robot.bucket.position = Bucket.Positions.REST }
+    }
+    private fun activateManual() {
+        robot.subsystems["Lift"] = LiftPower(hardwareMap, robot.bucket, robot.intake)
+
+        // Left trigger zeroes the bucket
+        gp2.leftTrigger.onActivate = {
+            robot.bucket.position = Bucket.Positions.ZERO
+        }
+
+        gp2.leftStickY.whileActive = {
+            robot.liftPower.power = gp2.leftStickY.correctedValue.toDouble()
+        }
+        gp2.leftStickY.whileActiveNeg = gp2.leftStickY.whileActive
+
+        gp2.leftStickY.onDeactivate = {
+            robot.liftPower.power = 0.0
+        }
+        gp2.leftStickY.onDeactivateNeg = gp2.leftStickY.onDeactivate
+
+        // X rests the bucket
+        gp2.x.onActivate = { robot.bucket.position = Bucket.Positions.REST }
 
         // A & B run the intake
-        gp2.a.onActivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = -1.0 }
-        gp2.a.onDeactivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = 0.0 }
-        gp2.b.onActivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = 1.0 }
-        gp2.b.onDeactivate = TriggerableCallback { if (robot.lift.isDown) robot.intake.power = 0.0 }
+        gp2.a.onActivate = {
+            robot.bucket.position = Bucket.Positions.ZERO
+            robot.intake.power = -1.0
+        }
+        gp2.a.onDeactivate = { robot.intake.power = 0.0 }
+        gp2.b.onActivate = { robot.intake.power = 1.0 }
+        gp2.b.onDeactivate = { robot.intake.power = 0.0 }
+    }
+    override fun setup() {
+        activateEither()
+        
+        // Left stick Y axis runs the lift
+        gp2.leftStickY.activationThreshold = 0.4
+        gp2.leftStickY.whileActive =
+             { robot.lift.height = robot.lift.height - liftChangeSpeed }
+        gp2.leftStickY.whileActiveNeg =
+             { robot.lift.height = robot.lift.height + liftChangeSpeed }
+
+        // Dpad does set points
+        gp2.dpadUp.onActivate = { robot.lift.target = Lift.Points.HIGH }
+        gp2.dpadRight.onActivate = { robot.lift.target = Lift.Points.LOW }
+        gp2.dpadLeft.onActivate = { robot.lift.target = Lift.Points.LOW }
+        gp2.dpadDown.onActivate = { robot.lift.target = Lift.Points.MIN }
+
+        // X wiggles the bucket
+        gp2.x.onActivate = { robot.bucket.position = Bucket.Positions.REST }
+        gp2.x.onDeactivate =
+             { robot.bucket.position = Bucket.Positions.ZERO }
+
+        // A & B run the intake
+        gp2.a.onActivate = { if (robot.lift.isDown) robot.intake.power = -1.0 }
+        gp2.a.onDeactivate = { if (robot.lift.isDown) robot.intake.power = 0.0 }
+        gp2.b.onActivate = { if (robot.lift.isDown) robot.intake.power = 1.0 }
+        gp2.b.onDeactivate = { if (robot.lift.isDown) robot.intake.power = 0.0 }
+
+        gp2.rightStickButton.onActivate = {
+            if (gp2.leftStickButton.active) {
+                activateEither()
+                activateManual()
+            }
+        }
     }
 
     override fun runLoop() {

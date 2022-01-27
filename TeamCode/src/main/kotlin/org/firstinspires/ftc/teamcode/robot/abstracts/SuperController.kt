@@ -39,35 +39,7 @@ class SuperController(
      * Update all triggerables
      */
     fun update() {
-        leftBumper.update()
-        rightBumper.update()
-        a.update()
-        b.update()
-        x.update()
-        y.update()
-        dpadUp.update()
-        dpadDown.update()
-        dpadLeft.update()
-        dpadRight.update()
-        start.update()
-        back.update()
-        leftStickButton.update()
-        rightStickButton.update()
-        guide.update()
-        share.update()
-        options.update()
-        touchpad.update()
-        cross.update()
-        circle.update()
-        square.update()
-        triangle.update()
-        ps.update()
-        leftTrigger.update()
-        rightTrigger.update()
-        leftStickX.update()
-        leftStickY.update()
-        rightStickX.update()
-        rightStickY.update()
+        binds.forEach { it.update() }
     }
 
     /**
@@ -261,4 +233,57 @@ class SuperController(
      */
     @JvmField
     val ps = Triggerables.ControllerButton { gamepad.ps }
+
+    /**
+     * List of all Triggerables on the gamepad.
+     */
+    val binds = listOf(
+        leftBumper,
+        rightBumper,
+        a,
+        b,
+        x,
+        y,
+        dpadUp,
+        dpadDown,
+        dpadLeft,
+        dpadRight,
+        start,
+        back,
+        leftStickButton,
+        rightStickButton,
+        guide,
+        share,
+        options,
+        touchpad,
+        cross,
+        circle,
+        square,
+        triangle,
+        ps,
+        leftTrigger,
+        rightTrigger,
+        leftStickX,
+        leftStickY,
+        rightStickX,
+        rightStickY
+    )
+
+    /**
+     * Clears all controller binds.
+     */
+    fun resetBinds() {
+        binds.forEach {
+            it.onActivate = null
+            it.onDeactivate = null
+            it.whileActive = null
+            it.whileInactive = null
+            it.onToggle = null
+            if (it is Triggerables.ControllerStick) {
+                it.onActivateNeg = null
+                it.onDeactivateNeg = null
+                it.whileActiveNeg = null
+            }
+        }
+    }
 }

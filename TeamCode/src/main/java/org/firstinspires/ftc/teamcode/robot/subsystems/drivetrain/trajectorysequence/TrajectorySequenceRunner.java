@@ -37,23 +37,23 @@ public class TrajectorySequenceRunner {
 
     public static int POSE_HISTORY_LIMIT = 100;
 
-    private final TrajectoryFollower follower;
+    protected final TrajectoryFollower follower;
 
-    private final PIDFController turnController;
+    protected final PIDFController turnController;
 
-    private final NanoClock clock;
+    protected final NanoClock clock;
 
     protected TrajectorySequence currentTrajectorySequence;
-    private double currentSegmentStartTime;
-    private int currentSegmentIndex;
-    private int lastSegmentIndex;
+    protected double currentSegmentStartTime;
+    protected int currentSegmentIndex;
+    protected int lastSegmentIndex;
 
-    private Pose2d lastPoseError = new Pose2d();
+    protected Pose2d lastPoseError = new Pose2d();
 
     List<TrajectoryMarker> remainingMarkers = new ArrayList<>();
 
-    private final FtcDashboard dashboard;
-    private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
+    protected final FtcDashboard dashboard;
+    protected final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 
     public TrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
         this.follower = follower;
@@ -75,7 +75,7 @@ public class TrajectorySequenceRunner {
     }
 
     public @Nullable
-    DriveSignal update(Pose2d poseEstimate, Pose2d poseVelocity, double voltage) {
+    DriveSignal update(Pose2d poseEstimate, Pose2d poseVelocity) {
         Pose2d targetPose = null;
         DriveSignal driveSignal = null;
 
@@ -182,8 +182,6 @@ public class TrajectorySequenceRunner {
             poseHistory.removeFirst();
         }
 
-        packet.put("voltage", voltage);
-
         packet.put("x", poseEstimate.getX());
         packet.put("y", poseEstimate.getY());
         packet.put("heading (deg)", Math.toDegrees(poseEstimate.getHeading()));
@@ -199,7 +197,7 @@ public class TrajectorySequenceRunner {
         return driveSignal;
     }
 
-    private void draw(
+    protected void draw(
             Canvas fieldOverlay,
             TrajectorySequence sequence, SequenceSegment currentSegment,
             Pose2d targetPose, Pose2d poseEstimate

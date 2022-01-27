@@ -8,12 +8,14 @@ import com.acmerobotics.roadrunner.localization.Localizer
 import com.arcrobotics.ftclib.geometry.Rotation2d
 import com.arcrobotics.ftclib.geometry.Transform2d
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds
-import com.qualcomm.robotcore.hardware.HardwareMap
 import com.spartronics4915.lib.T265Camera
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
+import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemContext
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer.Companion.inToM
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer.Companion.mToIn
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.SuperTrajectorySequenceRunner.Drawable
 import java.util.function.Consumer
 
 /**
@@ -56,9 +58,9 @@ fun ChassisSpeeds.toRoadRunner(): Pose2d {
 }
 
 class T265Localizer(
+    context: SubsystemContext,
     private var cameraToRobot: Pose2d,
-    odometryCovariance: Double,
-    hardwareMap: HardwareMap,
+    odometryCovariance: Double
 ): Localizer, Consumer<T265Camera.CameraUpdate>, AbstractSubsystem {
     override val tag = "T265Localizer"
     override val subsystems = SubsystemMap{ tag }
@@ -141,21 +143,39 @@ class T265Localizer(
                     ftcLibCameraToRobot.rotation
                 ),
                 odometryCovariance,
-                hardwareMap.appContext
+                context.hardwareMap.appContext
             )
         }
         slamera = persistentSlamera!!
         sleep(1000)
-        slamera.start(this)
+        if (!slamera.isStarted) {
+            Log.i(tag, "Starting camera...")
+            slamera.start(this)
+        } else {
+            Log.i(tag, "Camera was already started.")
+        }
         logPose(poseEstimate)
         poseEstimate = Pose2d()
         logPose(poseEstimate)
+
+        Thread {
+            while (context.subsystems["Drivetrain"] == null) {continue}
+            Log.i(tag, "Setting up dashboard telemetry.")
+            val drivetrain = context.subsystems["Drivetrain"]!! as Drivetrain
+            drivetrain.dashTelemetry["rawX"] = {lastUpdate.directPose.x}
+            drivetrain.dashTelemetry["rawY"] = {lastUpdate.directPose.y}
+            drivetrain.dashTelemetry["rawHeading (deg)"] = {Math.toDegrees(lastUpdate.directPose.heading)}
+            drivetrain.dashTelemetry["poseConfidence"] = {lastUpdate.confidence.ordinal}
+            drivetrain.drawnTelemetry.add(Drawable("#ffff00"
+            ) { lastUpdate.directPose })
+        }.start()
     }
 
     companion object {
         const val mToIn = 100.0/2.54
         const val inToM = 2.54/100.0
 
+        // TODO: add logging for the direct values of the camera
         private var persistentSlamera: T265Camera? = null
     }
 
@@ -191,6 +211,8 @@ class T265Localizer(
         extraAngle: Double = 0.0
     ) {
         private var extraRotation = Rotation2d(-extraAngle)
+
+        // TODO: apply some sort of filtering
         var pose = com.arcrobotics.ftclib.geometry.Pose2d(
             update.pose.translation.rotateBy(extraRotation),
             update.pose.rotation.rotateBy(extraRotation)
@@ -207,6 +229,7 @@ class T265Localizer(
             private set
         var confidence: T265Camera.PoseConfidence = update.confidence
             private set
+        val directPose = update.pose.toRoadRunner()
     }
 
     class BadPoseSetException: Exception("Attempted to set pose while confidence was Failed.")

@@ -20,8 +20,16 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.control.PIDCoefficients
+import com.acmerobotics.roadrunner.drive.DriveSignal
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower
+import com.acmerobotics.roadrunner.geometry.Pose2d
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.sequencesegment.SequenceSegment
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.sequencesegment.TrajectorySegment
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.sequencesegment.TurnSegment
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.sequencesegment.WaitSegment
+import org.firstinspires.ftc.teamcode.robot.util.DashboardUtil
 
 /**
  * I have the best trajectory sequence runners.
@@ -49,16 +57,149 @@ import com.acmerobotics.roadrunner.followers.TrajectoryFollower
  * If you listen to the FAKE NEWS guys over at ACME, they say, you know, that we already have good enough trajectory sequence runners, but they are liars, and, frankly, losers.
  * ok, ok, thank you, ok, goodnight, ok.
  *
+ * <a href="https://github.com/acmerobotics/rover-ruckus/blob/master/src/com/acmerobotics/roverruckus/util/SuperArrayList.java">
  * Parody of AMCE Robotics "SuperArrayList"
- * See https://github.com/acmerobotics/rover-ruckus/blob/master/src/com/acmerobotics/roverruckus/util/SuperArrayList.java
- * All opinions are my own, but in an alternate universe where ACME sucks.
+ * </a>
+ * All opinions are my own, but in an alternate universe where ACME isn't amazing.
  */
 class SuperTrajectorySequenceRunner(
     follower: TrajectoryFollower,
     headingPIDCoefficients: PIDCoefficients
 ) : TrajectorySequenceRunner(follower, headingPIDCoefficients) {
+    val dashTelemetry = mutableMapOf<String, () -> Any>()
+    val drawnTelemetry = mutableListOf<Drawable>()
+
+    data class Drawable(val color: String, val data: () -> Pose2d)
 
     fun cancelSequence() {
         currentTrajectorySequence = null
+    }
+
+    // TODO: log the values getting passed into the motors for diagnosis purposes
+    override fun update(poseEstimate: Pose2d, poseVelocity: Pose2d?): DriveSignal? {
+        var targetPose: Pose2d? = null
+        var driveSignal: DriveSignal? = null
+
+        val packet = TelemetryPacket()
+        val fieldOverlay = packet.fieldOverlay()
+
+        var currentSegment: SequenceSegment? = null
+
+        if (currentTrajectorySequence != null) {
+            if (currentSegmentIndex >= currentTrajectorySequence.size()) {
+                for (marker in remainingMarkers) {
+                    marker.callback.onMarkerReached()
+                }
+
+                remainingMarkers.clear()
+
+                currentTrajectorySequence = null
+            }
+
+            if (currentTrajectorySequence == null)
+                return DriveSignal()
+
+            val now = clock.seconds()
+            val isNewTransition = currentSegmentIndex != lastSegmentIndex
+
+            currentSegment = currentTrajectorySequence.get(currentSegmentIndex)
+
+            if (isNewTransition) {
+                currentSegmentStartTime = now
+                lastSegmentIndex = currentSegmentIndex
+
+                for (marker in remainingMarkers) {
+                    marker.callback.onMarkerReached()
+                }
+
+                remainingMarkers.clear()
+
+                remainingMarkers.addAll(currentSegment.markers)
+                remainingMarkers.sortWith(Comparator.comparingDouble { it.time })
+            }
+
+            val deltaTime = now - currentSegmentStartTime
+
+            if (currentSegment is TrajectorySegment) {
+                val currentTrajectory = currentSegment.trajectory
+
+                if (isNewTransition)
+                    follower.followTrajectory(currentTrajectory)
+
+                if (!follower.isFollowing()) {
+                    currentSegmentIndex++
+
+                    driveSignal = DriveSignal()
+                } else {
+                    driveSignal = follower.update(poseEstimate, poseVelocity)
+                    lastPoseError = follower.lastError
+                }
+
+                targetPose = currentTrajectory[deltaTime]
+            } else if (currentSegment is TurnSegment) {
+                val targetState = currentSegment.motionProfile[deltaTime]
+
+                turnController.targetPosition = targetState.x
+
+                val correction = turnController.update(poseEstimate.heading)
+
+                val targetOmega = targetState.v
+                val targetAlpha = targetState.a
+
+                lastPoseError = Pose2d(0.0, 0.0, turnController.lastError)
+
+                val startPose = currentSegment.startPose
+                targetPose = startPose.copy(startPose.x, startPose.y, targetState.x)
+
+                driveSignal = DriveSignal(
+                    Pose2d(0.0, 0.0, targetOmega + correction),
+                    Pose2d(0.0, 0.0, targetAlpha)
+                )
+
+                if (deltaTime >= currentSegment.getDuration()) {
+                    currentSegmentIndex++
+                    driveSignal = DriveSignal()
+                }
+            } else if (currentSegment is WaitSegment) {
+                lastPoseError = Pose2d()
+
+                targetPose = currentSegment.getStartPose()
+                driveSignal = DriveSignal()
+
+                if (deltaTime >= currentSegment.getDuration()) {
+                    currentSegmentIndex++
+                }
+            }
+
+            while (remainingMarkers.size > 0 && deltaTime > remainingMarkers[0].time) {
+                remainingMarkers[0].callback.onMarkerReached()
+                remainingMarkers.removeAt(0)
+            }
+        }
+
+        poseHistory.add(poseEstimate)
+
+        if (POSE_HISTORY_LIMIT > -1 && poseHistory.size > POSE_HISTORY_LIMIT) {
+            poseHistory.removeFirst()
+        }
+
+        dashTelemetry.forEach { (k, v) -> packet.put(k, v.invoke()) }
+        drawnTelemetry.forEach {
+            fieldOverlay.setStrokeWidth(1)
+            fieldOverlay.setStroke(it.color)
+            DashboardUtil.drawRobot(fieldOverlay, it.data.invoke())
+        }
+
+        draw(fieldOverlay, currentTrajectorySequence, currentSegment, targetPose, poseEstimate)
+
+        dashboard.sendTelemetryPacket(packet)
+
+        return driveSignal
+    }
+
+    init {
+        dashTelemetry["xError"] = {lastPoseError.x}
+        dashTelemetry["yError"] = {lastPoseError.y}
+        dashTelemetry["headingError (deg)"] = {Math.toDegrees(lastPoseError.heading)}
     }
 }

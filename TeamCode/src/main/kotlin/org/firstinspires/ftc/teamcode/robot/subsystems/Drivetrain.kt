@@ -35,10 +35,12 @@ import org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto.util.OpModeUtil
 import org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto.util.toSuperPose2d
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Motors
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
+import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemContext
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.DriveConstants
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.SuperTrajectorySequenceRunner
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.SuperTrajectorySequenceRunner.Drawable
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequenceBuilder
 import kotlin.math.abs
@@ -49,7 +51,7 @@ import kotlin.math.abs
  * @see org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain
  */
 @Config
-class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
+class Drivetrain(context: SubsystemContext) : MecanumDrive(
     DriveConstants.kV,
     DriveConstants.kA,
     DriveConstants.kStatic,
@@ -57,17 +59,24 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
     DriveConstants.TRACK_WIDTH,
     LATERAL_MULTIPLIER
 ), AbstractSubsystem {
+    constructor(hardwareMap: HardwareMap) : this(SubsystemContext(hardwareMap, SubsystemMap{ "unknown" }))
+
     override val tag = "Drivetrain"
     override val subsystems = SubsystemMap{ tag }
 
     private val trajectorySequenceRunner: SuperTrajectorySequenceRunner
-    private val leftFront = Motors.LEFT_FRONT.get(hardwareMap)
-    private val leftRear = Motors.LEFT_REAR.get(hardwareMap)
-    private val rightRear = Motors.RIGHT_REAR.get(hardwareMap)
-    private val rightFront = Motors.RIGHT_FRONT.get(hardwareMap)
+    private val leftFront = Motors.LEFT_FRONT.get(context.hardwareMap)
+    private val leftRear = Motors.LEFT_REAR.get(context.hardwareMap)
+    private val rightRear = Motors.RIGHT_REAR.get(context.hardwareMap)
+    private val rightFront = Motors.RIGHT_FRONT.get(context.hardwareMap)
     private val motors = listOf(leftFront, leftRear, rightRear, rightFront)
     private val imu: BNO055IMU
     private val batteryVoltageSensor: VoltageSensor
+
+    val dashTelemetry: MutableMap<String, () -> Any>
+        get() = trajectorySequenceRunner.dashTelemetry
+    val drawnTelemetry: MutableList<Drawable>
+        get() = trajectorySequenceRunner.drawnTelemetry
 
     fun trajectoryBuilder(startPose: Pose2d): TrajectoryBuilder {
         return TrajectoryBuilder(startPose, false, VEL_CONSTRAINT, ACCEL_CONSTRAINT)
@@ -130,7 +139,7 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
     override fun loop() {
         updatePoseEstimate()
         persistentPoseEstimate = poseEstimate.toSuperPose2d()
-        trajectorySequenceRunner.update(poseEstimate, poseVelocity, voltage)?.let {
+        trajectorySequenceRunner.update(poseEstimate, poseVelocity)?.let {
             setDriveSignal(it)
         }
     }
@@ -264,9 +273,15 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
             Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5
         )
 
-        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next()
+        trajectorySequenceRunner = SuperTrajectorySequenceRunner(follower, HEADING_PID)
+        dashTelemetry["voltage"] = {voltage}
+        dashTelemetry["x"] = {poseEstimate.x}
+        dashTelemetry["y"] = {poseEstimate.y}
+        dashTelemetry["heading (deg)"] = {poseEstimate.heading}
 
-        imu = hardwareMap.get(BNO055IMU::class.java, "imu")
+        batteryVoltageSensor = context.hardwareMap.voltageSensor.iterator().next()
+
+        imu = context.hardwareMap.get(BNO055IMU::class.java, "imu")
         val parameters = BNO055IMU.Parameters()
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS
         imu.initialize(parameters)
@@ -277,13 +292,11 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
             motor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         }
 
-        // DONE: if desired, use setLocalizer() to change the localization method
+        // TODO: create a system that filters between the default localizer (wheel powers) and T265
         val t265Localizer = T265Localizer(
-            cameraRobotOffset.pose2d, .8, hardwareMap
+            context, cameraRobotOffset.pose2d, .8
         )
         subsystems.register(t265Localizer)
         localizer = t265Localizer
-
-        trajectorySequenceRunner = SuperTrajectorySequenceRunner(follower, HEADING_PID)
     }
 }

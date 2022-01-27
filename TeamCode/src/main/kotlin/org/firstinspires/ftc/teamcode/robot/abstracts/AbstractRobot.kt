@@ -20,10 +20,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 package org.firstinspires.ftc.teamcode.robot.abstracts
 
+import com.qualcomm.robotcore.hardware.HardwareMap
+
 /**
  * Class that all robots need to extend
  */
-abstract class AbstractRobot {
+abstract class AbstractRobot(val hardwareMap: HardwareMap) {
     /**
      * String tag for logging.
      */
@@ -33,6 +35,11 @@ abstract class AbstractRobot {
      * Storage for added subsystems.
      */
     val subsystems = SubsystemMap{ tag }
+
+    /**
+     * Combo of a HardwareMap and a SubsystemMap.
+     */
+    val subsystemContext = SubsystemContext(hardwareMap, subsystems)
 
     /**
      * Runs once before the loop.
