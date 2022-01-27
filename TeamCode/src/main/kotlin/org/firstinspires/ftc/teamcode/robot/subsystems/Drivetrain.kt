@@ -285,6 +285,5 @@ class Drivetrain(hardwareMap: HardwareMap) : MecanumDrive(
         localizer = t265Localizer
 
         trajectorySequenceRunner = SuperTrajectorySequenceRunner(follower, HEADING_PID)
-        //poseEstimate = persistentPoseEstimate.pose2d
     }
 }

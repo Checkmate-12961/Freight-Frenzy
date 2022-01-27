@@ -63,10 +63,9 @@ class T265Localizer(
     override val tag = "T265Localizer"
     override val subsystems = SubsystemMap{ tag }
 
-    private lateinit var slamera: T265Camera
+    private val slamera: T265Camera
 
     // LOCKS //
-
     private object UpdateMutex
 
     // SLAMERA STUFF //
@@ -139,7 +138,7 @@ class T265Localizer(
         if (persistentSlamera == null) {
             Log.d(tag, "Slamera was null.")
             val ftcLibCameraToRobot = cameraToRobot.toFtcLib()
-            slamera = T265Camera(
+            persistentSlamera = T265Camera(
                 Transform2d(
                     ftcLibCameraToRobot.translation,
                     ftcLibCameraToRobot.rotation
@@ -147,15 +146,13 @@ class T265Localizer(
                 odometryCovariance,
                 hardwareMap.appContext
             )
-            persistentSlamera = slamera
         }
+        slamera = persistentSlamera!!
         sleep(1000)
         slamera.start(this)
-        waitForUpdate()
-        logPose(lastUpdate.pose)
+        logPose(poseEstimate)
         poseEstimate = Pose2d()
-        waitForUpdate()
-        logPose(lastUpdate.pose)
+        logPose(poseEstimate)
     }
 
     companion object {
