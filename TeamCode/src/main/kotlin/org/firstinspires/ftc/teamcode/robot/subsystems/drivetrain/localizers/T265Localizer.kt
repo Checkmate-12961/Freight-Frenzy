@@ -5,109 +5,117 @@ import android.util.Log
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.localization.Localizer
+import com.arcrobotics.ftclib.geometry.Rotation2d
 import com.arcrobotics.ftclib.geometry.Transform2d
+import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.spartronics4915.lib.T265Camera
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer.Companion.inToM
+import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer.Companion.mToIn
 import java.util.function.Consumer
-import kotlin.math.cos
-import kotlin.math.sin
 
 /**
- * Transforms a Pose2d by another Pose2d.
- * [A simulator for this behavior can be found here.](https://www.desmos.com/calculator/0x7xoeiudh)
+ * Convert a RoadRunner Pose2d to an FTCLib Pose2d and convert inches to meters.
  *
- * @param b The pose to transform the first pose by.
- * @return The result of the transformation.
+ * @return An FTCLib Pose2d in meters.
  */
-fun Pose2d.transformBy(b: Pose2d): Pose2d {
-    val cosT = cos(heading)
-    val sinT = sin(heading)
-    return Pose2d(
-        x + b.x * cosT - b.y * sinT,
-        y + b.x * sinT + b.y * cosT,
-        heading + b.heading
+fun Pose2d.toFtcLib(): com.arcrobotics.ftclib.geometry.Pose2d {
+    return com.arcrobotics.ftclib.geometry.Pose2d(
+        this.x * inToM,
+        this.y * inToM,
+        Rotation2d(this.heading)
     )
 }
 
 /**
- * Calculates the transformation between two Pose2d objects.
- * [A simulator for this behavior can be found here.](https://www.desmos.com/calculator/fttw74j9pp)
+ * Convert a FTCLib Pose2d to a RoadRunner Pose2d and convert meters to inches.
  *
- * @param r The result pose.
- * @return The transformation needed to get from the origin pose to the result pose.
+ * @return A RoadRunner Pose2d in inches.
  */
-fun Pose2d.calculateTransformation(r: Pose2d): Pose2d {
-    val cosT = cos(heading)
-    val sinT = sin(heading)
+fun com.arcrobotics.ftclib.geometry.Pose2d.toRoadRunner(): Pose2d {
     return Pose2d(
-        cosT * (r.x - x) + sinT * (r.y - y),
-        sinT * (x - r.x) + cosT * (r.y - y),
-        r.heading - heading
+        this.x * mToIn,
+        this.y * mToIn,
+        this.heading
     )
 }
 
 /**
- * Rotates a Vector2d object.
- * [A simulator for this behavior can be found here.](https://www.desmos.com/calculator/ath6szfezx)
+ * Convert a FTCLib ChassisSpeeds to a RoadRunner Pose2d and convert meters to inches.
  *
- * @param heading The new heading.
- * @return The rotated vector.
+ * @return A RoadRunner Pose2d in inches.
  */
-fun Vector2d.rotateBy(heading: Double): Vector2d {
-    val cosH = cos(heading)
-    val sinH = sin(heading)
-    return Vector2d(
-        x * cosH - y * sinH,
-        x * sinH + y * cosH
+fun ChassisSpeeds.toRoadRunner(): Pose2d {
+    return Pose2d(
+        this.vxMetersPerSecond * mToIn,
+        this.vyMetersPerSecond * mToIn,
+        this.omegaRadiansPerSecond
     )
 }
 
 class T265Localizer(
-    private val cameraToRobot: Pose2d,
+    cameraToRobot: Pose2d,
     odometryCovariance: Double,
     hardwareMap: HardwareMap,
 ): Localizer, Consumer<T265Camera.CameraUpdate>, AbstractSubsystem {
     override val tag = "T265Localizer"
     override val subsystems = SubsystemMap{ tag }
 
-    // MUTEXES //
+    private lateinit var slamera: T265Camera
+
+    // LOCKS //
+
     private object UpdateMutex
 
     // SLAMERA STUFF //
     @Volatile private var updatesReceived = 0
 
+    fun waitForUpdate() {
+        val lastUpdatesReceived = updatesReceived
+        while (lastUpdatesReceived == updatesReceived) { continue }
+    }
+
     var odometryVelocityCallback: (() -> Vector2d)? = null
 
-    private var originOffset = Pose2d()
+    private var lastUpdate: AmericanCameraUpdate = AmericanCameraUpdate()
+        get() {
+            synchronized(UpdateMutex) {
+                return field
+            }
+        }
+        set(value) {
+            synchronized(UpdateMutex) {
+                field = value
+            }
+        }
 
-    private var directPose = Pose2d()
-
-    var poseConfidence = T265Camera.PoseConfidence.Failed
-        private set
+    val poseConfidence: T265Camera.PoseConfidence
+        get() {
+            return lastUpdate.confidence
+        }
 
     /**
      * Current robot pose estimate.
      */
     override var poseEstimate: Pose2d
         get() {
-            val lastUpdateReceived = updatesReceived
-            while (updatesReceived > lastUpdateReceived) continue
-            synchronized(UpdateMutex) {
-                return directPose.transformBy(originOffset)
-            }
+            waitForUpdate()
+            return lastUpdate.pose
         }
         set(value) {
-            synchronized(UpdateMutex){
-                originOffset = directPose.calculateTransformation(value)
-            }
+            lastUpdate.pose = value
+            slamera.setPose(value.toFtcLib())
         }
 
     /**
      * Current robot pose velocity
      */
-    override var poseVelocity = Pose2d()
+    override val poseVelocity: Pose2d
+        get() {
+            return lastUpdate.velocity
+        }
 
     /**
      * Completes a single localization update.
@@ -115,7 +123,7 @@ class T265Localizer(
     override fun update() {
         val odometryVelocity = odometryVelocityCallback?.invoke()
         if (odometryVelocity != null) {
-            slamera?.sendOdometry(
+            slamera.sendOdometry(
                 odometryVelocity.x * inToM,
                 odometryVelocity.y * inToM
             )
@@ -123,33 +131,38 @@ class T265Localizer(
     }
 
     override fun cleanup() {
-        slamera?.stop()
+        slamera.stop()
     }
 
     init {
         Log.d(tag, "Initializing T265")
-        if (slamera == null) {
+        if (persistentSlamera == null) {
             Log.d(tag, "Slamera was null.")
+            val ftcLibCameraToRobot = cameraToRobot.toFtcLib()
             slamera = T265Camera(
-                Transform2d(),
+                Transform2d(
+                    ftcLibCameraToRobot.translation,
+                    ftcLibCameraToRobot.rotation
+                ),
                 odometryCovariance,
                 hardwareMap.appContext
             )
+            persistentSlamera = slamera
         }
-        synchronized(UpdateMutex) {
-            sleep(1000)
-            slamera?.start(this)
-        }
-        logPose(poseEstimate)
+        sleep(1000)
+        slamera.start(this)
+        waitForUpdate()
+        logPose(lastUpdate.pose)
         poseEstimate = Pose2d()
-        logPose(poseEstimate)
+        waitForUpdate()
+        logPose(lastUpdate.pose)
     }
 
     companion object {
         const val mToIn = 100.0/2.54
         const val inToM = 2.54/100.0
 
-        private var slamera: T265Camera? = null
+        private var persistentSlamera: T265Camera? = null
     }
 
     /**
@@ -161,24 +174,41 @@ class T265Localizer(
     override fun accept(update: T265Camera.CameraUpdate) {
         updatesReceived++
         synchronized(UpdateMutex) {
-            val rawPose = update.pose
-            directPose = Pose2d(
-                rawPose.x * mToIn,
-                rawPose.y * mToIn,
-                rawPose.heading
-            ).transformBy(cameraToRobot)
-            val rawPoseVelocity = update.velocity
-            poseVelocity = Pose2d(
-                Vector2d(rawPoseVelocity.vxMetersPerSecond * mToIn,
-                rawPoseVelocity.vyMetersPerSecond * mToIn
-                ).rotateBy(cameraToRobot.heading),
-                rawPoseVelocity.omegaRadiansPerSecond
-            )
-            poseConfidence = update.confidence
+            lastUpdate = AmericanCameraUpdate(update)
         }
     }
 
     private fun logPose(pose: Pose2d) {
         Log.d(tag, "${pose.x}, ${pose.y}, ${pose.heading}")
     }
+
+    /**
+     * CameraUpdate alternative that speaks in hamburgers, football fields, and guns, rather than
+     *  tea and crumpets
+     *
+     * @param update Your old, nasty, Bri'ish, tea-and-crumpets-speaking CameraUpdate object.
+     */
+    class AmericanCameraUpdate(
+        update: T265Camera.CameraUpdate = T265Camera.CameraUpdate(
+            com.arcrobotics.ftclib.geometry.Pose2d(),
+            ChassisSpeeds(),
+            T265Camera.PoseConfidence.Failed
+        )
+    ) {
+        var pose = update.pose.toRoadRunner()
+            set(value) {
+                if (confidence == T265Camera.PoseConfidence.Failed) {
+                    throw BadPoseSetException()
+                }
+                field = value
+                velocity = Pose2d()
+                confidence = T265Camera.PoseConfidence.High
+            }
+        var velocity = update.velocity.toRoadRunner()
+            private set
+        var confidence: T265Camera.PoseConfidence = update.confidence
+            private set
+    }
+
+    class BadPoseSetException: Exception("Attempted to set pose while confidence was Failed.")
 }
