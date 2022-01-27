@@ -20,16 +20,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequ
 @Config
 @Autonomous(name = "Square/T265", group = "test")
 class SquarePlusT265: BaseOpMode() {
-    private lateinit var squareTrajectory: TrajectorySequence
-    private var doThing = false
-
-    override fun setup() {
-        squareTrajectory = robot.drivetrain.trajectorySequenceBuilder(Pose2d())
-            .forward(squareLength)
-            .turn(kotlin.math.PI/2)
-            .build()
-    }
-
     override fun setupLoop() {
         val packet = TelemetryPacket()
         val poseEstimate = robot.drivetrain.poseEstimate
@@ -46,6 +36,10 @@ class SquarePlusT265: BaseOpMode() {
 
     override fun runLoop() {
         if (!robot.drivetrain.isBusy) {
+            val squareTrajectory = robot.drivetrain.trajectorySequenceBuilder(robot.drivetrain.poseEstimate)
+                .forward(squareLength)
+                .turn(kotlin.math.PI/2)
+                .build()
             robot.drivetrain.followTrajectorySequenceAsync(squareTrajectory)
         }
     }
