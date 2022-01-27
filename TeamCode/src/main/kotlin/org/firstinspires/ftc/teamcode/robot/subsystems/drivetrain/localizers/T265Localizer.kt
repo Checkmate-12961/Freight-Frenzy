@@ -188,9 +188,13 @@ class T265Localizer(
             ChassisSpeeds(),
             T265Camera.PoseConfidence.Failed
         ),
-        extraRotation: Double = 0.0
+        extraAngle: Double = 0.0
     ) {
-        var pose = update.pose.rotate(-extraRotation).toRoadRunner()
+        private var extraRotation = Rotation2d(-extraAngle)
+        var pose = com.arcrobotics.ftclib.geometry.Pose2d(
+            update.pose.translation.rotateBy(extraRotation),
+            update.pose.rotation.rotateBy(extraRotation)
+        ).toRoadRunner()
             set(value) {
                 if (confidence == T265Camera.PoseConfidence.Failed) {
                     throw BadPoseSetException()
