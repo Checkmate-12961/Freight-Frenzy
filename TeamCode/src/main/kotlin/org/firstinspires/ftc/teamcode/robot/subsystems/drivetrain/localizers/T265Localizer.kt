@@ -56,7 +56,7 @@ fun ChassisSpeeds.toRoadRunner(): Pose2d {
 }
 
 class T265Localizer(
-    cameraToRobot: Pose2d,
+    private var cameraToRobot: Pose2d,
     odometryCovariance: Double,
     hardwareMap: HardwareMap,
 ): Localizer, Consumer<T265Camera.CameraUpdate>, AbstractSubsystem {
@@ -171,7 +171,7 @@ class T265Localizer(
     override fun accept(update: T265Camera.CameraUpdate) {
         updatesReceived++
         synchronized(UpdateMutex) {
-            lastUpdate = AmericanCameraUpdate(update)
+            lastUpdate = AmericanCameraUpdate(update, cameraToRobot.heading)
         }
     }
 
@@ -190,9 +190,10 @@ class T265Localizer(
             com.arcrobotics.ftclib.geometry.Pose2d(),
             ChassisSpeeds(),
             T265Camera.PoseConfidence.Failed
-        )
+        ),
+        extraRotation: Double = 0.0
     ) {
-        var pose = update.pose.toRoadRunner()
+        var pose = update.pose.rotate(-extraRotation).toRoadRunner()
             set(value) {
                 if (confidence == T265Camera.PoseConfidence.Failed) {
                     throw BadPoseSetException()
