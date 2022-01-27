@@ -111,10 +111,7 @@ class T265Localizer(
     /**
      * Current robot pose velocity
      */
-    override val poseVelocity: Pose2d
-        get() {
-            return lastUpdate.velocity
-        }
+    override val poseVelocity: Pose2d? = null
 
     /**
      * Completes a single localization update.
