@@ -26,7 +26,7 @@ class SquarePlusT265: BaseOpMode() {
     override fun setup() {
         squareTrajectory = robot.drivetrain.trajectorySequenceBuilder(Pose2d())
             .forward(squareLength)
-            .turn(kotlin.math.PI)
+            .turn(kotlin.math.PI/2)
             .build()
     }
 
