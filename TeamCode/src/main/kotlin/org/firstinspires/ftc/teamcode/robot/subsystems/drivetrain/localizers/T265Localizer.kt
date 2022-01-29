@@ -107,7 +107,13 @@ class T265Localizer(
         }
         set(value) {
             lastUpdate.pose = value
-            slamera.setPose(value.toFtcLib())
+            val temp = value.toFtcLib()
+            slamera.setPose(
+                com.arcrobotics.ftclib.geometry.Pose2d(
+                    temp.translation.rotateBy(Rotation2d(cameraToRobot.heading)),
+                    temp.rotation
+                )
+            )
         }
 
     /**
