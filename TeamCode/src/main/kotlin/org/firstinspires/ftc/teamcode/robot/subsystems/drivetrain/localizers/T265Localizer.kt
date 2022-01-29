@@ -172,8 +172,7 @@ class T265Localizer(
             drivetrain.dashTelemetry["rawY"] = {lastUpdate.directPose.y}
             drivetrain.dashTelemetry["rawHeading (deg)"] = {Math.toDegrees(lastUpdate.directPose.heading)}
             drivetrain.dashTelemetry["poseConfidence"] = {lastUpdate.confidence.ordinal}
-            drivetrain.drawnTelemetry.add(Drawable("#ffff00"
-            ) { lastUpdate.directPose })
+            //drivetrain.drawnTelemetry.add(Drawable("#ffff00") { lastUpdate.directPose })
         }.start()
     }
 

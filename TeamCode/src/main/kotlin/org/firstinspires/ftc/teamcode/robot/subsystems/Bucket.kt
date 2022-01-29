@@ -21,6 +21,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.firstinspires.ftc.teamcode.robot.subsystems
 
+import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.robot.HardwareNames.Servos
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
@@ -34,6 +35,7 @@ import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
  *
  * @param hardwareMap Passed in from [org.firstinspires.ftc.teamcode.robot.CheckmateRobot].
  */
+@Config
 class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
     override val tag = "Bucket"
     override val subsystems = SubsystemMap{ tag }
@@ -48,13 +50,24 @@ class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
      *
      * @property position Position for the servo to travel to.
      */
-    enum class Positions(@JvmField val position: Double) {
+    enum class Positions {
         // Position when the bucket is dumping
-        DUMP(0.42),
+        DUMP {
+            override val position
+                get() = dump
+        },
         // The normal position
-        REST(0.17),
+        REST {
+            override val position
+                get() = rest
+        },
         // The position when the bucket is all the way down
-        ZERO(0.14)
+        ZERO {
+            override val position
+                get() = zero
+        };
+
+        abstract val position: Double
     }
 
     /**
@@ -72,5 +85,11 @@ class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
     init {
         // Set the position to the rest position
         bucketServo.position = Positions.REST.position
+    }
+
+    companion object {
+        @JvmField var dump = 0.42
+        @JvmField var rest = 0.2
+        @JvmField var zero = 0.14
     }
 }

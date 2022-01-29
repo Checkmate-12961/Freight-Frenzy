@@ -230,7 +230,7 @@ class Drivetrain(context: SubsystemContext) : MecanumDrive(
     }
 
     companion object {
-        @JvmField var cameraRobotOffset = OpModeUtil.SuperPose2d(-6.0, -6.0, 90.0)
+        @JvmField var cameraRobotOffset = OpModeUtil.SuperPose2d(-5.0, -2.75, 90.0)
 
         @JvmField var persistentPoseEstimate = OpModeUtil.SuperPose2d()
 

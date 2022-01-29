@@ -20,6 +20,8 @@ class BlueSide : BaseOpMode() {
     }
     private val startPose = Pose2d(-34.25, 62.0, PI/2)
 
+    private var trajIsSet = false
+
     enum class Segment { ZERO, CAROUSEL, ONE, LIFT, TWO, BUSY }
 
     private var segment = Segment.ZERO
@@ -43,16 +45,10 @@ class BlueSide : BaseOpMode() {
             .back(4.0)
             .turn(-PI/2)
             .lineToSplineHeading(Pose2d(-52.0, 56.0, 0.0))
-            .addDisplacementMarker {
-                segment = Segment.CAROUSEL
-            }
             .build()
         trajectory1 = robot.drivetrain.trajectorySequenceBuilder(trajectory0.end())
             .splineTo(Vector2d(-58.0, 36.0), -PI/2)
             .splineTo(Vector2d(-29.0, 25.0), 0.0)
-            .addDisplacementMarker{
-                segment = Segment.LIFT
-            }
             .build()
         trajectory2 = robot.drivetrain.trajectorySequenceBuilder(trajectory1.end())
             .lineTo(Vector2d(-40.0, 25.0))
@@ -74,8 +70,12 @@ class BlueSide : BaseOpMode() {
         telemetry.addData("Segment", segment)
         when (segment) {
             Segment.ZERO -> {
-                segment = Segment.BUSY
-                robot.drivetrain.followTrajectorySequenceAsync(trajectory0)
+                if (!trajIsSet) {
+                    robot.drivetrain.followTrajectorySequenceAsync(trajectory0)
+                } else if (!robot.drivetrain.isBusy) {
+                    trajIsSet = false
+                    segment = Segment.CAROUSEL
+                }
             }
             Segment.CAROUSEL -> {
                 if (lastTime == 0.0) {
@@ -88,8 +88,12 @@ class BlueSide : BaseOpMode() {
                 }
             }
             Segment.ONE -> {
-                segment = Segment.BUSY
-                robot.drivetrain.followTrajectorySequenceAsync(trajectory1)
+                if (!trajIsSet) {
+                    robot.drivetrain.followTrajectorySequenceAsync(trajectory1)
+                } else if (!robot.drivetrain.isBusy) {
+                    trajIsSet = false
+                    segment = Segment.LIFT
+                }
             }
             Segment.LIFT -> {
                 if (lastTime == 0.0) {
@@ -104,8 +108,12 @@ class BlueSide : BaseOpMode() {
                 }
             }
             Segment.TWO -> {
-                segment = Segment.BUSY
-                robot.drivetrain.followTrajectorySequenceAsync(trajectory2)
+                if (!trajIsSet) {
+                    robot.drivetrain.followTrajectorySequenceAsync(trajectory2)
+                } else if (!robot.drivetrain.isBusy) {
+                    trajIsSet = false
+                    segment = Segment.BUSY
+                }
             }
             else -> {}
         }
