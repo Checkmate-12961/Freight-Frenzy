@@ -45,7 +45,7 @@ class Intake(hardwareMap: HardwareMap) : AbstractSubsystem {
     private val intakeMotor = Motors.INTAKE.get(hardwareMap)
 
     companion object{
-        @JvmField var coefficient = .7
+        @JvmField var coefficient = 1.0
     }
 
     /**

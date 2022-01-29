@@ -163,7 +163,7 @@ class T265Localizer(
         logPose(poseEstimate)
         poseEstimate = Pose2d()
         logPose(poseEstimate)
-
+/*
         Thread {
             while (context.subsystems["Drivetrain"] == null) {continue}
             Log.i(tag, "Setting up dashboard telemetry.")
@@ -172,8 +172,8 @@ class T265Localizer(
             drivetrain.dashTelemetry["rawY"] = {lastUpdate.directPose.y}
             drivetrain.dashTelemetry["rawHeading (deg)"] = {Math.toDegrees(lastUpdate.directPose.heading)}
             drivetrain.dashTelemetry["poseConfidence"] = {lastUpdate.confidence.ordinal}
-            //drivetrain.drawnTelemetry.add(Drawable("#ffff00") { lastUpdate.directPose })
-        }.start()
+            drivetrain.drawnTelemetry.add(Drawable("#ffff00") { lastUpdate.directPose })
+        }.start()*/
     }
 
     companion object {

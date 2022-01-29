@@ -1,6 +1,7 @@
 package com.checkmaterobotics.meepmeep.util
 
 import com.noahbres.meepmeep.roadrunner.DriveShim
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder
 import kotlin.math.floor
 
 fun sleep(ms: Long) {

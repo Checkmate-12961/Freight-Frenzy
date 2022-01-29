@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.util.NanoClock
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
 import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequ
 import kotlin.math.PI
 import kotlin.math.abs
 
+@Disabled
 @Autonomous
 class BlueSide : BaseOpMode() {
     override fun setupLoop() {

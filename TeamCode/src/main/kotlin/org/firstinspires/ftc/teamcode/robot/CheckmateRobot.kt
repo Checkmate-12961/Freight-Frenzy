@@ -93,6 +93,6 @@ class CheckmateRobot(hardwareMap: HardwareMap) : AbstractRobot(hardwareMap) {
         subsystems.register(Lift(subsystemContext))
 
         // Set up the barcode stuff
-        subsystems.register(Barcode(hardwareMap))
+        //subsystems.register(Barcode(hardwareMap))
     }
 }

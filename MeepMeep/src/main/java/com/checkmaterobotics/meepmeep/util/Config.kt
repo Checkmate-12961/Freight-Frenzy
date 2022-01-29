@@ -3,6 +3,9 @@ package com.checkmaterobotics.meepmeep.util
 import com.noahbres.meepmeep.MeepMeep
 import com.noahbres.meepmeep.MeepMeep.Background
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark
+import com.noahbres.meepmeep.roadrunner.DriveShim
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder
 
 object Config {
     fun get(): MeepMeep {
@@ -21,5 +24,15 @@ object Config {
                 17.5
             ) // Set constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
             .setConstraints(35.0, 30.0, Math.toRadians(180.0), Math.toRadians(180.0), 12.0)
+    }
+
+    fun start(callback: (CheckmateRobot) -> TrajectorySequence) {
+        get().followTrajectorySequence {
+            callback.invoke(CheckmateRobot(it))
+        }.start()
+    }
+
+    class Pose2d(val x: Double, val y: Double, val heading: Double) {
+
     }
 }
