@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.geometry.Rotation2d
 import com.arcrobotics.ftclib.geometry.Transform2d
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds
 import com.spartronics4915.lib.T265Camera
+import org.apache.commons.math3.stat.correlation.Covariance
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemContext
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
@@ -60,7 +61,7 @@ fun ChassisSpeeds.toRoadRunner(): Pose2d {
 class T265Localizer(
     context: SubsystemContext,
     private var cameraToRobot: Pose2d,
-    odometryCovariance: Double
+    private var odometryCovariance: Double
 ): Localizer, Consumer<T265Camera.CameraUpdate>, AbstractSubsystem {
     override val tag = "T265Localizer"
     override val subsystems = SubsystemMap{ tag }
@@ -120,6 +121,27 @@ class T265Localizer(
      * Current robot pose velocity
      */
     override val poseVelocity: Pose2d? = null
+
+    /**
+     * Sets the odometry info of the camera.
+     *
+     * @param offset The offset from the camera's perspective to the robot.
+     * @param covariance Changes the ratio of trust between the camera's sensor and the passed in odometry data
+     */
+    fun setOdometryInfo(offset: Pose2d, covariance: Double = odometryCovariance) {
+        val ftcLibCameraToRobot = cameraToRobot.toFtcLib()
+        cameraToRobot = offset
+        if (covariance != odometryCovariance) {
+            odometryCovariance = covariance
+        }/*
+        slamera.setOdometryInfo(
+            Transform2d(
+                ftcLibCameraToRobot.translation,
+                ftcLibCameraToRobot.rotation
+            ),
+            covariance
+        )*/
+    }
 
     /**
      * Completes a single localization update.

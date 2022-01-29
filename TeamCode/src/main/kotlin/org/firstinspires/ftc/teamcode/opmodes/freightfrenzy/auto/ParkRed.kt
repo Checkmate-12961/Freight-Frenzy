@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T26
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.TrajectorySequence
 
 @Autonomous
-class park : BaseOpMode() {
+class ParkRed : BaseOpMode() {
     override fun setupLoop() {
         telemetry.addData("confidence", (robot.drivetrain.localizer as T265Localizer).poseConfidence)
     }
@@ -17,7 +17,7 @@ class park : BaseOpMode() {
     override fun setup() {
         park = robot.drivetrain.trajectorySequenceBuilder(Pose2d())
             .back(26.0)
-            .strafeLeft(7.0)
+            .strafeRight(7.0)
             .build()
         robot.drivetrain.poseEstimate = park.start()
         robot.drivetrain.followTrajectorySequenceAsync(park)
