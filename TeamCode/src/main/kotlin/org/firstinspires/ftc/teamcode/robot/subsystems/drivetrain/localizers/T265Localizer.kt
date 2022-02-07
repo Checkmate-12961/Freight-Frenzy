@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers
 
 import android.os.SystemClock.sleep
 import android.util.Log
+import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.localization.Localizer
@@ -57,12 +58,15 @@ fun ChassisSpeeds.toRoadRunner(): Pose2d {
     )
 }
 
+@Config
 class T265Localizer(
     context: SubsystemContext,
-    odometryCovariance: Double
+    private val odometryCovariance: Double
 ): Localizer, Consumer<T265Camera.CameraUpdate>, AbstractSubsystem {
     override val tag = "T265Localizer"
     override val subsystems = SubsystemMap{ tag }
+
+    private var lastCameraRobotOffset = cameraRobotOffset
 
     private val slamera: T265Camera
 
@@ -129,6 +133,18 @@ class T265Localizer(
             slamera.sendOdometry(
                 odometryVelocity.x * inToM,
                 odometryVelocity.y * inToM
+            )
+        }
+    }
+
+    override fun loop() {
+        if (lastCameraRobotOffset != cameraRobotOffset) {
+            val cameraRobotOffsetPose = cameraRobotOffset.pose2d.toFtcLib()
+            slamera.setOdometryInfo(
+                Transform2d(
+                    cameraRobotOffsetPose.translation,
+                    cameraRobotOffsetPose.rotation
+                ), odometryCovariance
             )
         }
     }
