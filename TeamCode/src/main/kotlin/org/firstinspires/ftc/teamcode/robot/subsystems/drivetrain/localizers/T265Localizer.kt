@@ -9,13 +9,13 @@ import com.arcrobotics.ftclib.geometry.Rotation2d
 import com.arcrobotics.ftclib.geometry.Transform2d
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds
 import com.spartronics4915.lib.T265Camera
+import org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto.util.OpModeUtil
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemContext
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer.Companion.inToM
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer.Companion.mToIn
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.SuperTrajectorySequenceRunner.Drawable
 import java.util.function.Consumer
 
 /**
@@ -59,7 +59,6 @@ fun ChassisSpeeds.toRoadRunner(): Pose2d {
 
 class T265Localizer(
     context: SubsystemContext,
-    private var cameraToRobot: Pose2d,
     odometryCovariance: Double
 ): Localizer, Consumer<T265Camera.CameraUpdate>, AbstractSubsystem {
     override val tag = "T265Localizer"
@@ -73,7 +72,7 @@ class T265Localizer(
     // SLAMERA STUFF //
     @Volatile private var updatesReceived = 0
 
-    fun waitForUpdate() {
+    private fun waitForUpdate() {
         val lastUpdatesReceived = updatesReceived
         while (lastUpdatesReceived == updatesReceived) { continue }
     }
@@ -110,7 +109,7 @@ class T265Localizer(
             val temp = value.toFtcLib()
             slamera.setPose(
                 com.arcrobotics.ftclib.geometry.Pose2d(
-                    temp.translation.rotateBy(Rotation2d(cameraToRobot.heading)),
+                    temp.translation.rotateBy(Rotation2d(cameraRobotOffset.h)),
                     temp.rotation
                 )
             )
@@ -142,7 +141,7 @@ class T265Localizer(
         Log.d(tag, "Initializing T265")
         if (persistentSlamera == null) {
             Log.d(tag, "Slamera was null.")
-            val ftcLibCameraToRobot = cameraToRobot.toFtcLib()
+            val ftcLibCameraToRobot = cameraRobotOffset.pose2d.toFtcLib()
             persistentSlamera = T265Camera(
                 Transform2d(
                     ftcLibCameraToRobot.translation,
@@ -163,7 +162,7 @@ class T265Localizer(
         logPose(poseEstimate)
         poseEstimate = Pose2d()
         logPose(poseEstimate)
-/*
+
         Thread {
             while (context.subsystems["Drivetrain"] == null) {continue}
             Log.i(tag, "Setting up dashboard telemetry.")
@@ -172,11 +171,13 @@ class T265Localizer(
             drivetrain.dashTelemetry["rawY"] = {lastUpdate.directPose.y}
             drivetrain.dashTelemetry["rawHeading (deg)"] = {Math.toDegrees(lastUpdate.directPose.heading)}
             drivetrain.dashTelemetry["poseConfidence"] = {lastUpdate.confidence.ordinal}
-            drivetrain.drawnTelemetry.add(Drawable("#ffff00") { lastUpdate.directPose })
-        }.start()*/
+            //drivetrain.drawnTelemetry.add(Drawable("#ffff00") { lastUpdate.directPose })
+        }.start()
     }
 
     companion object {
+        @JvmField var cameraRobotOffset = OpModeUtil.SuperPose2d(-4.0, 4.875, 90.0)
+
         const val mToIn = 100.0/2.54
         const val inToM = 2.54/100.0
 
@@ -193,7 +194,7 @@ class T265Localizer(
     override fun accept(update: T265Camera.CameraUpdate) {
         updatesReceived++
         synchronized(UpdateMutex) {
-            lastUpdate = AmericanCameraUpdate(update, cameraToRobot.heading)
+            lastUpdate = AmericanCameraUpdate(update, cameraRobotOffset.h)
         }
     }
 

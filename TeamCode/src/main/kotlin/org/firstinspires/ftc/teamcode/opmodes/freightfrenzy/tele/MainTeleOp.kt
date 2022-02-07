@@ -35,7 +35,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.LiftPower
 @TeleOp(name = "TeleOp")
 class MainTeleOp : BaseOpMode() {
     override fun preSetup() {
-        Drivetrain.useAlternateLocalizer = false
+        Drivetrain.useAlternateLocalizer = true
     }
 
     private val CheckmateRobot.liftPower: LiftPower
