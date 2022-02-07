@@ -28,14 +28,19 @@ import org.firstinspires.ftc.teamcode.robot.CheckmateRobot
 import org.firstinspires.ftc.teamcode.robot.abstracts.BaseOpMode
 import org.firstinspires.ftc.teamcode.robot.subsystems.Lift
 import org.firstinspires.ftc.teamcode.robot.subsystems.Bucket
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain
 import org.firstinspires.ftc.teamcode.robot.subsystems.LiftPower
 
 @Config
-@TeleOp(name = "TeleOp") // TODO: create a failure backup function
+@TeleOp(name = "TeleOp")
 class MainTeleOp : BaseOpMode() {
+    override fun preSetup() {
+        Drivetrain.useAlternateLocalizer = true
+    }
+
     private val CheckmateRobot.liftPower: LiftPower
         get() = subsystems["Lift"]!! as LiftPower
-
+/*
     override fun preSetup() {
         telemetry.addData("SHOULD YOU INIT", false)
         telemetry.update()
@@ -44,7 +49,7 @@ class MainTeleOp : BaseOpMode() {
     override fun setupLoop() {
         telemetry.addData("SHOULD YOU INIT",robot.barcode.isStreaming ?: false)
         telemetry.update()
-    }
+    }*/
 
     private fun activateEither() {
         gp2.resetBinds()

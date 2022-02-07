@@ -9,14 +9,13 @@ import com.arcrobotics.ftclib.geometry.Rotation2d
 import com.arcrobotics.ftclib.geometry.Transform2d
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds
 import com.spartronics4915.lib.T265Camera
-import org.apache.commons.math3.stat.correlation.Covariance
+import org.firstinspires.ftc.teamcode.opmodes.freightfrenzy.auto.util.OpModeUtil
 import org.firstinspires.ftc.teamcode.robot.abstracts.AbstractSubsystem
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemContext
 import org.firstinspires.ftc.teamcode.robot.abstracts.SubsystemMap
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drivetrain
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer.Companion.inToM
 import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers.T265Localizer.Companion.mToIn
-import org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.trajectorysequence.SuperTrajectorySequenceRunner.Drawable
 import java.util.function.Consumer
 
 /**
@@ -60,8 +59,7 @@ fun ChassisSpeeds.toRoadRunner(): Pose2d {
 
 class T265Localizer(
     context: SubsystemContext,
-    private var cameraToRobot: Pose2d,
-    private var odometryCovariance: Double
+    odometryCovariance: Double
 ): Localizer, Consumer<T265Camera.CameraUpdate>, AbstractSubsystem {
     override val tag = "T265Localizer"
     override val subsystems = SubsystemMap{ tag }
@@ -74,7 +72,7 @@ class T265Localizer(
     // SLAMERA STUFF //
     @Volatile private var updatesReceived = 0
 
-    fun waitForUpdate() {
+    private fun waitForUpdate() {
         val lastUpdatesReceived = updatesReceived
         while (lastUpdatesReceived == updatesReceived) { continue }
     }
@@ -111,7 +109,7 @@ class T265Localizer(
             val temp = value.toFtcLib()
             slamera.setPose(
                 com.arcrobotics.ftclib.geometry.Pose2d(
-                    temp.translation.rotateBy(Rotation2d(cameraToRobot.heading)),
+                    temp.translation.rotateBy(Rotation2d(cameraRobotOffset.h)),
                     temp.rotation
                 )
             )
@@ -121,27 +119,6 @@ class T265Localizer(
      * Current robot pose velocity
      */
     override val poseVelocity: Pose2d? = null
-
-    /**
-     * Sets the odometry info of the camera.
-     *
-     * @param offset The offset from the camera's perspective to the robot.
-     * @param covariance Changes the ratio of trust between the camera's sensor and the passed in odometry data
-     */
-    fun setOdometryInfo(offset: Pose2d, covariance: Double = odometryCovariance) {
-        val ftcLibCameraToRobot = cameraToRobot.toFtcLib()
-        cameraToRobot = offset
-        if (covariance != odometryCovariance) {
-            odometryCovariance = covariance
-        }/*
-        slamera.setOdometryInfo(
-            Transform2d(
-                ftcLibCameraToRobot.translation,
-                ftcLibCameraToRobot.rotation
-            ),
-            covariance
-        )*/
-    }
 
     /**
      * Completes a single localization update.
@@ -164,7 +141,7 @@ class T265Localizer(
         Log.d(tag, "Initializing T265")
         if (persistentSlamera == null) {
             Log.d(tag, "Slamera was null.")
-            val ftcLibCameraToRobot = cameraToRobot.toFtcLib()
+            val ftcLibCameraToRobot = cameraRobotOffset.pose2d.toFtcLib()
             persistentSlamera = T265Camera(
                 Transform2d(
                     ftcLibCameraToRobot.translation,
@@ -199,6 +176,8 @@ class T265Localizer(
     }
 
     companion object {
+        @JvmField var cameraRobotOffset = OpModeUtil.SuperPose2d(-4.0, 4.875, 90.0)
+
         const val mToIn = 100.0/2.54
         const val inToM = 2.54/100.0
 
@@ -215,7 +194,7 @@ class T265Localizer(
     override fun accept(update: T265Camera.CameraUpdate) {
         updatesReceived++
         synchronized(UpdateMutex) {
-            lastUpdate = AmericanCameraUpdate(update, cameraToRobot.heading)
+            lastUpdate = AmericanCameraUpdate(update, cameraRobotOffset.h)
         }
     }
 

@@ -230,7 +230,7 @@ class Drivetrain(context: SubsystemContext) : MecanumDrive(
     }
 
     companion object {
-        @JvmField var cameraRobotOffset = OpModeUtil.SuperPose2d(-5.0, -2.75, 90.0)
+        var useAlternateLocalizer = true
 
         @JvmField var persistentPoseEstimate = OpModeUtil.SuperPose2d()
 
@@ -293,10 +293,12 @@ class Drivetrain(context: SubsystemContext) : MecanumDrive(
         }
 
         // TODO: create a system that filters between the default localizer (wheel powers) and T265
-        val t265Localizer = T265Localizer(
-            context, cameraRobotOffset.pose2d, .8
-        )
-        subsystems.register(t265Localizer)
-        localizer = t265Localizer
+        if (useAlternateLocalizer) {
+            val t265Localizer = T265Localizer(
+                context, .8
+            )
+            subsystems.register(t265Localizer)
+            localizer = t265Localizer
+        }
     }
 }

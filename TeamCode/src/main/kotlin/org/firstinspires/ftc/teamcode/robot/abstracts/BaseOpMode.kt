@@ -113,9 +113,9 @@ abstract class BaseOpMode : LinearOpMode() {
 
     val dash = FtcDashboard.getInstance()
 
-    private fun updateTelemetry() {
+    private fun updateTelemetry() {/*
         telemetry.addData("Position", robot.barcode.position)
-        telemetry.addData("Analysis", robot.barcode.analysis)
+        telemetry.addData("Analysis", robot.barcode.analysis)*/
         val position = robot.drivetrain.poseEstimate
         val velocity = robot.drivetrain.poseVelocity
         // Print pose to telemetry
