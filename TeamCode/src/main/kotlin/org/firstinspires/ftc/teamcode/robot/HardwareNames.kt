@@ -46,7 +46,7 @@ class HardwareNames {
         // Carousel mechanism
         CAROUSEL("carousel", false),
         // Intake mechanism
-        INTAKE("intake", false),
+        INTAKE("intake", true),
         // Lift mechanism
         LIFT("lift", false);
 

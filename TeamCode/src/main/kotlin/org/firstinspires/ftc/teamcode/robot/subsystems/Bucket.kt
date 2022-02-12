@@ -88,8 +88,8 @@ class Bucket(hardwareMap: HardwareMap) : AbstractSubsystem {
     }
 
     companion object {
-        @JvmField var dump = 0.42
-        @JvmField var rest = 0.2
-        @JvmField var zero = 0.17
+        @JvmField var dump = 0.55
+        @JvmField var rest = 0.22
+        @JvmField var zero = 0.15
     }
 }
