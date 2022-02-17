@@ -58,7 +58,7 @@ class Lift(
     private var offset = 0
 
     companion object {
-        @JvmField var liftBounds = LiftBounds(0.0, 20.0)
+        @JvmField var liftBounds = LiftBounds(0.0, 28.0)
         @JvmField var liftSetPoints = LiftSetPoints(12.0, 15.0, 27.0)
         @JvmField var runIntakeThreshold = 5.2
     }
