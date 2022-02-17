@@ -59,7 +59,7 @@ class Lift(
 
     companion object {
         @JvmField var liftBounds = LiftBounds(0.0, 20.0)
-        @JvmField var liftSetPoints = LiftSetPoints(12.0, 15.0, 20.0)
+        @JvmField var liftSetPoints = LiftSetPoints(12.0, 15.0, 27.0)
         @JvmField var runIntakeThreshold = 5.2
     }
     data class LiftBounds(@JvmField var min: Double, @JvmField var max: Double)
@@ -75,7 +75,7 @@ class Lift(
 
     // Multiplier for the height of the lift
     private val spoolDiameter = 1.5 // inches
-    private val encoderTicksPerRev = 537.7
+    private val encoderTicksPerRev = 384.5
     private val ticksPerInch = encoderTicksPerRev / (spoolDiameter * PI)
 
     private var runIntakeLatch = false

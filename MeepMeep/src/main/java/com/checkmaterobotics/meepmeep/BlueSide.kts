@@ -3,8 +3,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.checkmaterobotics.meepmeep.util.*
 import kotlin.math.PI
 
-Config.get().followTrajectorySequence {
-    val robot = CheckmateRobot(it)
+Config.start { robot ->
     robot.barcode.position = Barcode.BarcodePosition.LEFT
 
     robot.drivetrain.trajectorySequenceBuilder(Pose2d(-34.25, 62.0, PI/2))
@@ -31,4 +30,4 @@ Config.get().followTrajectorySequence {
             println("-" * 10 + "\nRESTART\n" + "-" * 10)
         }
         .build()
-}.start()
+}

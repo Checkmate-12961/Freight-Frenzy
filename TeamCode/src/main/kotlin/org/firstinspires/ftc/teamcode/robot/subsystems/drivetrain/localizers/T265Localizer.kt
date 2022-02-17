@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems.drivetrain.localizers
 
+import android.os.SystemClock
 import android.os.SystemClock.sleep
 import android.util.Log
 import com.acmerobotics.dashboard.config.Config
@@ -75,6 +76,8 @@ class T265Localizer(
 
     // SLAMERA STUFF //
     @Volatile private var updatesReceived = 0
+    @Volatile private var lastUpdateTime = SystemClock.elapsedRealtimeNanos()
+    @Volatile private var updateDelayNanos = 0L
 
     private fun waitForUpdate() {
         val lastUpdatesReceived = updatesReceived
@@ -187,6 +190,7 @@ class T265Localizer(
             drivetrain.dashTelemetry["rawY"] = {lastUpdate.directPose.y}
             drivetrain.dashTelemetry["rawHeading (deg)"] = {Math.toDegrees(lastUpdate.directPose.heading)}
             drivetrain.dashTelemetry["poseConfidence"] = {lastUpdate.confidence.ordinal}
+            drivetrain.dashTelemetry["T265UpdatesDelay"] = {updateDelayNanos}
             //drivetrain.drawnTelemetry.add(Drawable("#ffff00") { lastUpdate.directPose })
         }.start()
     }
@@ -209,6 +213,9 @@ class T265Localizer(
      */
     override fun accept(update: T265Camera.CameraUpdate) {
         updatesReceived++
+        val elapsedTimeNanos = SystemClock.elapsedRealtimeNanos()
+        updateDelayNanos = elapsedTimeNanos - lastUpdateTime
+        lastUpdateTime = elapsedTimeNanos
         synchronized(UpdateMutex) {
             lastUpdate = AmericanCameraUpdate(update, cameraRobotOffset.h)
         }

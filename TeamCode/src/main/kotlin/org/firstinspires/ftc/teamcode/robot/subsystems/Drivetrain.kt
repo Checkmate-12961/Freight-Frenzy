@@ -301,4 +301,8 @@ class Drivetrain(context: SubsystemContext) : MecanumDrive(
             localizer = t265Localizer
         }
     }
+
+    override fun cleanup() {
+        useAlternateLocalizer = false
+    }
 }
