@@ -109,11 +109,13 @@ class MainTeleOp : BaseOpMode() {
         gp2.leftStickY.whileActiveNeg =
              { robot.lift.height = robot.lift.height + liftChangeSpeed }
 
-        // Dpad does set points
+        // Dpad does set points + hold point on trigger and shared point on y
         gp2.dpadUp.onActivate = { robot.lift.target = Lift.Points.HIGH }
         gp2.dpadRight.onActivate = { robot.lift.target = Lift.Points.LOW }
         gp2.dpadLeft.onActivate = { robot.lift.target = Lift.Points.LOW }
         gp2.dpadDown.onActivate = { robot.lift.target = Lift.Points.MIN }
+        gp2.leftTrigger.onActivate = { robot.lift.target = Lift.Points.HOLD }
+        gp2.y.onActivate = { robot.lift.target = Lift.Points.SHARED }
 
         // X wiggles the bucket
         gp2.x.onActivate = { robot.bucket.position = Bucket.Positions.REST }

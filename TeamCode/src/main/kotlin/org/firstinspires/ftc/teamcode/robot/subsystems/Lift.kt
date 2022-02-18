@@ -59,18 +59,18 @@ class Lift(
 
     companion object {
         @JvmField var liftBounds = LiftBounds(0.0, 28.0)
-        @JvmField var liftSetPoints = LiftSetPoints(12.0, 15.0, 27.0)
+        @JvmField var liftSetPoints = LiftSetPoints(12.0, 14.0, 15.0, 23.0, 27.0)
         @JvmField var runIntakeThreshold = 5.2
     }
     data class LiftBounds(@JvmField var min: Double, @JvmField var max: Double)
     data class LiftSetPoints(
-        @JvmField var low: Double, @JvmField var mid: Double, @JvmField var high: Double)
+        @JvmField var low: Double, @JvmField var hold: Double, @JvmField var shared: Double, @JvmField var mid: Double, @JvmField var high: Double)
 
     /**
      * Represents the possible positions of the lift.
      */
     enum class Points {
-        LOW, MID, HIGH, MIN, MAX
+        LOW, MID, HIGH, MIN, MAX, HOLD, SHARED
     }
 
     // Multiplier for the height of the lift
@@ -142,9 +142,12 @@ class Lift(
             when (value) {
                 Points.MIN -> height = liftBounds.min
                 Points.LOW -> height = liftSetPoints.low
+                Points.HOLD -> height = liftSetPoints.hold
+                Points.SHARED -> height = liftSetPoints.shared
                 Points.MID -> height = liftSetPoints.mid
                 Points.HIGH -> height = liftSetPoints.high
                 Points.MAX -> height = liftBounds.max
+
                 else -> {}
             }
         }
