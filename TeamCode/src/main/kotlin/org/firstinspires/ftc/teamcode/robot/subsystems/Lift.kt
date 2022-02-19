@@ -59,7 +59,7 @@ class Lift(
 
     companion object {
         @JvmField var liftBounds = LiftBounds(0.0, 28.0)
-        @JvmField var liftSetPoints = LiftSetPoints(12.0, 14.0, 15.0, 23.0, 27.0)
+        @JvmField var liftSetPoints = LiftSetPoints(12.0, 6.0, 14.0, 23.0, 25.0)
         @JvmField var runIntakeThreshold = 5.2
     }
     data class LiftBounds(@JvmField var min: Double, @JvmField var max: Double)
